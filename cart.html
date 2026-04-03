@@ -6,194 +6,49 @@
     <title>JAMBA WEAR | Shopping Cart</title>
     <style>
         /* --- GLOBAL STYLES --- */
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #f5f5f5;
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            color: #1a1a1a;
-            padding-top: 70px; 
-        }
-
+        body { margin: 0; padding-top: 70px; background-color: #f5f5f5; font-family: 'Helvetica Neue', sans-serif; color: #1a1a1a; }
         a { text-decoration: none; color: inherit; }
 
-        /* --- NAVIGATION BAR --- */
-        .top-bar {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 5%; position: fixed; top: 0; width: 100%; box-sizing: border-box;
-            background-color: rgba(245, 245, 245, 0.95); backdrop-filter: blur(8px);
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05); z-index: 1000;
-        }
-
+        /* --- NAVIGATION --- */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 5%; position: fixed; top: 0; width: 100%; box-sizing: border-box; background-color: rgba(245, 245, 245, 0.95); backdrop-filter: blur(8px); box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05); z-index: 1000; }
         .Nav { display: flex; gap: 15px; list-style: none; margin: 0; padding: 0; }
-        .Nav a { font-size: 13px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; }
-        .Nav a:hover { color: #d2b48c; }
+        .Nav a { font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* --- CART LAYOUT (MOBILE FIRST) --- */
-        .cart-container {
-            max-width: 1200px;
-            margin: 30px auto; 
-            padding: 0 5%;
-        }
+        /* --- CART LAYOUT --- */
+        .cart-container { max-width: 1200px; margin: 30px auto; padding: 0 5%; }
+        .cart-header { font-size: 24px; text-transform: uppercase; margin-bottom: 20px; border-bottom: 1px solid #ddd; padding-bottom: 15px; }
+        .cart-content { display: flex; flex-direction: column; gap: 40px; }
 
-        .cart-header {
-            font-size: 24px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 15px;
-        }
+        /* Left Side: Items */
+        .cart-items-section { width: 100%; }
+        .cart-item { display: grid; grid-template-columns: 100px 1fr; gap: 15px; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid #ddd; }
+        .item-image { width: 100%; height: 130px; object-fit: cover; border-radius: 4px; }
+        .item-details { display: flex; flex-direction: column; justify-content: space-between; }
+        .item-title { font-size: 16px; margin: 0 0 5px 0; }
+        .item-variant { color: #666; font-size: 13px; margin: 0 0 10px 0; }
+        .item-price { font-size: 16px; font-weight: bold; margin-bottom: 10px; }
+        .item-actions { display: flex; justify-content: space-between; align-items: center; }
+        .remove-btn { background: none; border: none; color: #d9534f; cursor: pointer; text-decoration: underline; font-size: 13px; padding: 0; }
 
-        .cart-content {
-            display: flex;
-            flex-direction: column; /* Stack vertically on mobile */
-            gap: 40px;
-        }
+        /* Right Side: Summary */
+        .order-summary { width: 100%; background-color: #fff; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border-radius: 4px; }
+        .summary-title { font-size: 18px; text-transform: uppercase; margin: 0 0 15px 0; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; color: #444; font-size: 14px; }
+        .summary-total { display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd; }
+        .checkout-btn { width: 100%; padding: 16px 0; margin-top: 25px; background-color: #1a1a1a; color: white; font-size: 15px; text-transform: uppercase; border: none; cursor: pointer; transition: 0.3s; }
+        .checkout-btn:hover { background-color: #d2b48c; }
 
-        /* Cart Items Section */
-        .cart-items-section {
-            width: 100%;
-        }
+        /* Empty Cart State */
+        .empty-cart-msg { text-align: center; font-size: 18px; color: #666; padding: 40px 0; }
 
-        .cart-item {
-            display: grid; /* Using grid makes aligning image and text easier */
-            grid-template-columns: 100px 1fr;
-            gap: 15px;
-            padding-bottom: 20px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .item-image {
-            width: 100%;
-            height: 130px;
-            object-fit: cover;
-            background-color: #eaeaea;
-            border-radius: 4px;
-        }
-
-        .item-details {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .item-title {
-            font-size: 16px;
-            margin: 0 0 5px 0;
-            line-height: 1.2;
-        }
-
-        .item-variant {
-            color: #666;
-            font-size: 13px;
-            margin: 0 0 10px 0;
-        }
-
-        .item-price {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .item-actions {
-            display: flex;
-            align-items: center;
-            justify-content: space-between; /* Spreads inputs out */
-            gap: 15px;
-        }
-
-        .qty-input {
-            width: 45px;
-            padding: 6px;
-            text-align: center;
-            border: 1px solid #ccc;
-            font-family: inherit;
-        }
-
-        .remove-btn {
-            background: none;
-            border: none;
-            color: #888;
-            cursor: pointer;
-            text-decoration: underline;
-            font-size: 13px;
-            padding: 0;
-        }
-
-        /* Order Summary Section */
-        .order-summary {
-            width: 100%;
-            background-color: #ffffff;
-            padding: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-            box-sizing: border-box;
-            border-radius: 4px;
-        }
-
-        .summary-title {
-            font-size: 18px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 0 0 15px 0;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 10px;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            color: #444;
-            font-size: 14px;
-        }
-
-        .summary-total {
-            display: flex;
-            justify-content: space-between;
-            font-size: 18px;
-            font-weight: bold;
-            color: #1a1a1a;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #ddd;
-        }
-
-        .checkout-btn {
-            width: 100%;
-            padding: 16px 0;
-            margin-top: 25px;
-            background-color: #1a1a1a;
-            color: white;
-            font-size: 15px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            border: none;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        /* --- DESKTOP ADAPTATION --- */
         @media (min-width: 768px) {
             .cart-container { margin: 60px auto; }
-            .cart-header { font-size: 32px; margin-bottom: 40px; }
             .cart-content { flex-direction: row; gap: 60px; }
             .cart-items-section { flex: 2; }
-            .order-summary { flex: 1; padding: 30px; }
-            
-            .cart-item { 
-                display: flex; /* Back to flex layout for desktop */
-                gap: 30px; 
-            }
-            .item-image { width: 150px; height: 200px; }
-            .item-title { font-size: 20px; margin-bottom: 10px; }
-            .item-variant { font-size: 14px; }
-            .item-price { font-size: 18px; align-self: flex-start; margin-left: auto; }
-            .item-actions { justify-content: flex-start; margin-top: auto; }
-            
-            .Nav { gap: 35px; }
-            .Nav a { font-size: 15px; }
+            .order-summary { flex: 1; align-self: flex-start; }
+            .cart-item { display: flex; gap: 30px; }
+            .item-image { width: 120px; height: 160px; }
+            .Nav { gap: 35px; } .Nav a { font-size: 15px; }
         }
     </style>
 </head>
@@ -201,14 +56,12 @@
 
     <header class="top-bar">
         <div class="logo">
-            <a href="index.html">
-                <img src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/assets/JAMBA.png" alt="JAMBA WEAR Logo" height="30">
-            </a>
+            <a href="index.html"><img src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/assets/JAMBA.png" alt="JAMBA WEAR Logo" height="30"></a>
         </div>
         <ul class="Nav">
             <li><a href="men.html">Men</a></li>
             <li><a href="women.html">Women</a></li>
-            <li><a href="cart.html" style="font-weight: bold;">Cart (1)</a></li>
+            <li><a href="cart.html" id="cart-nav-link" style="font-weight: bold;">Cart (0)</a></li>
         </ul>
     </header>
 
@@ -216,62 +69,87 @@
         <h1 class="cart-header">Your Cart</h1>
         
         <div class="cart-content">
-            
-            <section class="cart-items-section">
-                
-                <div class="cart-item">
-                    <img src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/waistcoat.png" alt="Classic Linen Waistcoat" class="item-image">
-                    
-                    <div class="item-details">
-                        <div>
-                            <h2 class="item-title">Classic Linen Waistcoat</h2>
-                            <p class="item-variant">Size: <span id="display-size">M</span></p>
-                        </div>
-                        
-                        <div class="item-price">₹85.00</div>
-                        
-                        <div class="item-actions">
-                            <input type="number" class="qty-input" value="1" min="1">
-                            <button class="remove-btn">Remove</button>
-                        </div>
-                    </div>
-                </div>
+            <section class="cart-items-section" id="cart-items-container">
+                </section>
 
-            </section>
-
-            <section class="order-summary">
+            <section class="order-summary" id="order-summary-container">
                 <h2 class="summary-title">Order Summary</h2>
-                
                 <div class="summary-row">
                     <span>Subtotal</span>
-                    <span>₹85.00</span>
+                    <span id="subtotal-price">₹0.00</span>
                 </div>
                 <div class="summary-row">
                     <span>Shipping</span>
                     <span>Calculated at checkout</span>
                 </div>
-                
                 <div class="summary-total">
                     <span>Total</span>
-                    <span>₹85.00</span>
+                    <span id="total-price">₹0.00</span>
                 </div>
-
-                <button class="checkout-btn" onclick="window.location.href='checkout.html'">Proceed to Checkout</button>
+                <button class="checkout-btn">Proceed to Checkout</button>
             </section>
-
         </div>
     </main>
 
     <script>
-        // 1. Get the parameters from the URL (e.g., ?size=XL)
-        const urlParams = new URLSearchParams(window.location.search);
-        const selectedSize = urlParams.get('size');
+        // 1. Get cart data from memory
+        let cart = JSON.parse(localStorage.getItem('jambaCart')) || [];
+        
+        const cartContainer = document.getElementById('cart-items-container');
+        const orderSummary = document.getElementById('order-summary-container');
+        const navLink = document.getElementById('cart-nav-link');
 
-        // 2. If a size was passed in the URL, update the page
-        if (selectedSize) {
-            document.getElementById('display-size').innerText = selectedSize;
+        // Function to display the cart
+        function renderCart() {
+            // Update Nav Counter
+            navLink.innerText = `Cart (${cart.length})`;
+
+            // If empty, show message and hide summary
+            if (cart.length === 0) {
+                cartContainer.innerHTML = `<div class="empty-cart-msg">Your cart is currently empty.<br><br><a href="index.html" style="text-decoration:underline; color:#1a1a1a;">Continue Shopping</a></div>`;
+                orderSummary.style.display = 'none';
+                return;
+            }
+
+            orderSummary.style.display = 'block';
+            cartContainer.innerHTML = ''; // Clear out old HTML
+            let subtotal = 0;
+
+            // Loop through each item in the cart and create HTML for it
+            cart.forEach((item, index) => {
+                subtotal += (item.price * item.quantity);
+
+                cartContainer.innerHTML += `
+                    <div class="cart-item">
+                        <img src="${item.image}" alt="${item.name}" class="item-image">
+                        <div class="item-details">
+                            <div>
+                                <h2 class="item-title">${item.name}</h2>
+                                <p class="item-variant">Size: ${item.size} | Qty: ${item.quantity}</p>
+                            </div>
+                            <div class="item-price">₹${item.price.toFixed(2)}</div>
+                            <div class="item-actions">
+                                <button class="remove-btn" onclick="removeItem(${index})">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Update Totals
+            document.getElementById('subtotal-price').innerText = `₹${subtotal.toFixed(2)}`;
+            document.getElementById('total-price').innerText = `₹${subtotal.toFixed(2)}`;
         }
-    </script>
 
+        // Function to remove an item
+        function removeItem(index) {
+            cart.splice(index, 1); // Remove item from array
+            localStorage.setItem('jambaCart', JSON.stringify(cart)); // Save new array to memory
+            renderCart(); // Refresh the page visual
+        }
+
+        // Run the render function when the page loads
+        renderCart();
+    </script>
 </body>
 </html>
