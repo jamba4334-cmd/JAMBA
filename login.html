@@ -3,122 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JAMBA WEAR | Member Access</title>
+    <title>JAMBA WEAR | Login</title>
     <style>
-        :root { --primary: #1a1a1a; --bg: #f8f8f8; --accent: #007bff; }
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: var(--bg); display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
-        .login-card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); width: 100%; max-width: 400px; text-align: center; }
-        .logo img { height: 28px; margin-bottom: 20px; }
-        h2 { text-transform: uppercase; letter-spacing: 2px; font-size: 16px; margin-bottom: 25px; color: var(--primary); }
+        :root { --primary: #1a1a1a; --accent: #d2b48c; --bg: #f8f8f8; }
+        body { margin: 0; font-family: 'Helvetica Neue', sans-serif; background-color: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; }
         
-        .input-group { margin-bottom: 15px; text-align: left; }
-        .label { font-size: 11px; font-weight: bold; text-transform: uppercase; color: #888; margin-bottom: 5px; display: block; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 14px; transition: 0.3s; }
-        input:focus { border-color: var(--primary); outline: none; }
+        .login-container { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 400px; text-align: center; }
+        .logo img { height: 40px; margin-bottom: 20px; }
+        h2 { margin-bottom: 30px; font-weight: 300; letter-spacing: 1px; text-transform: uppercase; }
 
-        .btn-login { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; }
-        .btn-login:hover { background: #333; }
+        input { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 16px; outline: none; transition: border 0.3s; }
+        input:focus { border-color: var(--accent); }
         
-        .divider { margin: 25px 0; border-top: 1px solid #eee; position: relative; }
-        .divider span { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: white; padding: 0 10px; font-size: 12px; color: #aaa; }
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; margin-bottom: 15px; }
+        .btn:disabled { background-color: #ccc; cursor: not-allowed; }
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-google { background-color: white; color: #555; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+
+        /* --- NEW: OTP SECTION SPACING & ANIMATION --- */
+        #otp-section { 
+            display: none; 
+            margin-top: 30px; /* This is the space you requested */
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .divider { margin: 20px 0; color: #aaa; font-size: 11px; display: flex; align-items: center; letter-spacing: 1px; }
+        .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: #eee; margin: 0 10px; }
+        
+        #error-msg { color: #d9534f; font-size: 12px; margin-bottom: 15px; display: none; }
+        
+        .change-num { font-size: 11px; color: #888; text-decoration: underline; cursor: pointer; margin-top: 10px; display: block; text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
-    <div class="login-card">
+    <div class="login-container">
         <div class="logo"><img src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/assets/JAMBA.png" alt="JAMBA"></div>
-        <h2>Member Login</h2>
-        
-        <div class="input-group">
-            <label class="label">Email Address</label>
-            <input type="email" id="email" placeholder="email@example.com">
-        </div>
-        <div class="input-group">
-            <label class="label">Password</label>
-            <input type="password" id="password" placeholder="••••••••">
+        <h2>Sign In</h2>
+
+        <div id="error-msg"></div>
+
+        <button class="btn btn-google" id="google-login">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">
+            Continue with Google
+        </button>
+
+        <div class="divider">OR USE PHONE</div>
+
+        <div id="phone-section">
+            <input type="tel" id="phone-number" value="+91 " maxlength="14">
+            <div id="recaptcha-container"></div> 
+            <button class="btn btn-primary" id="send-otp">Send OTP</button>
         </div>
 
-        <div class="divider"><span>Important Profile Data</span></div>
-
-        <div class="input-group">
-            <label class="label">Full Name</label>
-            <input type="text" id="fullName" placeholder="John Doe">
+        <div id="otp-section">
+            <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Enter the 6-digit code sent to your phone</p>
+            <input type="text" id="otp-code" placeholder="Enter OTP" maxlength="6">
+            <button class="btn btn-primary" id="verify-otp">Verify & Login</button>
+            <span class="change-num" onclick="location.reload()">← Change Phone Number</span>
         </div>
-        
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <div class="input-group">
-                <label class="label">Age</label>
-                <input type="number" id="age" placeholder="21">
-            </div>
-            <div class="input-group">
-                <label class="label">Gender</label>
-                <select id="gender">
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
-        </div>
-        
-        <button class="btn-login" id="login-btn">Sign In & Sync</button>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        const firebaseConfig = { 
-            apiKey: "AIzaSyBgH8hpWJ97mqLFfoDDW9A_78pR5YjEmxo", 
-            authDomain: "jamba-wear.firebaseapp.com", 
-            projectId: "jamba-wear" 
+        const firebaseConfig = {
+            apiKey: "AIzaSyBgH8hpWJ97mqLFfoDDW9A_78pR5YjEmxo",
+            authDomain: "jamba-wear.firebaseapp.com",
+            projectId: "jamba-wear",
+            storageBucket: "jamba-wear.firebasestorage.app",
+            messagingSenderId: "679544590258",
+            appId: "1:679544590258:web:eac3841e5f555e3fb89eab",
+            measurementId: "G-8XSNJG079Z"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        document.getElementById('login-btn').addEventListener('click', async () => {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const fullName = document.getElementById('fullName').value;
-            const age = document.getElementById('age').value;
-            const gender = document.getElementById('gender').value;
+        const showError = (msg) => {
+            const errDiv = document.getElementById('error-msg');
+            errDiv.innerText = msg;
+            errDiv.style.display = 'block';
+        };
 
-            if(!email || !password || !fullName || !age) {
-                alert("Please fill in all fields to proceed.");
-                return;
+        // Locked +91 Logic
+        const phoneInput = document.getElementById('phone-number');
+        const prefix = "+91 ";
+        phoneInput.addEventListener('keydown', (e) => {
+            if (phoneInput.selectionStart <= prefix.length && (e.key === 'Backspace' || e.key === 'Delete')) e.preventDefault();
+        });
+        phoneInput.addEventListener('input', () => { if (!phoneInput.value.startsWith(prefix)) phoneInput.value = prefix; });
+
+        // Google Login
+        const googleProvider = new GoogleAuthProvider();
+        document.getElementById('google-login').onclick = async () => {
+            try {
+                await signInWithPopup(auth, googleProvider);
+                window.location.href = "index.html";
+            } catch (error) { showError("Google Login Failed."); }
+        };
+
+        // Phone OTP Logic
+        let confirmationResult;
+        const initRecaptcha = () => {
+            if (!window.recaptchaVerifier) {
+                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
             }
+        };
+
+        document.getElementById('send-otp').onclick = async () => {
+            const btn = document.getElementById('send-otp');
+            const phoneNumber = phoneInput.value.replace(/\s/g, ''); 
+            if (phoneNumber.length < 13) { showError("Please enter a 10-digit number."); return; }
+
+            btn.disabled = true;
+            btn.innerText = "Sending...";
+            initRecaptcha();
 
             try {
-                // 1. Firebase Auth (Attempt Login, if fails, create user)
-                let user;
-                try {
-                    const res = await signInWithEmailAndPassword(auth, email, password);
-                    user = res.user;
-                } catch (e) {
-                    const res = await createUserWithEmailAndPassword(auth, email, password);
-                    user = res.user;
-                }
-
-                // 2. Sync Demographic Data to MongoDB via Render
-                await fetch('https://jamba-backend.onrender.com/update-user', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        email: user.email,
-                        fullName: fullName,
-                        age: age,
-                        gender: gender
-                    })
-                });
-
-                // 3. Handle Redirect
-                const urlParams = new URLSearchParams(window.location.search);
-                window.location.href = urlParams.get('redirect') === 'cart' ? "cart.html" : "index.html";
-
+                confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);
+                document.getElementById('phone-section').style.display = 'none';
+                document.getElementById('otp-section').style.display = 'block';
+                document.getElementById('error-msg').style.display = 'none';
             } catch (error) {
-                alert("Error: " + error.message);
+                btn.disabled = false;
+                btn.innerText = "Send OTP";
+                showError("Error: " + error.message);
+                if (window.grecaptcha) window.grecaptcha.reset();
+                window.recaptchaVerifier = null;
             }
-        });
+        };
+
+        document.getElementById('verify-otp').onclick = async () => {
+            const btn = document.getElementById('verify-otp');
+            const code = document.getElementById('otp-code').value;
+            btn.disabled = true;
+            btn.innerText = "Verifying...";
+            try {
+                await confirmationResult.confirm(code);
+                window.location.href = "index.html";
+            } catch (error) {
+                btn.disabled = false;
+                btn.innerText = "Verify & Login";
+                showError("Invalid OTP.");
+            }
+        };
     </script>
 </body>
 </html>
