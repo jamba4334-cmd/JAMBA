@@ -21,20 +21,29 @@
         .btn-google { background-color: white; color: #555; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
 
-        #otp-section { display: none; }
+        /* --- NEW: OTP SECTION SPACING & ANIMATION --- */
+        #otp-section { 
+            display: none; 
+            margin-top: 30px; /* This is the space you requested */
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         .divider { margin: 20px 0; color: #aaa; font-size: 11px; display: flex; align-items: center; letter-spacing: 1px; }
         .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: #eee; margin: 0 10px; }
         
-        /* Error message styling */
         #error-msg { color: #d9534f; font-size: 12px; margin-bottom: 15px; display: none; }
+        
+        .change-num { font-size: 11px; color: #888; text-decoration: underline; cursor: pointer; margin-top: 10px; display: block; text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
     <div class="login-container">
-        <div class="logo">
-            <img src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/assets/JAMBA.png" alt="JAMBA">
-        </div>
+        <div class="logo"><img src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/assets/JAMBA.png" alt="JAMBA"></div>
         <h2>Sign In</h2>
 
         <div id="error-msg"></div>
@@ -53,9 +62,10 @@
         </div>
 
         <div id="otp-section">
-            <input type="text" id="otp-code" placeholder="Enter 6-digit OTP">
+            <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Enter the 6-digit code sent to your phone</p>
+            <input type="text" id="otp-code" placeholder="Enter OTP" maxlength="6">
             <button class="btn btn-primary" id="verify-otp">Verify & Login</button>
-            <p style="font-size: 12px; cursor: pointer; text-decoration: underline;" onclick="location.reload()">Change Number</p>
+            <span class="change-num" onclick="location.reload()">← Change Phone Number</span>
         </div>
     </div>
 
@@ -76,63 +86,44 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Utility to show errors
         const showError = (msg) => {
             const errDiv = document.getElementById('error-msg');
             errDiv.innerText = msg;
             errDiv.style.display = 'block';
         };
 
-        // --- 1. Locked +91 Logic ---
+        // Locked +91 Logic
         const phoneInput = document.getElementById('phone-number');
         const prefix = "+91 ";
-
         phoneInput.addEventListener('keydown', (e) => {
-            if (phoneInput.selectionStart <= prefix.length && (e.key === 'Backspace' || e.key === 'Delete')) {
-                e.preventDefault();
-            }
+            if (phoneInput.selectionStart <= prefix.length && (e.key === 'Backspace' || e.key === 'Delete')) e.preventDefault();
         });
+        phoneInput.addEventListener('input', () => { if (!phoneInput.value.startsWith(prefix)) phoneInput.value = prefix; });
 
-        phoneInput.addEventListener('input', () => {
-            if (!phoneInput.value.startsWith(prefix)) phoneInput.value = prefix;
-        });
-
-        // --- 2. Google Login ---
+        // Google Login
         const googleProvider = new GoogleAuthProvider();
         document.getElementById('google-login').onclick = async () => {
             try {
                 await signInWithPopup(auth, googleProvider);
                 window.location.href = "index.html";
-            } catch (error) {
-                showError("Google Login Failed: " + error.code);
-            }
+            } catch (error) { showError("Google Login Failed."); }
         };
 
-        // --- 3. Stable Phone OTP Logic ---
+        // Phone OTP Logic
         let confirmationResult;
-
-        // Initialize invisible reCAPTCHA
         const initRecaptcha = () => {
             if (!window.recaptchaVerifier) {
-                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-                    'size': 'invisible'
-                });
+                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
             }
         };
 
         document.getElementById('send-otp').onclick = async () => {
             const btn = document.getElementById('send-otp');
-            // Remove spaces: results in +91XXXXXXXXXX
             const phoneNumber = phoneInput.value.replace(/\s/g, ''); 
-            
-            if (phoneNumber.length < 13) {
-                showError("Please enter a 10-digit number.");
-                return;
-            }
+            if (phoneNumber.length < 13) { showError("Please enter a 10-digit number."); return; }
 
             btn.disabled = true;
-            btn.innerText = "Sending SMS...";
-            
+            btn.innerText = "Sending...";
             initRecaptcha();
 
             try {
@@ -141,20 +132,9 @@
                 document.getElementById('otp-section').style.display = 'block';
                 document.getElementById('error-msg').style.display = 'none';
             } catch (error) {
-                console.error(error);
                 btn.disabled = false;
                 btn.innerText = "Send OTP";
-                
-                // Handle specific Firebase blocks
-                if (error.code === 'auth/unauthorized-domain') {
-                    showError("Domain Error: Add your URL to Firebase Authorized Domains.");
-                } else if (error.code === 'auth/too-many-requests') {
-                    showError("Too many attempts. Please try again later.");
-                } else {
-                    showError("Error: " + error.message);
-                }
-
-                // Reset reCAPTCHA on failure to allow retry
+                showError("Error: " + error.message);
                 if (window.grecaptcha) window.grecaptcha.reset();
                 window.recaptchaVerifier = null;
             }
@@ -163,17 +143,15 @@
         document.getElementById('verify-otp').onclick = async () => {
             const btn = document.getElementById('verify-otp');
             const code = document.getElementById('otp-code').value;
-            
             btn.disabled = true;
             btn.innerText = "Verifying...";
-
             try {
                 await confirmationResult.confirm(code);
                 window.location.href = "index.html";
             } catch (error) {
                 btn.disabled = false;
                 btn.innerText = "Verify & Login";
-                showError("Invalid OTP. Please check the code.");
+                showError("Invalid OTP.");
             }
         };
     </script>
