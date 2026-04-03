@@ -247,7 +247,7 @@
     </div>
 
     <section class="product-grid">
-        <div class="product-card" onclick="window.location.href='product1.html'">
+        <div class="product-card" onclick="window.location.href='product.html?id=1'">
             <img class="product-image" src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/waistcoat.png" alt="Linen Waistcoat">
             <div class="product-info">
                 <h3 class="product-title">Classic Linen Waistcoat</h3>
@@ -255,7 +255,7 @@
             </div>
         </div>
 
-        <div class="product-card" onclick="window.location.href='product2.html'">
+        <div class="product-card" onclick="window.location.href='product.html?id=2'">
             <img class="product-image" src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/GoldenShirt.png" alt="Tailored Shirt">
             <div class="product-info">
                 <h3 class="product-title">Tailored Oxford Shirt</h3>
@@ -263,7 +263,7 @@
             </div>
         </div>
 
-        <div class="product-card" onclick="window.location.href='product3.html'">
+        <div class="product-card" onclick="window.location.href='product.html?id=3'">
             <img class="product-image" src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/Pinkshirt.png" alt="Pleated Trousers">
             <div class="product-info">
                 <h3 class="product-title">Pleated Wool Trousers</h3>
@@ -297,12 +297,12 @@
             }
         };
 
-        // Simplified Auth Logic: Just toggle a class on the body!
+        // Simplified Auth Logic: Toggle a class on the body to let CSS do the work!
         onAuthStateChanged(auth, (user) => {
             const userDisplay = document.getElementById('user-display-name');
             
             if (user) {
-                document.body.classList.add('logged-in'); // This triggers the CSS rules to hide/show buttons
+                document.body.classList.add('logged-in'); 
                 userDisplay.innerText = "Hi, " + (user.displayName || user.phoneNumber || "Member");
             } else {
                 document.body.classList.remove('logged-in');
