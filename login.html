@@ -12,17 +12,21 @@
         .logo img { height: 40px; margin-bottom: 20px; }
         h2 { margin-bottom: 30px; font-weight: 300; letter-spacing: 1px; text-transform: uppercase; }
 
-        input { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 16px; outline: none; }
+        input { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 16px; outline: none; transition: border 0.3s; }
         input:focus { border-color: var(--accent); }
         
         .btn { width: 100%; padding: 14px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; margin-bottom: 15px; }
+        .btn:disabled { background-color: #ccc; cursor: not-allowed; }
         .btn-primary { background-color: var(--primary); color: white; }
         .btn-google { background-color: white; color: #555; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
 
         #otp-section { display: none; }
         .divider { margin: 20px 0; color: #aaa; font-size: 11px; display: flex; align-items: center; letter-spacing: 1px; }
         .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: #eee; margin: 0 10px; }
+        
+        /* Error message styling */
+        #error-msg { color: #d9534f; font-size: 12px; margin-bottom: 15px; display: none; }
     </style>
 </head>
 <body>
@@ -32,6 +36,8 @@
             <img src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/assets/JAMBA.png" alt="JAMBA">
         </div>
         <h2>Sign In</h2>
+
+        <div id="error-msg"></div>
 
         <button class="btn btn-google" id="google-login">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">
@@ -49,6 +55,7 @@
         <div id="otp-section">
             <input type="text" id="otp-code" placeholder="Enter 6-digit OTP">
             <button class="btn btn-primary" id="verify-otp">Verify & Login</button>
+            <p style="font-size: 12px; cursor: pointer; text-decoration: underline;" onclick="location.reload()">Change Number</p>
         </div>
     </div>
 
@@ -56,7 +63,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // Your specific JAMBA WEAR configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBgH8hpWJ97mqLFfoDDW9A_78pR5YjEmxo",
             authDomain: "jamba-wear.firebaseapp.com",
@@ -70,7 +76,14 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // --- 1. Lock +91 Logic ---
+        // Utility to show errors
+        const showError = (msg) => {
+            const errDiv = document.getElementById('error-msg');
+            errDiv.innerText = msg;
+            errDiv.style.display = 'block';
+        };
+
+        // --- 1. Locked +91 Logic ---
         const phoneInput = document.getElementById('phone-number');
         const prefix = "+91 ";
 
@@ -84,59 +97,83 @@
             if (!phoneInput.value.startsWith(prefix)) phoneInput.value = prefix;
         });
 
-        phoneInput.addEventListener('click', () => {
-            if (phoneInput.selectionStart < prefix.length) {
-                phoneInput.setSelectionRange(prefix.length, prefix.length);
-            }
-        });
-
         // --- 2. Google Login ---
         const googleProvider = new GoogleAuthProvider();
         document.getElementById('google-login').onclick = async () => {
             try {
-                const result = await signInWithPopup(auth, googleProvider);
-                alert("Welcome " + result.user.displayName);
-                window.location.href = "index.html"; 
+                await signInWithPopup(auth, googleProvider);
+                window.location.href = "index.html";
             } catch (error) {
-                console.error(error);
-                alert("Google Login Failed. Ensure Google is enabled in Firebase Console.");
+                showError("Google Login Failed: " + error.code);
             }
         };
 
-        // --- 3. Phone OTP Logic ---
-        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-            'size': 'invisible'
-        });
-
+        // --- 3. Stable Phone OTP Logic ---
         let confirmationResult;
 
+        // Initialize invisible reCAPTCHA
+        const initRecaptcha = () => {
+            if (!window.recaptchaVerifier) {
+                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                    'size': 'invisible'
+                });
+            }
+        };
+
         document.getElementById('send-otp').onclick = async () => {
-            const phoneNumber = phoneInput.value.trim().replace(/\s/g, ''); 
+            const btn = document.getElementById('send-otp');
+            // Remove spaces: results in +91XXXXXXXXXX
+            const phoneNumber = phoneInput.value.replace(/\s/g, ''); 
+            
             if (phoneNumber.length < 13) {
-                alert("Please enter a valid phone number.");
+                showError("Please enter a 10-digit number.");
                 return;
             }
 
-            const appVerifier = window.recaptchaVerifier;
+            btn.disabled = true;
+            btn.innerText = "Sending SMS...";
+            
+            initRecaptcha();
+
             try {
-                confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
+                confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);
                 document.getElementById('phone-section').style.display = 'none';
                 document.getElementById('otp-section').style.display = 'block';
-                alert("OTP Sent to " + phoneNumber);
+                document.getElementById('error-msg').style.display = 'none';
             } catch (error) {
                 console.error(error);
-                alert("Error sending OTP. Make sure your phone number is correct.");
+                btn.disabled = false;
+                btn.innerText = "Send OTP";
+                
+                // Handle specific Firebase blocks
+                if (error.code === 'auth/unauthorized-domain') {
+                    showError("Domain Error: Add your URL to Firebase Authorized Domains.");
+                } else if (error.code === 'auth/too-many-requests') {
+                    showError("Too many attempts. Please try again later.");
+                } else {
+                    showError("Error: " + error.message);
+                }
+
+                // Reset reCAPTCHA on failure to allow retry
+                if (window.grecaptcha) window.grecaptcha.reset();
+                window.recaptchaVerifier = null;
             }
         };
 
         document.getElementById('verify-otp').onclick = async () => {
+            const btn = document.getElementById('verify-otp');
             const code = document.getElementById('otp-code').value;
+            
+            btn.disabled = true;
+            btn.innerText = "Verifying...";
+
             try {
                 await confirmationResult.confirm(code);
-                alert("Success! Welcome to JAMBA WEAR.");
                 window.location.href = "index.html";
             } catch (error) {
-                alert("Invalid OTP code.");
+                btn.disabled = false;
+                btn.innerText = "Verify & Login";
+                showError("Invalid OTP. Please check the code.");
             }
         };
     </script>
