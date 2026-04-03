@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAMBA WEAR | Join the Tribe</title>
+    <style>
+        :root { --primary: #1a1a1a; --accent: #d2b48c; --bg: #f8f8f8; }
+        body { margin: 0; font-family: 'Helvetica Neue', sans-serif; background-color: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        
+        .signup-container { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 420px; text-align: center; }
+        .logo img { height: 35px; margin-bottom: 20px; }
+        h2 { margin-bottom: 10px; font-weight: 300; letter-spacing: 1px; text-transform: uppercase; }
+        p { color: #666; font-size: 13px; margin-bottom: 30px; line-height: 1.5; }
+
+        .form-group { text-align: left; margin-bottom: 15px; }
+        .label { font-size: 11px; font-weight: bold; text-transform: uppercase; color: #888; margin-bottom: 5px; display: block; }
+        
+        input, select { 
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; 
+            box-sizing: border-box; font-size: 15px; outline: none; transition: border 0.3s; 
+            background: white;
+        }
+        input:focus { border-color: var(--primary); }
+        
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        .btn { 
+            width: 100%; padding: 16px; border: none; border-radius: 4px; cursor: pointer; 
+            font-weight: bold; text-transform: uppercase; letter-spacing: 2px; 
+            transition: 0.3s; margin-top: 20px; background-color: var(--primary); color: white; 
+        }
+        .btn:hover { background-color: #333; transform: translateY(-1px); }
+        .btn:disabled { background-color: #ccc; cursor: not-allowed; }
+
+        #status-msg { margin-top: 15px; font-size: 12px; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="signup-container">
+        <div class="logo"><img src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/assets/JAMBA.png" alt="JAMBA"></div>
+        <h2>Complete Profile</h2>
+        <p>Welcome to JAMBA! We just need a few more details to set up your personalized shopping experience.</p>
+
+        <div id="status-msg"></div>
+
+        <form id="signup-form">
+            <div class="form-group">
+                <label class="label">Full Name</label>
+                <input type="text" id="fullName" placeholder="e.g. Rahul Boro" required>
+            </div>
+
+            <div class="grid">
+                <div class="form-group">
+                    <label class="label">Age</label>
+                    <input type="number" id="age" placeholder="21" required min="12" max="100">
+                </div>
+                <div class="form-group">
+                    <label class="label">Gender</label>
+                    <select id="gender" required>
+                        <option value="" disabled selected>Select</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn" id="finish-btn">Start Shopping</button>
+        </form>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBgH8hpWJ97mqLFfoDDW9A_78pR5YjEmxo",
+            authDomain: "jamba-wear.firebaseapp.com",
+            projectId: "jamba-wear"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const UPDATE_USER_URL = "https://jamba-backend.onrender.com/update-user";
+
+        // Logic: Only allow access if Firebase already authenticated them in login.html
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                // If they try to visit signup directly without logging in, kick them back
+                window.location.href = "login.html";
+            }
+        });
+
+        document.getElementById('signup-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('finish-btn');
+            const msg = document.getElementById('status-msg');
+            
+            const user = auth.currentUser;
+            const userData = {
+                email: user.email || user.phoneNumber, // Identifies them in MongoDB
+                fullName: document.getElementById('fullName').value,
+                age: document.getElementById('age').value,
+                gender: document.getElementById('gender').value
+            };
+
+            btn.disabled = true;
+            btn.innerText = "Syncing Profile...";
+
+            try {
+                const response = await fetch(UPDATE_USER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+
+                if (response.ok) {
+                    msg.style.color = "green";
+                    msg.innerText = "Profile created! Redirecting...";
+                    msg.style.display = "block";
+                    
+                    // Final redirection back to the shop
+                    setTimeout(() => {
+                        window.location.href = "index.html";
+                    }, 1500);
+                } else {
+                    throw new Error("Failed to sync with database.");
+                }
+            } catch (error) {
+                btn.disabled = false;
+                btn.innerText = "Start Shopping";
+                msg.style.color = "red";
+                msg.innerText = "Error: " + error.message;
+                msg.style.display = "block";
+            }
+        };
+    </script>
+</body>
+</html>
