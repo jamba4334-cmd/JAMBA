@@ -21,30 +21,21 @@
         .btn-google { background-color: white; color: #555; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
 
-        /* --- NEW: OTP SECTION SPACING & ANIMATION --- */
-        #otp-section { 
-            display: none; 
-            margin-top: 30px; /* This is the space you requested */
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            animation: fadeIn 0.4s ease-in-out;
-        }
-
+        #otp-section { display: none; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .divider { margin: 20px 0; color: #aaa; font-size: 11px; display: flex; align-items: center; letter-spacing: 1px; }
         .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: #eee; margin: 0 10px; }
-        
         #error-msg { color: #d9534f; font-size: 12px; margin-bottom: 15px; display: none; }
-        
-        .change-num { font-size: 11px; color: #888; text-decoration: underline; cursor: pointer; margin-top: 10px; display: block; text-transform: uppercase; letter-spacing: 1px; }
+        .footer-link { margin-top: 15px; font-size: 12px; color: #888; }
+        .footer-link a { color: var(--primary); font-weight: bold; text-decoration: none; }
     </style>
 </head>
 <body>
 
     <div class="login-container">
         <div class="logo"><img src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/assets/JAMBA.png" alt="JAMBA"></div>
-        <h2>Sign In</h2>
+        <h2>Login</h2>
 
         <div id="error-msg"></div>
 
@@ -59,13 +50,13 @@
             <input type="tel" id="phone-number" value="+91 " maxlength="14">
             <div id="recaptcha-container"></div> 
             <button class="btn btn-primary" id="send-otp">Send OTP</button>
+            <div class="footer-link">New to JAMBA? <a href="signup.html">Sign Up</a></div>
         </div>
 
         <div id="otp-section">
             <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Enter the 6-digit code sent to your phone</p>
             <input type="text" id="otp-code" placeholder="Enter OTP" maxlength="6">
             <button class="btn btn-primary" id="verify-otp">Verify & Login</button>
-            <span class="change-num" onclick="location.reload()">← Change Phone Number</span>
         </div>
     </div>
 
@@ -77,14 +68,12 @@
             apiKey: "AIzaSyBgH8hpWJ97mqLFfoDDW9A_78pR5YjEmxo",
             authDomain: "jamba-wear.firebaseapp.com",
             projectId: "jamba-wear",
-            storageBucket: "jamba-wear.firebasestorage.app",
-            messagingSenderId: "679544590258",
-            appId: "1:679544590258:web:eac3841e5f555e3fb89eab",
-            measurementId: "G-8XSNJG079Z"
+            appId: "1:679544590258:web:eac3841e5f555e3fb89eab"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const CHECK_USER_URL = "https://jamba-backend.onrender.com/check-user";
 
         const showError = (msg) => {
             const errDiv = document.getElementById('error-msg');
@@ -92,51 +81,51 @@
             errDiv.style.display = 'block';
         };
 
-        // Locked +91 Logic
-        const phoneInput = document.getElementById('phone-number');
-        const prefix = "+91 ";
-        phoneInput.addEventListener('keydown', (e) => {
-            if (phoneInput.selectionStart <= prefix.length && (e.key === 'Backspace' || e.key === 'Delete')) e.preventDefault();
-        });
-        phoneInput.addEventListener('input', () => { if (!phoneInput.value.startsWith(prefix)) phoneInput.value = prefix; });
+        // --- NEW LOGIC: CHECK IF USER EXISTS IN MONGODB ---
+        async function handleUserRouting(user) {
+            const identifier = user.email || user.phoneNumber;
+            try {
+                const response = await fetch(`${CHECK_USER_URL}?id=${identifier}`);
+                const result = await response.json();
+
+                if (result.exists) {
+                    window.location.href = "index.html"; // Old User -> Home
+                } else {
+                    window.location.href = "signup.html"; // New User -> Profile Setup
+                }
+            } catch (error) {
+                console.error("Routing Error:", error);
+                window.location.href = "index.html"; // Fallback
+            }
+        }
 
         // Google Login
-        const googleProvider = new GoogleAuthProvider();
         document.getElementById('google-login').onclick = async () => {
             try {
-                await signInWithPopup(auth, googleProvider);
-                window.location.href = "index.html";
+                const result = await signInWithPopup(auth, new GoogleAuthProvider());
+                handleUserRouting(result.user);
             } catch (error) { showError("Google Login Failed."); }
         };
 
         // Phone OTP Logic
         let confirmationResult;
-        const initRecaptcha = () => {
-            if (!window.recaptchaVerifier) {
-                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
-            }
-        };
-
         document.getElementById('send-otp').onclick = async () => {
-            const btn = document.getElementById('send-otp');
-            const phoneNumber = phoneInput.value.replace(/\s/g, ''); 
+            const phoneNumber = document.getElementById('phone-number').value.replace(/\s/g, ''); 
             if (phoneNumber.length < 13) { showError("Please enter a 10-digit number."); return; }
-
+            
+            const btn = document.getElementById('send-otp');
             btn.disabled = true;
             btn.innerText = "Sending...";
-            initRecaptcha();
+            const verifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
 
             try {
-                confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);
+                confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, verifier);
                 document.getElementById('phone-section').style.display = 'none';
                 document.getElementById('otp-section').style.display = 'block';
-                document.getElementById('error-msg').style.display = 'none';
             } catch (error) {
                 btn.disabled = false;
                 btn.innerText = "Send OTP";
                 showError("Error: " + error.message);
-                if (window.grecaptcha) window.grecaptcha.reset();
-                window.recaptchaVerifier = null;
             }
         };
 
@@ -146,8 +135,8 @@
             btn.disabled = true;
             btn.innerText = "Verifying...";
             try {
-                await confirmationResult.confirm(code);
-                window.location.href = "index.html";
+                const result = await confirmationResult.confirm(code);
+                handleUserRouting(result.user);
             } catch (error) {
                 btn.disabled = false;
                 btn.innerText = "Verify & Login";
