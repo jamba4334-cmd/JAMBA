@@ -3,18 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JAMBA WEAR | Login</title>
+    <title>JAMBA WEAR | Member Access</title>
     <style>
-        :root { --primary: #1a1a1a; --bg: #f8f8f8; }
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: var(--bg); display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .login-card { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 400px; text-align: center; }
-        .logo img { height: 30px; margin-bottom: 20px; }
-        h2 { text-transform: uppercase; letter-spacing: 2px; font-size: 18px; margin-bottom: 30px; }
-        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        .btn-login { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        :root { --primary: #1a1a1a; --bg: #f8f8f8; --accent: #007bff; }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: var(--bg); display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .login-card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); width: 100%; max-width: 400px; text-align: center; }
+        .logo img { height: 28px; margin-bottom: 20px; }
+        h2 { text-transform: uppercase; letter-spacing: 2px; font-size: 16px; margin-bottom: 25px; color: var(--primary); }
+        
+        .input-group { margin-bottom: 15px; text-align: left; }
+        .label { font-size: 11px; font-weight: bold; text-transform: uppercase; color: #888; margin-bottom: 5px; display: block; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 14px; transition: 0.3s; }
+        input:focus { border-color: var(--primary); outline: none; }
+
+        .btn-login { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; }
         .btn-login:hover { background: #333; }
-        .footer-link { margin-top: 20px; font-size: 13px; color: #777; }
-        .footer-link a { color: var(--primary); font-weight: bold; text-decoration: none; }
+        
+        .divider { margin: 25px 0; border-top: 1px solid #eee; position: relative; }
+        .divider span { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: white; padding: 0 10px; font-size: 12px; color: #aaa; }
     </style>
 </head>
 <body>
@@ -23,54 +29,95 @@
         <div class="logo"><img src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/assets/JAMBA.png" alt="JAMBA"></div>
         <h2>Member Login</h2>
         
-        <input type="email" id="email" placeholder="Email Address">
-        <input type="password" id="password" placeholder="Password">
-        
-        <button class="btn-login" id="login-btn">Sign In</button>
-
-        <div class="footer-link">
-            Don't have an account? <a href="signup.html">Join Us</a>
+        <div class="input-group">
+            <label class="label">Email Address</label>
+            <input type="email" id="email" placeholder="email@example.com">
         </div>
+        <div class="input-group">
+            <label class="label">Password</label>
+            <input type="password" id="password" placeholder="••••••••">
+        </div>
+
+        <div class="divider"><span>Important Profile Data</span></div>
+
+        <div class="input-group">
+            <label class="label">Full Name</label>
+            <input type="text" id="fullName" placeholder="John Doe">
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="input-group">
+                <label class="label">Age</label>
+                <input type="number" id="age" placeholder="21">
+            </div>
+            <div class="input-group">
+                <label class="label">Gender</label>
+                <select id="gender">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+        </div>
+        
+        <button class="btn-login" id="login-btn">Sign In & Sync</button>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = { 
             apiKey: "AIzaSyBgH8hpWJ97mqLFfoDDW9A_78pR5YjEmxo", 
             authDomain: "jamba-wear.firebaseapp.com", 
             projectId: "jamba-wear" 
-            // ... (rest of your config)
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        document.getElementById('login-btn').addEventListener('click', () => {
+        document.getElementById('login-btn').addEventListener('click', async () => {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            const fullName = document.getElementById('fullName').value;
+            const age = document.getElementById('age').value;
+            const gender = document.getElementById('gender').value;
 
-            signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    // SUCCESSFUL LOGIN LOGIC
-                    console.log("Logged in:", userCredential.user);
+            if(!email || !password || !fullName || !age) {
+                alert("Please fill in all fields to proceed.");
+                return;
+            }
 
-                    // 1. Check if there is a redirect instruction in the URL
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const redirectPage = urlParams.get('redirect');
+            try {
+                // 1. Firebase Auth (Attempt Login, if fails, create user)
+                let user;
+                try {
+                    const res = await signInWithEmailAndPassword(auth, email, password);
+                    user = res.user;
+                } catch (e) {
+                    const res = await createUserWithEmailAndPassword(auth, email, password);
+                    user = res.user;
+                }
 
-                    if (redirectPage === 'cart') {
-                        // 2. Send them back to the cart to finish the order
-                        window.location.href = "cart.html";
-                    } else {
-                        // 3. Otherwise, go to home page
-                        window.location.href = "index.html";
-                    }
-                })
-                .catch((error) => {
-                    alert("Login failed: " + error.message);
+                // 2. Sync Demographic Data to MongoDB via Render
+                await fetch('https://jamba-backend.onrender.com/update-user', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: user.email,
+                        fullName: fullName,
+                        age: age,
+                        gender: gender
+                    })
                 });
+
+                // 3. Handle Redirect
+                const urlParams = new URLSearchParams(window.location.search);
+                window.location.href = urlParams.get('redirect') === 'cart' ? "cart.html" : "index.html";
+
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
         });
     </script>
 </body>
