@@ -20,13 +20,13 @@
             background-color: var(--bg);
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             color: var(--primary);
-            padding-top: 60px; /* Space for the sticky header */
+            padding-top: 60px; 
             padding-bottom: 40px;
         }
 
         a { text-decoration: none; color: inherit; }
 
-        /* --- PROMO BANNER (Geometric Motif) --- */
+        /* --- PROMO BANNER --- */
         .promo-banner {
             background-color: var(--primary);
             color: white;
@@ -35,7 +35,6 @@
             letter-spacing: 2px;
             text-transform: uppercase;
             padding: 8px 0;
-            /* Subtle triangle pattern background */
             background-image: linear-gradient(45deg, rgba(255,255,255,0.05) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05)), 
                               linear-gradient(45deg, rgba(255,255,255,0.05) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05));
             background-size: 10px 10px;
@@ -58,35 +57,11 @@
             z-index: 1000;
         }
 
-        .menu-btn {
-            font-size: 24px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 30px;
-        }
-
-        .logo img {
-            height: 28px;
-            display: block;
-        }
-
-        .cart-icon-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        /* Cart SVG Icon */
-        .cart-icon {
-            width: 24px;
-            height: 24px;
-            fill: none;
-            stroke: var(--primary);
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
+        .menu-btn { font-size: 24px; font-weight: bold; cursor: pointer; width: 30px; }
+        .logo img { height: 28px; display: block; }
+        .cart-icon-wrapper { position: relative; display: flex; align-items: center; }
+        .cart-icon { width: 24px; height: 24px; fill: none; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        
         .cart-badge {
             position: absolute;
             top: -5px;
@@ -105,57 +80,15 @@
             box-sizing: border-box;
         }
 
-        /* --- HERO CATEGORY BANNERS --- */
-        .hero {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            padding: 15px;
-        }
-
-        .hero-banner {
-            position: relative;
-            height: 220px;
-            border-radius: 8px;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #ddd; /* Placeholder for real photos */
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-
-        /* Differentiating the two banners slightly */
-        .hero-banner.women { background: linear-gradient(to right, #e8e8e8, #f0f0f0); }
-        .hero-banner.men { background: linear-gradient(to right, #d1d1d1, #e0e0e0); }
-
-        .shop-btn {
-            padding: 14px 32px;
-            background-color: var(--primary);
-            color: white;
-            font-size: 13px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-        }
-
-        .shop-btn:active { transform: scale(0.98); }
-
         /* --- HORIZONTAL SCROLL CATEGORIES --- */
         .category-scroll {
             display: flex;
             overflow-x: auto;
             gap: 12px;
-            padding: 10px 15px 20px;
-            scrollbar-width: none; /* Firefox */
+            padding: 15px 15px 5px;
+            scrollbar-width: none;
         }
-        .category-scroll::-webkit-scrollbar { display: none; } /* Chrome/Safari */
-
+        .category-scroll::-webkit-scrollbar { display: none; }
         .chip {
             padding: 8px 20px;
             background-color: white;
@@ -168,27 +101,76 @@
         }
         .chip.active { background-color: var(--primary); color: white; border-color: var(--primary); }
 
-        /* --- PRODUCT GRID --- */
-        .section-header {
+        /* --- HERO CATEGORY BANNERS (VIDEO INTEGRATION) --- */
+        .hero {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            padding: 0 15px;
-            margin: 20px 0 15px;
+            flex-direction: column;
+            gap: 15px;
+            padding: 15px;
         }
 
-        .section-title {
-            margin: 0;
-            font-size: 20px;
-            letter-spacing: 1px;
+        .hero-banner {
+            position: relative; 
+            height: 250px; 
+            border-radius: 8px;
+            overflow: hidden; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* The Video Element */
+        .hero-banner video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            z-index: 0; 
+        }
+
+        /* Dark Overlay to make buttons readable */
+        .hero-banner::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.25); 
+            z-index: 1; 
+        }
+
+        /* Link wrapper for the button */
+        .hero-banner a {
+            position: relative;
+            z-index: 2; 
+        }
+
+        .shop-btn {
+            padding: 14px 32px;
+            background-color: white; 
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 2px;
             text-transform: uppercase;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        .view-all {
-            font-size: 12px;
-            color: var(--text-light);
-            text-decoration: underline;
-        }
+        .shop-btn:active { transform: scale(0.98); }
+
+        /* --- PRODUCT GRID --- */
+        .section-header { display: flex; justify-content: space-between; align-items: flex-end; padding: 0 15px; margin: 30px 0 15px; }
+        .section-title { margin: 0; font-size: 20px; letter-spacing: 1px; text-transform: uppercase; }
+        .view-all { font-size: 12px; color: var(--text-light); text-decoration: underline; }
 
         .product-grid {
             display: grid;
@@ -197,47 +179,12 @@
             padding: 0 15px;
         }
 
-        .product-card {
-            background: white;
-            border-radius: 6px;
-            overflow: hidden;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.04);
-            text-align: left;
-            transition: transform 0.2s;
-        }
-
+        .product-card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.04); text-align: left; transition: transform 0.2s; }
         .product-card:active { transform: scale(0.98); }
-
-        .product-image {
-            width: 100%;
-            aspect-ratio: 3 / 4;
-            background-color: #eaeaea;
-            object-fit: cover;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .product-info {
-            padding: 12px;
-        }
-
-        .product-title {
-            margin: 0 0 6px 0;
-            font-size: 13px;
-            color: var(--text-main);
-            font-weight: 500;
-            line-height: 1.3;
-            /* Truncate long titles to 1 line */
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .product-price {
-            margin: 0;
-            color: var(--primary);
-            font-size: 14px;
-            font-weight: bold;
-        }
+        .product-image { width: 100%; aspect-ratio: 3 / 4; background-color: #eaeaea; object-fit: cover; border-bottom: 1px solid #f0f0f0; }
+        .product-info { padding: 12px; }
+        .product-title { margin: 0 0 6px 0; font-size: 13px; color: var(--text-main); font-weight: 500; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .product-price { margin: 0; color: var(--primary); font-size: 14px; font-weight: bold; }
 
         /* --- DESKTOP OVERRIDES --- */
         @media (min-width: 768px) {
@@ -247,7 +194,7 @@
             .section-header { padding: 0 5%; margin: 50px 0 25px; }
             .category-scroll { padding: 10px 5%; }
             .top-bar { padding: 15px 5%; }
-            .menu-btn { display: none; } /* Hide hamburger on desktop */
+            .menu-btn { display: none; } 
         }
     </style>
 </head>
@@ -272,9 +219,7 @@
         </a>
     </header>
 
-    <div class="promo-banner">
-        Free Shipping on Orders Over ₹2000
-    </div>
+    <div class="promo-banner">Free Shipping on Orders Over ₹2000</div>
 
     <div class="category-scroll">
         <a href="#" class="chip active">All</a>
@@ -285,12 +230,23 @@
     </div>
 
     <section class="hero">
+        
         <div class="hero-banner women">
+            <video autoplay loop muted playsinline>
+                <source src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Video/Women.mp4" type="video/mp4">
+            </video>
+            
             <a href="women.html"><button class="shop-btn">Shop Women</button></a>
         </div>
+
         <div class="hero-banner men">
+            <video autoplay loop muted playsinline>
+                <source src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Video/Men.mp4" type="video/mp4">
+            </video>
+
             <a href="men.html"><button class="shop-btn">Shop Men</button></a>
         </div>
+
     </section>
 
     <div class="section-header">
@@ -329,7 +285,6 @@
             const cart = JSON.parse(localStorage.getItem('jambaCart')) || [];
             const badge = document.getElementById('cart-count');
             
-            // Calculate total items (accounting for quantities)
             let totalItems = 0;
             cart.forEach(item => {
                 totalItems += item.quantity;
@@ -337,15 +292,12 @@
 
             badge.innerText = totalItems;
 
-            // Hide badge if cart is empty
             if (totalItems === 0) {
                 badge.style.display = 'none';
             } else {
                 badge.style.display = 'flex';
             }
         }
-
-        // Run on page load
         updateCartBadge();
     </script>
 </body>
