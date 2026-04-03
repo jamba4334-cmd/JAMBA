@@ -99,6 +99,30 @@
         </div>
     </main>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        
+        const firebaseConfig = { 
+            apiKey: "AIzaSyBgH8hpWJ97mqLFfoDDW9A_78pR5YjEmxo", 
+            authDomain: "jamba-wear.firebaseapp.com", 
+            projectId: "jamba-wear", 
+            storageBucket: "jamba-wear.firebasestorage.app", 
+            messagingSenderId: "679544590258", 
+            appId: "1:679544590258:web:eac3841e5f555e3fb89eab" 
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        
+        // Export auth to global window so processCheckout can see it
+        window.firebaseAuth = auth;
+
+        onAuthStateChanged(auth, (user) => {
+            console.log("Current User:", user ? user.email : "Logged Out");
+        });
+    </script>
+
     <script>
         const RAZORPAY_KEY_ID = "rzp_test_SZAb6yIrMNshnu"; 
         const BACKEND_URL = "https://jamba-backend.onrender.com/create-order";
@@ -132,40 +156,60 @@
         }
 
         async function processCheckout() {
+            const auth = window.firebaseAuth;
+            const user = auth.currentUser;
+
+            // 1. LOGIN GATEKEEPER
+            if (!user) {
+                alert("Please login to proceed with JAMBA checkout.");
+                window.location.href = "login.html?redirect=cart";
+                return;
+            }
+
+            // 2. ADDRESS COLLECTION
+            const address = prompt("Please enter your full delivery address (House No, Street, City, Pincode):");
+            if (!address || address.length < 15) {
+                alert("A complete address is required for delivery.");
+                return;
+            }
+
             const btn = document.querySelector('.checkout-btn');
             btn.innerText = "Securing Order...";
             btn.disabled = true;
 
             try {
-                // IMPORTANT: We ensure each item has an ID before sending to backend
                 const secureCart = cart.map(item => ({
                     ...item,
-                    id: item.id || 1 // Fallback to ID 1 if missing
+                    id: item.id || 1 
                 }));
-
-                console.log("Sending to Backend:", secureCart);
 
                 const response = await fetch(BACKEND_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ cart: secureCart })
+                    body: JSON.stringify({ 
+                        cart: secureCart,
+                        customer: user.email,
+                        address: address 
+                    })
                 });
 
                 if (!response.ok) throw new Error("Backend error");
-
                 const order = await response.json();
-                console.log("Order Created:", order);
 
                 const options = {
                     "key": RAZORPAY_KEY_ID,
                     "amount": order.amount,
                     "currency": "INR",
                     "name": "JAMBA WEAR",
-                    "description": "Secure Checkout",
+                    "description": "Secure Purchase",
                     "image": "https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/assets/JAMBA.png",
                     "order_id": order.id,
+                    "prefill": {
+                        "email": user.email,
+                        "contact": user.phoneNumber || ""
+                    },
                     "handler": function (response) {
-                        alert("Payment Success! ID: " + response.razorpay_payment_id);
+                        alert("Order Successful! Payment ID: " + response.razorpay_payment_id);
                         localStorage.removeItem('jambaCart');
                         window.location.href = "index.html";
                     },
@@ -176,7 +220,7 @@
 
             } catch (error) {
                 console.error("Checkout Error:", error);
-                alert("The server is waking up! Please click again in 30 seconds.");
+                alert("Server is warming up. Please try again in a moment.");
             } finally {
                 btn.innerText = "Secure Checkout";
                 btn.disabled = false;
