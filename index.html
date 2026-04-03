@@ -59,89 +59,27 @@
 
         .logo img { height: 28px; display: block; }
         
-        /* Container for right side icons */
-        .right-actions {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
+        .right-actions { display: flex; align-items: center; gap: 20px; }
 
-        /* SVG Icon styling for both Cart and Profile */
-        .nav-icon {
-            width: 24px;
-            height: 24px;
-            fill: none;
-            stroke: var(--primary);
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            cursor: pointer;
-        }
+        .nav-icon { width: 24px; height: 24px; fill: none; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; cursor: pointer; }
 
-        /* Cart specific styling */
+        /* --- CART BADGE --- */
         .cart-icon-wrapper { position: relative; display: flex; align-items: center; }
         .cart-badge {
-            position: absolute;
-            top: -5px;
-            right: -8px;
-            background-color: var(--accent);
-            color: #fff;
-            font-size: 10px;
-            font-weight: bold;
-            height: 16px;
-            min-width: 16px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 4px;
-            box-sizing: border-box;
+            position: absolute; top: -5px; right: -8px; background-color: var(--accent); color: #fff;
+            font-size: 10px; font-weight: bold; height: 16px; min-width: 16px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; padding: 0 4px; box-sizing: border-box;
         }
 
-        /* --- PROFILE DROPDOWN STYLING --- */
-        .profile-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
+        /* --- PROFILE DROPDOWN --- */
+        .profile-wrapper { position: relative; display: flex; align-items: center; }
         .dropdown-menu {
-            position: absolute;
-            top: 35px;
-            right: 0;
-            width: 180px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            display: none; /* Hidden by default */
-            flex-direction: column;
-            overflow: hidden;
-            z-index: 1001;
-            border: 1px solid #eaeaea;
+            position: absolute; top: 35px; right: 0; width: 180px; background-color: white; border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1); display: none; flex-direction: column; overflow: hidden; z-index: 1001; border: 1px solid #eaeaea;
         }
-
-        /* JavaScript toggles this class to show the menu */
-        .dropdown-menu.show {
-            display: flex;
-        }
-
-        .dropdown-header {
-            padding: 15px;
-            font-weight: bold;
-            font-size: 14px;
-            background-color: #fafafa;
-            border-bottom: 1px solid #eaeaea;
-            color: var(--primary);
-        }
-
-        .dropdown-menu a {
-            padding: 12px 15px;
-            font-size: 13px;
-            color: var(--text-main);
-            border-bottom: 1px solid #f5f5f5;
-            transition: background 0.2s;
-        }
-
+        .dropdown-menu.show { display: flex; }
+        .dropdown-header { padding: 15px; font-weight: bold; font-size: 14px; background-color: #fafafa; border-bottom: 1px solid #eaeaea; color: var(--primary); }
+        .dropdown-menu a { padding: 12px 15px; font-size: 13px; color: var(--text-main); border-bottom: 1px solid #f5f5f5; transition: background 0.2s; }
         .dropdown-menu a:last-child { border-bottom: none; }
         .dropdown-menu a:hover { background-color: #f9f9f9; color: var(--primary); }
 
@@ -163,10 +101,11 @@
             white-space: nowrap;
             color: var(--text-main);
             box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            transition: all 0.2s;
         }
         .chip.active { background-color: var(--primary); color: white; border-color: var(--primary); }
 
-        /* --- HERO CATEGORY BANNERS --- */
+        /* --- HERO CATEGORY BANNERS (VIDEO INTEGRATION) --- */
         .hero { display: flex; flex-direction: column; gap: 15px; padding: 15px; }
         .hero-banner {
             position: relative; 
@@ -195,7 +134,7 @@
         .section-title { margin: 0; font-size: 20px; letter-spacing: 1px; text-transform: uppercase; }
         .view-all { font-size: 12px; color: var(--text-light); text-decoration: underline; }
         .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 15px; }
-        .product-card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.04); text-align: left; transition: transform 0.2s; }
+        .product-card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.04); text-align: left; transition: transform 0.2s; cursor: pointer; }
         .product-card:active { transform: scale(0.98); }
         .product-image { width: 100%; aspect-ratio: 3 / 4; background-color: #eaeaea; object-fit: cover; border-bottom: 1px solid #f0f0f0; }
         .product-info { padding: 12px; }
@@ -255,13 +194,15 @@
     <div class="promo-banner">Free Shipping on Orders Over ₹2000</div>
 
     <div class="category-scroll">
-        <a href="#" class="chip active">All</a>
-        <a href="#" class="chip">Shirts</a>
-        <a href="#" class="chip">Waistcoats</a>
-        <a href="#" class="chip">Accessories</a>
+        <a href="index.html" class="chip active">All</a>
+        <a href="shirts.html" class="chip">Shirts</a>
+        <a href="waistcoats.html" class="chip">Waistcoats</a>
+        <a href="trousers.html" class="chip">Trousers</a>
+        <a href="accessories.html" class="chip">Accessories</a>
     </div>
 
     <section class="hero">
+        
         <div class="hero-banner women">
             <video autoplay loop muted playsinline>
                 <source src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Video/Women.mp4" type="video/mp4">
@@ -275,37 +216,38 @@
             </video>
             <a href="men.html"><button class="shop-btn">Shop Men</button></a>
         </div>
+
     </section>
 
     <div class="section-header">
         <h2 class="section-title">New Arrivals</h2>
-        <a href="#" class="view-all">View All</a>
+        <a href="all-products.html" class="view-all">View All</a>
     </div>
 
     <section class="product-grid">
-        <a href="product1.html" class="product-card">
+        <div class="product-card" onclick="window.location.href='product1.html'">
             <img class="product-image" src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/waistcoat.png" alt="Linen Waistcoat">
             <div class="product-info">
                 <h3 class="product-title">Classic Linen Waistcoat</h3>
-                <p class="product-price">₹85.00</p>
+                <p class="product-price">₹2,999</p>
             </div>
-        </a>
+        </div>
 
-        <a href="product2.html" class="product-card">
+        <div class="product-card" onclick="window.location.href='product2.html'">
             <img class="product-image" src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/GoldenShirt.png" alt="Tailored Shirt">
             <div class="product-info">
                 <h3 class="product-title">Tailored Oxford Shirt</h3>
-                <p class="product-price">₹95.00</p>
+                <p class="product-price">₹1,699</p>
             </div>
-        </a>
+        </div>
 
-        <a href="product3.html" class="product-card">
+        <div class="product-card" onclick="window.location.href='product3.html'">
             <img class="product-image" src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/Pinkshirt.png" alt="Pleated Trousers">
             <div class="product-info">
                 <h3 class="product-title">Pleated Wool Trousers</h3>
-                <p class="product-price">₹120.00</p>
+                <p class="product-price">₹1,699</p>
             </div>
-        </a>
+        </div>
     </section>
 
     <script>
