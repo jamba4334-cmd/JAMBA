@@ -13,7 +13,11 @@
         /* --- HEADER --- */
         .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 25px; position: fixed; top: 0; width: 100%; box-sizing: border-box; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 1000; }
         .logo img { height: 26px; }
-        .nav-icon { width: 24px; height: 24px; stroke: var(--primary); stroke-width: 1.5; fill: none; cursor: pointer; }
+        
+        /* Home Button Styles */
+        .nav-btn-container { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; }
+        .nav-icon { width: 22px; height: 22px; stroke: var(--primary); stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .nav-label { font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); }
 
         /* --- CART LAYOUT --- */
         .cart-container { max-width: 1100px; margin: 0 auto; padding: 20px; }
@@ -56,8 +60,12 @@
             <a href="index.html"><img src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/assets/JAMBA.png" alt="JAMBA"></a>
         </div>
         <div class="right-actions">
-            <a href="login.html">
-                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <a href="index.html" class="nav-btn-container">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span class="nav-label">Home</span>
             </a>
         </div>
     </header>
