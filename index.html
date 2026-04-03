@@ -57,11 +57,29 @@
             z-index: 1000;
         }
 
-        .menu-btn { font-size: 24px; font-weight: bold; cursor: pointer; width: 30px; }
         .logo img { height: 28px; display: block; }
-        .cart-icon-wrapper { position: relative; display: flex; align-items: center; }
-        .cart-icon { width: 24px; height: 24px; fill: none; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
         
+        /* Container for right side icons */
+        .right-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* SVG Icon styling for both Cart and Profile */
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: var(--primary);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            cursor: pointer;
+        }
+
+        /* Cart specific styling */
+        .cart-icon-wrapper { position: relative; display: flex; align-items: center; }
         .cart-badge {
             position: absolute;
             top: -5px;
@@ -79,6 +97,53 @@
             padding: 0 4px;
             box-sizing: border-box;
         }
+
+        /* --- PROFILE DROPDOWN STYLING --- */
+        .profile-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 35px;
+            right: 0;
+            width: 180px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1001;
+            border: 1px solid #eaeaea;
+        }
+
+        /* JavaScript toggles this class to show the menu */
+        .dropdown-menu.show {
+            display: flex;
+        }
+
+        .dropdown-header {
+            padding: 15px;
+            font-weight: bold;
+            font-size: 14px;
+            background-color: #fafafa;
+            border-bottom: 1px solid #eaeaea;
+            color: var(--primary);
+        }
+
+        .dropdown-menu a {
+            padding: 12px 15px;
+            font-size: 13px;
+            color: var(--text-main);
+            border-bottom: 1px solid #f5f5f5;
+            transition: background 0.2s;
+        }
+
+        .dropdown-menu a:last-child { border-bottom: none; }
+        .dropdown-menu a:hover { background-color: #f9f9f9; color: var(--primary); }
 
         /* --- HORIZONTAL SCROLL CATEGORIES --- */
         .category-scroll {
@@ -101,14 +166,8 @@
         }
         .chip.active { background-color: var(--primary); color: white; border-color: var(--primary); }
 
-        /* --- HERO CATEGORY BANNERS (VIDEO INTEGRATION) --- */
-        .hero {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            padding: 15px;
-        }
-
+        /* --- HERO CATEGORY BANNERS --- */
+        .hero { display: flex; flex-direction: column; gap: 15px; padding: 15px; }
         .hero-banner {
             position: relative; 
             height: 250px; 
@@ -121,64 +180,21 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        /* The Video Element */
-        .hero-banner video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover; 
-            z-index: 0; 
-        }
-
-        /* Dark Overlay to make buttons readable */
-        .hero-banner::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.25); 
-            z-index: 1; 
-        }
-
-        /* Link wrapper for the button */
-        .hero-banner a {
-            position: relative;
-            z-index: 2; 
-        }
+        .hero-banner video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+        .hero-banner::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.25); z-index: 1; }
+        .hero-banner a { position: relative; z-index: 2; }
 
         .shop-btn {
-            padding: 14px 32px;
-            background-color: white; 
-            color: var(--primary);
-            font-size: 13px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            padding: 14px 32px; background-color: white; color: var(--primary); font-size: 13px; font-weight: bold;
+            letter-spacing: 2px; text-transform: uppercase; border: none; border-radius: 4px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
-
         .shop-btn:active { transform: scale(0.98); }
 
         /* --- PRODUCT GRID --- */
         .section-header { display: flex; justify-content: space-between; align-items: flex-end; padding: 0 15px; margin: 30px 0 15px; }
         .section-title { margin: 0; font-size: 20px; letter-spacing: 1px; text-transform: uppercase; }
         .view-all { font-size: 12px; color: var(--text-light); text-decoration: underline; }
-
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            padding: 0 15px;
-        }
-
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 15px; }
         .product-card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.04); text-align: left; transition: transform 0.2s; }
         .product-card:active { transform: scale(0.98); }
         .product-image { width: 100%; aspect-ratio: 3 / 4; background-color: #eaeaea; object-fit: cover; border-bottom: 1px solid #f0f0f0; }
@@ -194,14 +210,12 @@
             .section-header { padding: 0 5%; margin: 50px 0 25px; }
             .category-scroll { padding: 10px 5%; }
             .top-bar { padding: 15px 5%; }
-            .menu-btn { display: none; } 
         }
     </style>
 </head>
 <body>
 
     <header class="top-bar">
-        <div class="menu-btn">☰</div>
         
         <div class="logo">
             <a href="index.html">
@@ -209,14 +223,33 @@
             </a>
         </div>
         
-        <a href="cart.html" class="cart-icon-wrapper">
-            <svg class="cart-icon" viewBox="0 0 24 24">
-                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <path d="M16 10a4 4 0 0 1-8 0"></path>
-            </svg>
-            <span class="cart-badge" id="cart-count">0</span>
-        </a>
+        <div class="right-actions">
+            
+            <a href="cart.html" class="cart-icon-wrapper">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+                <span class="cart-badge" id="cart-count">0</span>
+            </a>
+
+            <div class="profile-wrapper">
+                <svg class="nav-icon" id="profile-btn" viewBox="0 0 24 24">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                
+                <div class="dropdown-menu" id="dropdown-menu">
+                    <div class="dropdown-header">Hi, JAMBA Member</div>
+                    <a href="#">Orders</a>
+                    <a href="#">Address</a>
+                    <a href="#">Wishlist</a>
+                    <a href="#">Contact Us</a>
+                </div>
+            </div>
+
+        </div>
     </header>
 
     <div class="promo-banner">Free Shipping on Orders Over ₹2000</div>
@@ -225,17 +258,14 @@
         <a href="#" class="chip active">All</a>
         <a href="#" class="chip">Shirts</a>
         <a href="#" class="chip">Waistcoats</a>
-        <a href="#" class="chip">Trousers</a>
         <a href="#" class="chip">Accessories</a>
     </div>
 
     <section class="hero">
-        
         <div class="hero-banner women">
             <video autoplay loop muted playsinline>
                 <source src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Video/Women.mp4" type="video/mp4">
             </video>
-            
             <a href="women.html"><button class="shop-btn">Shop Women</button></a>
         </div>
 
@@ -243,10 +273,8 @@
             <video autoplay loop muted playsinline>
                 <source src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Video/Men.mp4" type="video/mp4">
             </video>
-
             <a href="men.html"><button class="shop-btn">Shop Men</button></a>
         </div>
-
     </section>
 
     <div class="section-header">
@@ -281,6 +309,7 @@
     </section>
 
     <script>
+        // 1. Cart Badge Sync Logic
         function updateCartBadge() {
             const cart = JSON.parse(localStorage.getItem('jambaCart')) || [];
             const badge = document.getElementById('cart-count');
@@ -291,14 +320,26 @@
             });
 
             badge.innerText = totalItems;
-
-            if (totalItems === 0) {
-                badge.style.display = 'none';
-            } else {
-                badge.style.display = 'flex';
-            }
+            badge.style.display = totalItems === 0 ? 'none' : 'flex';
         }
         updateCartBadge();
+
+        // 2. Profile Dropdown Logic
+        const profileBtn = document.getElementById('profile-btn');
+        const dropdownMenu = document.getElementById('dropdown-menu');
+
+        // Toggle menu when icon is clicked
+        profileBtn.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevents click from bubbling to the window
+            dropdownMenu.classList.toggle('show');
+        });
+
+        // Close menu when clicking anywhere else on the screen
+        window.addEventListener('click', function(e) {
+            if (!dropdownMenu.contains(e.target) && !profileBtn.contains(e.target)) {
+                dropdownMenu.classList.remove('show');
+            }
+        });
     </script>
 </body>
 </html>
