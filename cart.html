@@ -14,7 +14,6 @@
         .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 25px; position: fixed; top: 0; width: 100%; box-sizing: border-box; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 1000; }
         .logo img { height: 26px; }
         
-        /* Home Button Styles */
         .nav-btn-container { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; }
         .nav-icon { width: 22px; height: 22px; stroke: var(--primary); stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
         .nav-label { font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); }
@@ -61,10 +60,7 @@
         </div>
         <div class="right-actions">
             <a href="index.html" class="nav-btn-container">
-                <svg class="nav-icon" viewBox="0 0 24 24">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                 <span class="nav-label">Home</span>
             </a>
         </div>
@@ -74,7 +70,6 @@
         <h2 style="text-transform: uppercase; letter-spacing: 1px;">Shopping Bag</h2>
         <div class="cart-content">
             <div id="cart-list"></div>
-            
             <div class="order-summary" id="summary-card">
                 <h3 style="margin-top: 0; font-size: 16px;">ORDER DETAILS</h3>
                 <div class="summary-row"><span>Bag Subtotal</span><span id="subtotal">₹0</span></div>
@@ -96,64 +91,26 @@
                     <label class="label">Full Name (Required) <span>*</span></label>
                     <input type="text" class="input" id="fullName" placeholder="Enter your full name" required>
                 </div>
-
                 <div class="form-group">
                     <label class="label">Pincode (Required) <span>*</span></label>
                     <input type="text" class="input" id="pincode" placeholder="e.g. 110001" required maxlength="6">
                 </div>
-
                 <div class="grid">
                     <div class="form-group">
                         <label class="label">State (Required) <span>*</span></label>
                         <select class="select" id="state" required>
                             <option value="" disabled selected>Select State</option>
-                            <option value="Andhra Pradesh">Andhra Pradesh</option>
-                            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
                             <option value="Assam">Assam</option>
-                            <option value="Bihar">Bihar</option>
-                            <option value="Chhattisgarh">Chhattisgarh</option>
-                            <option value="Goa">Goa</option>
-                            <option value="Gujarat">Gujarat</option>
-                            <option value="Haryana">Haryana</option>
-                            <option value="Himachal Pradesh">Himachal Pradesh</option>
-                            <option value="Jharkhand">Jharkhand</option>
-                            <option value="Karnataka">Karnataka</option>
-                            <option value="Kerala">Kerala</option>
-                            <option value="Madhya Pradesh">Madhya Pradesh</option>
-                            <option value="Maharashtra">Maharashtra</option>
-                            <option value="Manipur">Manipur</option>
-                            <option value="Meghalaya">Meghalaya</option>
-                            <option value="Mizoram">Mizoram</option>
-                            <option value="Nagaland">Nagaland</option>
-                            <option value="Odisha">Odisha</option>
-                            <option value="Punjab">Punjab</option>
-                            <option value="Rajasthan">Rajasthan</option>
-                            <option value="Sikkim">Sikkim</option>
-                            <option value="Tamil Nadu">Tamil Nadu</option>
-                            <option value="Telangana">Telangana</option>
-                            <option value="Tripura">Tripura</option>
-                            <option value="Uttar Pradesh">Uttar Pradesh</option>
-                            <option value="Uttarakhand">Uttarakhand</option>
-                            <option value="West Bengal">West Bengal</option>
-                            <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
-                            <option value="Chandigarh">Chandigarh</option>
-                            <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
-                            <option value="Lakshadweep">Lakshadweep</option>
                             <option value="Delhi">Delhi</option>
-                            <option value="Puducherry">Puducherry</option>
-                            <option value="Ladakh">Ladakh</option>
-                            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
-                        </select>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="West Bengal">West Bengal</option>
+                            </select>
                     </div>
                     <div class="form-group"><label class="label">City (Required) <span>*</span></label><input type="text" class="input" id="city" required></div>
                 </div>
-
                 <div class="form-group"><label class="label">House No., Building Name (Required) <span>*</span></label><input type="text" class="input" id="house" required></div>
-                
                 <div class="form-group"><label class="label">Road name, Area, Colony (Required) <span>*</span></label><input type="text" class="input" id="road" required></div>
-                
                 <div class="form-group"><label class="label">+ Add Nearby Famous Landmark (Optional)</label><input type="text" class="input" id="landmark"></div>
-                
                 <button type="submit" class="pay-now-btn">Proceed to Payment</button>
             </form>
         </div>
@@ -179,26 +136,11 @@
                 document.getElementById('summary-card').style.display = 'none';
                 return;
             }
-
             let subtotal = 0;
             list.innerHTML = cart.map((item, i) => {
                 subtotal += (item.price * item.quantity);
-                return `
-                <div class="cart-item">
-                    <img src="${item.image}" class="item-image">
-                    <div class="item-info">
-                        <div>
-                            <p class="item-title">${item.title}</p>
-                            <p style="font-size: 12px; color: #666; margin: 5px 0;">Size: ${item.size} | Qty: ${item.quantity}</p>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                            <span class="item-price">₹${item.price.toLocaleString('en-IN')}</span>
-                            <button class="remove-btn" onclick="removeItem(${i})">REMOVE</button>
-                        </div>
-                    </div>
-                </div>`;
+                return `<div class="cart-item"><img src="${item.image}" class="item-image"><div class="item-info"><div><p class="item-title">${item.title}</p><p style="font-size: 12px; color: #666; margin: 5px 0;">Size: ${item.size} | Qty: ${item.quantity}</p></div><div style="display: flex; justify-content: space-between; align-items: flex-end;"><span class="item-price">₹${item.price.toLocaleString('en-IN')}</span><button class="remove-btn" onclick="removeItem(${i})">REMOVE</button></div></div></div>`;
             }).join('');
-            
             document.getElementById('subtotal').innerText = `₹${subtotal.toLocaleString('en-IN')}`;
             document.getElementById('total').innerText = `₹${subtotal.toLocaleString('en-IN')}`;
         }
@@ -217,8 +159,7 @@
         document.getElementById('addressForm').onsubmit = async (e) => {
             e.preventDefault();
             const name = document.getElementById('fullName').value;
-            const state = document.getElementById('state').value;
-            const addr = `${name}, ${document.getElementById('house').value}, ${document.getElementById('road').value}, ${document.getElementById('city').value}, ${state} - ${document.getElementById('pincode').value}`;
+            const fullAddr = `${name}, ${document.getElementById('house').value}, ${document.getElementById('road').value}, ${document.getElementById('city').value}, ${document.getElementById('state').value} - ${document.getElementById('pincode').value}`;
             
             closeModal();
             const btn = document.querySelector('.checkout-btn');
@@ -226,29 +167,27 @@
             btn.disabled = true;
 
             try {
-                const res = await fetch(BACKEND_URL, {
+                const response = await fetch(BACKEND_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         cart: cart.map(i => ({...i, id: i.id || 1})), 
-                        customer: window.firebaseAuth.currentUser.email, 
-                        address: addr 
+                        customer: window.firebaseAuth.currentUser.email, // LINK TO MONGODB USER
+                        address: fullAddr 
                     })
                 });
-                const order = await res.json();
-                
+
+                const order = await response.json();
+
                 const options = {
                     key: RAZORPAY_KEY,
                     amount: order.amount,
                     order_id: order.id,
                     name: "JAMBA WEAR",
                     image: "https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/assets/JAMBA.png",
-                    prefill: {
-                        name: name,
-                        email: window.firebaseAuth.currentUser.email
-                    },
+                    prefill: { name: name, email: window.firebaseAuth.currentUser.email },
                     handler: function(r) {
-                        alert("Order Success! ID: " + r.razorpay_payment_id);
+                        alert("Order Placed Successfully! Payment ID: " + r.razorpay_payment_id);
                         localStorage.removeItem('jambaCart');
                         window.location.href = "index.html";
                     },
@@ -256,7 +195,7 @@
                 };
                 new Razorpay(options).open();
             } catch (err) {
-                alert("Server busy. Try again in 30 seconds.");
+                alert("Error connecting to server. Please try again.");
             } finally {
                 btn.innerText = "Secure Checkout";
                 btn.disabled = false;
