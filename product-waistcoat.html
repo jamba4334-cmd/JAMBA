@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JAMBA | Classic Linen Waistcoat</title>
+    <title>JAMBA WEAR | Classic Linen Waistcoat</title>
     <style>
         /* --- GLOBAL STYLES --- */
         body {
@@ -12,7 +12,7 @@
             background-color: #f5f5f5;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             color: #1a1a1a;
-            padding-top: 70px; /* Adjusted for smaller header */
+            padding-top: 70px; 
         }
 
         a { text-decoration: none; color: inherit; }
@@ -26,33 +26,35 @@
         }
 
         .Nav { display: flex; gap: 15px; list-style: none; margin: 0; padding: 0; }
-        .Nav a { font-size: 13px; font-weight: 500; text-transform: uppercase; }
+        .Nav a { font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
+        .Nav a:hover { color: #d2b48c; }
 
         /* --- PRODUCT VIEW LAYOUT --- */
         .product-container {
             display: flex;
-            flex-direction: column; /* Stacked by default for mobile */
+            flex-direction: column; /* Mobile First: Stacked */
             max-width: 1200px;
             margin: 20px auto; 
             padding: 0 5%;
             gap: 30px;
         }
 
-        /* Image Section */
         .product-image-section {
             width: 100%;
-            background-color: #fff; /* White background makes the product pop */
-            border-radius: 8px;
+            background-color: #fff;
+            border-radius: 4px;
             overflow: hidden;
+            display: flex;
+            justify-content: center;
         }
 
         .product-image-section img {
             width: 100%;
+            max-width: 500px;
             height: auto;
             display: block;
         }
 
-        /* Details Section */
         .product-details {
             width: 100%;
             display: flex;
@@ -60,22 +62,22 @@
         }
 
         .product-title {
-            font-size: 24px;
+            font-size: 26px;
             letter-spacing: 1px;
             text-transform: uppercase;
-            margin: 0 0 8px 0;
+            margin: 0 0 10px 0;
         }
 
         .product-price {
-            font-size: 20px;
-            font-weight: bold;
-            color: #333;
+            font-size: 22px;
+            font-weight: 600;
+            color: #444;
             margin: 0 0 20px 0;
         }
 
         .product-description {
             font-size: 15px;
-            line-height: 1.5;
+            line-height: 1.6;
             color: #555;
             margin-bottom: 30px;
         }
@@ -83,17 +85,17 @@
         /* --- SIZE SELECTOR --- */
         .size-selector { margin-bottom: 30px; }
         .size-title {
-            font-size: 12px;
+            font-size: 13px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             display: block;
             font-weight: bold;
         }
 
         .size-options {
             display: grid;
-            grid-template-columns: repeat(5, 1fr); /* Equal width buttons */
+            grid-template-columns: repeat(5, 1fr);
             gap: 10px;
         }
 
@@ -103,10 +105,12 @@
             background: white;
             cursor: pointer;
             font-size: 14px;
-            transition: 0.2s;
+            font-family: inherit;
+            transition: all 0.2s ease;
         }
 
-        .size-btn:focus {
+        /* Logic State: When a size is clicked */
+        .size-btn.active {
             background-color: #1a1a1a;
             color: white;
             border-color: #1a1a1a;
@@ -114,7 +118,7 @@
 
         /* --- ADD TO CART BUTTON --- */
         .add-to-cart-btn {
-            padding: 18px 0;
+            padding: 20px 0;
             background-color: #1a1a1a;
             color: white;
             font-size: 16px;
@@ -123,15 +127,20 @@
             text-transform: uppercase;
             border: none;
             width: 100%;
-            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: #d2b48c;
         }
 
         /* --- DESKTOP ADAPTATION --- */
         @media (min-width: 768px) {
             .product-container {
-                flex-direction: row; /* Side-by-side for desktop */
-                margin: 80px auto;
-                gap: 60px;
+                flex-direction: row; /* Desktop: Side-by-Side */
+                margin: 60px auto;
+                gap: 80px;
             }
             .product-image-section, .product-details { flex: 1; }
             .product-title { font-size: 32px; }
@@ -145,7 +154,7 @@
     <header class="top-bar">
         <div class="logo">
             <a href="index.html">
-                <img src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/assets/JAMBA.png" alt="JAMBA Logo" height="30">
+                <img src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/assets/JAMBA.png" alt="JAMBA WEAR Logo" height="35">
             </a>
         </div>
         <ul class="Nav">
@@ -181,10 +190,48 @@
             </div>
 
             <button class="add-to-cart-btn">Add to Cart</button>
-
         </section>
 
     </main>
+
+    <script>
+        let selectedSize = null;
+
+        // Select all size buttons and the add to cart button
+        const sizeButtons = document.querySelectorAll('.size-btn');
+        const addToCartBtn = document.querySelector('.add-to-cart-btn');
+
+        // Size Selection Logic
+        sizeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // 1. Remove 'active' class from all buttons
+                sizeButtons.forEach(btn => btn.classList.remove('active'));
+
+                // 2. Add 'active' class to the one we just clicked
+                button.classList.add('active');
+
+                // 3. Store the size in our variable
+                selectedSize = button.innerText;
+                console.log("Size selected: " + selectedSize);
+            });
+        });
+
+        // Add to Cart Logic
+        addToCartBtn.addEventListener('click', () => {
+            if (selectedSize === null) {
+                // If no size is picked, show an error
+                alert("Please select a size first!");
+            } else {
+                // If size is picked, proceed
+                alert("Success! Classic Linen Waistcoat (Size " + selectedSize + ") added to your cart.");
+                
+                // Optional: Update the Cart text in the header
+                document.querySelector('.Nav a[href="cart.html"]').innerText = "Cart (1)";
+            }
+        });
+
+        
+    </script>
 
 </body>
 </html>
