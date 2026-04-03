@@ -20,7 +20,7 @@
             background-color: var(--bg);
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             color: var(--primary);
-            padding-top: 70px; /* Increased slightly to accommodate taller header */
+            padding-top: 70px; 
             padding-bottom: 40px;
         }
 
@@ -59,18 +59,16 @@
 
         .logo img { height: 28px; display: block; }
         
-        /* INCREASED GAP BETWEEN ICONS HERE */
         .right-actions { display: flex; align-items: center; gap: 30px; } 
 
         .nav-icon { width: 22px; height: 22px; fill: none; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; cursor: pointer; }
 
-        /* --- NEW ICON LABELS AND CONTAINERS --- */
         .icon-btn-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 4px; /* Space between icon and text */
+            gap: 4px;
             cursor: pointer;
         }
 
@@ -98,10 +96,7 @@
             white-space: nowrap;
         }
 
-        .login-nav-btn:hover {
-            background-color: transparent;
-            color: var(--primary);
-        }
+        .login-nav-btn:hover { background-color: transparent; color: var(--primary); }
 
         /* --- CART BADGE --- */
         .cart-icon-wrapper { position: relative; display: inline-block; line-height: 0; }
@@ -120,7 +115,7 @@
         .dropdown-menu.show { display: flex; }
         .dropdown-header { padding: 15px; font-weight: bold; font-size: 14px; background-color: #fafafa; border-bottom: 1px solid #eaeaea; color: var(--primary); }
         .dropdown-menu a { padding: 12px 15px; font-size: 13px; color: var(--text-main); border-bottom: 1px solid #f5f5f5; transition: background 0.2s; }
-        .dropdown-menu a:last-child { border-bottom: none; }
+        .dropdown-menu a.logout-link { border-top: 1px solid #eaeaea; border-bottom: none; } /* Special styling for logout */
         .dropdown-menu a:hover { background-color: #f9f9f9; color: var(--primary); }
 
         /* --- HORIZONTAL SCROLL CATEGORIES --- */
@@ -158,7 +153,7 @@
             .desktop-only { display: none !important; } 
             .mobile-only { display: block !important; } 
             .hero { flex-direction: column; }
-            .right-actions { gap: 20px; } /* Increased gap for mobile too */
+            .right-actions { gap: 20px; } 
         }
 
         @media (min-width: 769px) {
@@ -168,7 +163,7 @@
             .section-header { padding: 0 5%; margin: 50px 0 25px; }
             .category-scroll { padding: 10px 5%; }
             .top-bar { padding: 15px 5%; }
-            .right-actions { gap: 35px; } /* Even wider gap for desktop */
+            .right-actions { gap: 35px; } 
         }
     </style>
 </head>
@@ -182,7 +177,7 @@
         </div>
         
         <div class="right-actions">
-            <button id="auth-btn-desktop" class="login-nav-btn desktop-only" onclick="handleAuthAction()">Login / Signup</button>
+            <button id="header-login-btn" class="login-nav-btn desktop-only" onclick="handleAuthAction()">Login / Signup</button>
 
             <a href="cart.html" class="icon-btn-container">
                 <div class="cart-icon-wrapper">
@@ -208,12 +203,14 @@
                 <div class="dropdown-menu" id="dropdown-menu">
                     <div class="dropdown-header" id="user-display-name">Hi, JAMBA Member</div>
                     
-                    <a href="javascript:void(0)" id="auth-btn-mobile" class="mobile-only" onclick="handleAuthAction()" style="font-weight: bold; color: var(--accent);">Login / Signup</a>
+                    <a href="javascript:void(0)" id="dropdown-login-link" class="mobile-only" onclick="handleAuthAction()" style="font-weight: bold; color: var(--accent);">Login / Signup</a>
                     
                     <a href="#">Orders</a>
                     <a href="#">Address</a>
                     <a href="#">Wishlist</a>
                     <a href="#">Contact Us</a>
+
+                    <a href="javascript:void(0)" id="dropdown-logout-link" class="logout-link" onclick="handleAuthAction()" style="font-weight: bold; color: #d9534f; display: none;">Logout</a>
                 </div>
             </div>
         </div>
@@ -292,7 +289,7 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Global Auth Logic to handle both buttons
+        // Global Auth Logic
         window.handleAuthAction = () => {
             const user = auth.currentUser;
             if (user) {
@@ -304,21 +301,26 @@
             }
         };
 
-        // Listen for authentication changes
+        // DYNAMIC UI LOGIC: Hides/Shows elements based on login state
         onAuthStateChanged(auth, (user) => {
-            const authBtnDesktop = document.getElementById('auth-btn-desktop');
-            const authBtnMobile = document.getElementById('auth-btn-mobile');
+            const headerLoginBtn = document.getElementById('header-login-btn');
+            const dropdownLoginLink = document.getElementById('dropdown-login-link');
+            const dropdownLogoutLink = document.getElementById('dropdown-logout-link');
             const userDisplay = document.getElementById('user-display-name');
             
             if (user) {
-                const logoutText = "Logout";
-                authBtnDesktop.innerText = logoutText;
-                authBtnMobile.innerText = logoutText;
+                // LOGGED IN STATE
+                headerLoginBtn.style.display = 'none'; // Hide big button
+                dropdownLoginLink.style.display = 'none'; // Hide top "Login" link
+                dropdownLogoutLink.style.display = 'block'; // Show bottom "Logout" link
+                
                 userDisplay.innerText = "Hi, " + (user.displayName || user.phoneNumber || "Member");
             } else {
-                const loginText = "Login / Signup";
-                authBtnDesktop.innerText = loginText;
-                authBtnMobile.innerText = loginText;
+                // LOGGED OUT STATE
+                headerLoginBtn.style.display = ''; // Reverts to CSS default
+                dropdownLoginLink.style.display = ''; // Reverts to CSS default
+                dropdownLogoutLink.style.display = 'none'; // Hide bottom "Logout" link
+                
                 userDisplay.innerText = "Hi, JAMBA Member";
             }
         });
