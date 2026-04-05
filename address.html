@@ -49,7 +49,7 @@
         
         <div class="address-card">
             <p style="font-size: 13px; color: #777; margin-top: 0; margin-bottom: 25px;">
-                Save your details here to checkout faster on your next order.
+                Save your exact details here to checkout faster on your next order.
             </p>
 
             <form id="address-form">
@@ -69,11 +69,26 @@
                     </div>
                 </div>
 
-                <div class="input-group">
-                    <label>Complete Address</label>
-                    <textarea id="fullAddress" class="input-field" rows="3" placeholder="House/Flat No., Street, Area, City" required></textarea>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label>State</label>
+                        <input type="text" id="state" class="input-field" placeholder="e.g. Assam" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Landmark</label>
+                        <input type="text" id="landmark" class="input-field" placeholder="Village / Town / School" required>
+                    </div>
                 </div>
 
+                <div class="input-group">
+                    <label>Address Line 1</label>
+                    <input type="text" id="address1" class="input-field" placeholder="House/Flat No., Building, Street Name" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Address Line 2</label>
+                    <input type="text" id="address2" class="input-field" placeholder="Area, Sector, Locality (Optional)">
+                </div>
                 <button type="submit" class="save-btn" id="save-btn">Save Changes</button>
                 <div id="status-msg"></div>
             </form>
@@ -107,14 +122,19 @@
         const nameInput = document.getElementById('name');
         const phoneInput = document.getElementById('phone');
         const pincodeInput = document.getElementById('pincode');
-        const addressInput = document.getElementById('fullAddress');
+        
+        // New Address Elements
+        const stateInput = document.getElementById('state');
+        const landmarkInput = document.getElementById('landmark');
+        const address1Input = document.getElementById('address1');
+        const address2Input = document.getElementById('address2');
+        
         const saveBtn = document.getElementById('save-btn');
         const statusMsg = document.getElementById('status-msg');
 
         // Check Login Status
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // Using the secure UID instead of email
                 currentUserUid = user.uid; 
                 loadSavedAddress(currentUserUid);
             } else {
@@ -134,7 +154,12 @@
                         nameInput.value = data.name || '';
                         phoneInput.value = data.phone || '';
                         pincodeInput.value = data.pincode || '';
-                        addressInput.value = data.fullAddress || '';
+                        
+                        // Populate new fields
+                        stateInput.value = data.state || '';
+                        landmarkInput.value = data.landmark || '';
+                        address1Input.value = data.address1 || '';
+                        address2Input.value = data.address2 || '';
                     }
                 }
             } catch (error) {
@@ -150,15 +175,18 @@
             saveBtn.innerText = "Saving...";
             saveBtn.disabled = true;
 
+            // Save the granular address data
             const addressData = {
                 name: nameInput.value,
                 phone: phoneInput.value,
                 pincode: pincodeInput.value,
-                fullAddress: addressInput.value
+                state: stateInput.value,
+                landmark: landmarkInput.value,
+                address1: address1Input.value,
+                address2: address2Input.value
             };
 
             try {
-                // 'merge: true' means it updates the address without deleting other user profile data
                 await setDoc(doc(db, "users", currentUserUid), { 
                     address: addressData 
                 }, { merge: true });
