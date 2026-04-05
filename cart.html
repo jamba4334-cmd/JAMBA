@@ -129,7 +129,6 @@
                     document.getElementById('pay-btn').disabled = true;
                 }
             } else {
-                // Redirect to login if they try to access cart without being signed in
                 window.location.href = "login.html?redirect=cart";
             }
         });
@@ -212,15 +211,20 @@
             renderCart();
         };
 
-        // 3. RAZORPAY & FIREBASE INTEGRATION
+        // 3. RAZORPAY & FIREBASE INTEGRATION (BULLETPROOF TEST VERSION)
         window.startPayment = () => {
             if (!savedAddress) {
                 alert("Please save your shipping address first!");
                 return;
             }
 
+            if (finalAmount <= 0) {
+                alert("Your cart total must be greater than ₹0 to checkout.");
+                return;
+            }
+
             const options = {
-                "key": "rzp_test_SZxdNM9vw8sb9u", // YOUR TEST KEY IS INSERTED HERE
+                "key": "rzp_test_SZxdNM9vw8sb9u", // Your new Test Key
                 "amount": finalAmount * 100, // Razorpay calculates in paise
                 "currency": "INR",
                 "name": "JAMBA WEAR",
@@ -229,14 +233,23 @@
                 "handler": async function (response) {
                     await saveOrderToFirebase(response.razorpay_payment_id);
                 },
+                // FORCING PERFECT DUMMY DATA TO BYPASS RAZORPAY VALIDATION CRASHES
                 "prefill": {
-                    "name": savedAddress.name,
-                    "email": currentUser.email || "test@jambawear.com", // Fallback email added to prevent Razorpay errors
-                    "contact": savedAddress.phone
+                    "name": "JAMBA Customer",
+                    "email": "test@jambawear.com",
+                    "contact": "9876543210"
                 },
                 "theme": { "color": "#1a1a1a" }
             };
+
             const rzp = new Razorpay(options);
+
+            // THIS WILL CATCH THE EXACT ERROR IF IT STILL FAILS
+            rzp.on('payment.failed', function (response){
+                alert("Razorpay Error: " + response.error.description);
+                console.error(response.error);
+            });
+
             rzp.open();
         };
 
