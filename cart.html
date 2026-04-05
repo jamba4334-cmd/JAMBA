@@ -220,7 +220,7 @@
             }
 
             const options = {
-                "key": "rzp_live_XXXXXXXXXXXXXX", // IMPORTANT: Replace with your actual Live Key
+                "key": "rzp_test_SZxdNM9vw8sb9u", // YOUR TEST KEY IS INSERTED HERE
                 "amount": finalAmount * 100, // Razorpay calculates in paise
                 "currency": "INR",
                 "name": "JAMBA WEAR",
@@ -231,7 +231,7 @@
                 },
                 "prefill": {
                     "name": savedAddress.name,
-                    "email": currentUser.email || "",
+                    "email": currentUser.email || "test@jambawear.com", // Fallback email added to prevent Razorpay errors
                     "contact": savedAddress.phone
                 },
                 "theme": { "color": "#1a1a1a" }
