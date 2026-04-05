@@ -59,10 +59,13 @@
         .input-group { margin-bottom: 15px; }
         .input-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
         
-        .input-field { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; box-sizing: border-box; transition: 0.3s; background-color: white; color: var(--primary); }
+        /* * FIX APPLIED HERE: font-size is now 16px to prevent iOS auto-zoom 
+         */
+        .input-field { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box; transition: 0.3s; background-color: white; color: var(--primary); }
         .input-field:focus { border-color: var(--primary); outline: none; }
         .input-field:disabled { background-color: #f5f5f5; color: #777; border-color: transparent; cursor: not-allowed; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
         select.input-field:disabled { background-image: none; }
+        
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 
         .btn { padding: 14px 20px; border: none; border-radius: 6px; font-weight: bold; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: 0.3s; text-align: center; }
