@@ -24,6 +24,13 @@
         .item-price { font-weight: bold; font-size: 16px; }
         .remove-btn { position: absolute; top: 15px; right: 15px; color: #ff4d4d; font-size: 12px; cursor: pointer; font-weight: bold; }
 
+        /* --- QUANTITY CONTROL --- */
+        .qty-wrapper { display: flex; align-items: center; gap: 5px; margin-top: 5px; }
+        .qty-btn { background: var(--border); border: none; width: 24px; height: 24px; border-radius: 4px; font-weight: bold; cursor: pointer; color: var(--primary); display: flex; align-items: center; justify-content: center; }
+        .qty-btn:hover { background: #dcdcdc; }
+        .qty-input { width: 35px; height: 24px; text-align: center; border: 1px solid var(--border); border-radius: 4px; font-size: 13px; font-weight: 600; padding: 0; }
+        .qty-input::-webkit-outer-spin-button, .qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
         /* --- ADDRESS CONFIRMATION BOX --- */
         .address-box { background: #fff; border: 1.5px dashed var(--accent); padding: 15px; border-radius: 8px; margin: 30px 0; }
         .address-header { font-size: 12px; font-weight: bold; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; display: flex; justify-content: space-between; }
@@ -51,8 +58,7 @@
     <div class="container">
         <h1 class="page-title">Your Bag</h1>
 
-        <div id="cart-items-container">
-            </div>
+        <div id="cart-items-container"></div>
 
         <div id="empty-cart-msg">
             <p>Your bag is currently empty.</p>
@@ -124,7 +130,7 @@
         });
 
         // 2. RENDER CART ITEMS
-        function renderCart() {
+        window.renderCart = () => {
             const cart = JSON.parse(localStorage.getItem('jambaCart')) || [];
             const container = document.getElementById('cart-items-container');
             const emptyMsg = document.getElementById('empty-cart-msg');
@@ -149,7 +155,14 @@
                         <img src="${item.image}" class="item-img">
                         <div class="item-info">
                             <p class="item-title">${item.title}</p>
-                            <p class="item-meta">Size: ${item.size} | Qty: ${item.quantity}</p>
+                            <div class="item-meta">
+                                <span>Size: ${item.size}</span>
+                                <div class="qty-wrapper">
+                                    <button class="qty-btn" onclick="updateQty(${index}, -1)">-</button>
+                                    <input type="number" class="qty-input" value="${item.quantity}" min="1" onchange="setQty(${index}, this.value)">
+                                    <button class="qty-btn" onclick="updateQty(${index}, 1)">+</button>
+                                </div>
+                            </div>
                             <p class="item-price">₹${(item.price * item.quantity).toLocaleString('en-IN')}</p>
                         </div>
                         <span class="remove-btn" onclick="removeItem(${index})">REMOVE</span>
@@ -161,7 +174,31 @@
             container.innerHTML = html;
             document.getElementById('subtotal').innerText = '₹' + total.toLocaleString('en-IN');
             document.getElementById('grand-total').innerText = '₹' + total.toLocaleString('en-IN');
-        }
+        };
+
+        // --- NEW QUANTITY FUNCTIONS ---
+        window.updateQty = (index, change) => {
+            let cart = JSON.parse(localStorage.getItem('jambaCart')) || [];
+            let currentQty = parseInt(cart[index].quantity) || 1;
+            let newQty = currentQty + change;
+            
+            if (newQty < 1) return; // Prevent 0 or negative
+            
+            cart[index].quantity = newQty;
+            localStorage.setItem('jambaCart', JSON.stringify(cart));
+            renderCart();
+        };
+
+        window.setQty = (index, value) => {
+            let cart = JSON.parse(localStorage.getItem('jambaCart')) || [];
+            let newQty = parseInt(value);
+            
+            if (isNaN(newQty) || newQty < 1) newQty = 1; 
+            
+            cart[index].quantity = newQty;
+            localStorage.setItem('jambaCart', JSON.stringify(cart));
+            renderCart();
+        };
 
         window.removeItem = (index) => {
             let cart = JSON.parse(localStorage.getItem('jambaCart'));
@@ -204,13 +241,13 @@
             try {
                 const orderData = {
                     customerId: currentUser.uid,
-                    customerContact: currentUser.email || currentUser.phoneNumber,
+                    customerContact: currentUser.email || currentUser.phoneNumber || savedAddress.phone,
                     razorpay_id: paymentId,
                     items: cart,
                     totalAmount: finalAmount,
                     status: "processing",
                     createdAt: serverTimestamp(),
-                    shippingAddress: savedAddress // THE SNAPSHOT
+                    shippingAddress: savedAddress 
                 };
 
                 await addDoc(collection(db, "orders"), orderData);
@@ -222,6 +259,7 @@
             }
         }
 
+        // Initialize cart on load
         renderCart();
     </script>
 </body>
