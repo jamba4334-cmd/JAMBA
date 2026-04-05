@@ -16,20 +16,35 @@
 
         /* --- LAYOUT --- */
         .container { max-width: 600px; margin: 20px auto; padding: 0 20px; }
-        .page-title { font-size: 20px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 25px; border-bottom: 2px solid var(--primary); padding-bottom: 10px; display: inline-block; }
+        .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px; border-bottom: 2px solid var(--primary); padding-bottom: 10px; }
+        .page-title { font-size: 20px; letter-spacing: 1px; text-transform: uppercase; margin: 0; }
 
         /* --- ADDRESS CARD / FORM --- */
         .address-card { background: white; padding: 30px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         
         .input-group { margin-bottom: 15px; }
         .input-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
-        .input-field { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; box-sizing: border-box; transition: 0.3s; }
+        
+        /* Form Inputs & Selects */
+        .input-field { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; box-sizing: border-box; transition: 0.3s; background-color: white; color: var(--primary); }
         .input-field:focus { border-color: var(--primary); outline: none; }
         
+        /* LOCKED STATE STYLING */
+        .input-field:disabled { background-color: #f5f5f5; color: #777; border-color: transparent; cursor: not-allowed; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+        select.input-field:disabled { background-image: none; /* Removes dropdown arrow when locked */ }
+
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 
-        .save-btn { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; margin-top: 10px; transition: 0.3s; }
-        .save-btn:active { transform: scale(0.98); }
+        /* --- BUTTONS --- */
+        .btn { padding: 14px 20px; border: none; border-radius: 6px; font-weight: bold; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: 0.3s; text-align: center; }
+        .btn:active { transform: scale(0.98); }
+        
+        .edit-btn { background: white; color: var(--primary); border: 2px solid var(--primary); width: 100%; margin-top: 10px; }
+        .edit-btn:hover { background: #f0f0f0; }
+
+        .action-buttons { display: none; grid-template-columns: 1fr 2fr; gap: 15px; margin-top: 15px; }
+        .cancel-btn { background: #eee; color: #333; }
+        .save-btn { background: var(--primary); color: white; }
         .save-btn:disabled { background: #ccc; cursor: not-allowed; }
 
         #status-msg { text-align: center; font-size: 13px; font-weight: bold; margin-top: 15px; display: none; }
@@ -45,65 +60,76 @@
     </header>
 
     <div class="container">
-        <h1 class="page-title">Default Shipping Address</h1>
+        <div class="page-header">
+            <h1 class="page-title">Shipping Address</h1>
+        </div>
         
         <div class="address-card">
-            <p style="font-size: 13px; color: #777; margin-top: 0; margin-bottom: 25px;">
-                Save your exact details here to checkout faster on your next order.
+            <p id="helper-text" style="font-size: 13px; color: #777; margin-top: 0; margin-bottom: 25px;">
+                Your saved delivery details. Click Edit to make changes.
             </p>
 
             <form id="address-form">
                 <div class="input-group">
                     <label>Full Name</label>
-                    <input type="text" id="name" class="input-field" placeholder="Rahul Boro" required>
+                    <input type="text" id="name" class="input-field" placeholder="Rahul Boro" required disabled>
                 </div>
                 
                 <div class="grid-2">
                     <div class="input-group">
                         <label>Phone Number</label>
-                        <input type="tel" id="phone" class="input-field" placeholder="10-digit mobile number" required maxlength="10">
+                        <input type="tel" id="phone" class="input-field" placeholder="10-digit mobile number" required maxlength="10" disabled>
                     </div>
                     <div class="input-group">
                         <label>Pincode</label>
-                        <input type="text" id="pincode" class="input-field" placeholder="e.g. 781001" required maxlength="6">
+                        <input type="text" id="pincode" class="input-field" placeholder="e.g. 781001" required maxlength="6" disabled>
                     </div>
                 </div>
 
                 <div class="grid-2">
                     <div class="input-group">
                         <label>State</label>
-                        <input type="text" id="state" list="state-list" class="input-field" placeholder="Type to search State" required autocomplete="off">
-                        <datalist id="state-list"></datalist>
+                        <select id="state" class="input-field" required disabled>
+                            <option value="" disabled selected>Select State</option>
+                        </select>
                     </div>
                     <div class="input-group">
                         <label>District</label>
-                        <input type="text" id="district" list="district-list" class="input-field" placeholder="Select State first" required autocomplete="off">
-                        <datalist id="district-list"></datalist>
+                        <select id="district" class="input-field" required disabled>
+                            <option value="" disabled selected>Select District</option>
+                        </select>
                     </div>
                 </div>
 
                 <div class="input-group">
                     <label>Landmark</label>
-                    <input type="text" id="landmark" class="input-field" placeholder="Village / Town / School" required>
+                    <input type="text" id="landmark" class="input-field" placeholder="Village / Town / School" required disabled>
                 </div>
 
                 <div class="input-group">
                     <label>Address Line 1</label>
-                    <input type="text" id="address1" class="input-field" placeholder="House/Flat No., Building, Street Name" required>
+                    <input type="text" id="address1" class="input-field" placeholder="House/Flat No., Building, Street Name" required disabled>
                 </div>
 
                 <div class="input-group">
                     <label>Address Line 2</label>
-                    <input type="text" id="address2" class="input-field" placeholder="Area, Sector, Locality (Optional)">
+                    <input type="text" id="address2" class="input-field" placeholder="Area, Sector, Locality (Optional)" disabled>
                 </div>
 
-                <button type="submit" class="save-btn" id="save-btn">Save Changes</button>
+                <button type="button" class="btn edit-btn" id="edit-btn">Edit Address</button>
+                
+                <div class="action-buttons" id="action-buttons">
+                    <button type="button" class="btn cancel-btn" id="cancel-btn">Cancel</button>
+                    <button type="submit" class="btn save-btn" id="save-btn">Save Changes</button>
+                </div>
+
                 <div id="status-msg"></div>
             </form>
         </div>
     </div>
 
     <script>
+        // The Indian States Database
         const indiaData = {
             "Assam": ["Baksa", "Barpeta", "Biswanath", "Bongaigaon", "Cachar", "Charaideo", "Chirang", "Darrang", "Dhemaji", "Dhubri", "Dibrugarh", "Dima Hasao", "Goalpara", "Golaghat", "Hailakandi", "Hojai", "Jorhat", "Kamrup", "Kamrup Metropolitan", "Karbi Anglong", "Karimganj", "Kokrajhar", "Lakhimpur", "Majuli", "Morigaon", "Nagaon", "Nalbari", "Sivasagar", "Sonitpur", "South Salmara-Mankachar", "Tinsukia", "Udalguri", "West Karbi Anglong"],
             "Arunachal Pradesh": ["Tawang", "West Kameng", "East Kameng", "Papum Pare", "Kurung Kumey", "Kra Daadi", "Lower Subansiri", "Upper Subansiri", "West Siang", "East Siang", "Siang", "Upper Siang", "Lower Siang", "Lower Dibang Valley", "Dibang Valley", "Anjaw", "Lohit", "Namsai", "Changlang", "Tirap", "Longding"],
@@ -116,47 +142,44 @@
             "Maharashtra": ["Ahmednagar", "Akola", "Amravati", "Aurangabad", "Beed", "Bhandara", "Buldhana", "Chandrapur", "Dhule", "Gadchiroli", "Gondia", "Hingoli", "Jalgaon", "Jalna", "Kolhapur", "Latur", "Mumbai City", "Mumbai Suburban", "Nagpur", "Nanded", "Nandurbar", "Nashik", "Osmanabad", "Palghar", "Parbhani", "Pune", "Raigad", "Ratnagiri", "Sangli", "Satara", "Sindhudurg", "Solapur", "Thane", "Wardha", "Washim", "Yavatmal"],
             "West Bengal": ["Alipurduar", "Bankura", "Birbhum", "Cooch Behar", "Dakshin Dinajpur", "Darjeeling", "Hooghly", "Howrah", "Jalpaiguri", "Jhargram", "Kalimpong", "Kolkata", "Malda", "Murshidabad", "Nadia", "North 24 Parganas", "Paschim Bardhaman", "Paschim Medinipur", "Purba Bardhaman", "Purba Medinipur", "Purulia", "South 24 Parganas", "Uttar Dinajpur"],
             "Karnataka": ["Bagalkot", "Ballari", "Belagavi", "Bengaluru Rural", "Bengaluru Urban", "Bidar", "Chamarajanagar", "Chikkaballapur", "Chikkamagaluru", "Chitradurga", "Dakshina Kannada", "Davanagere", "Dharwad", "Gadag", "Hassan", "Haveri", "Kalaburagi", "Kodagu", "Kolar", "Koppal", "Mandya", "Mysuru", "Raichur", "Ramanagara", "Shivamogga", "Tumakuru", "Udupi", "Uttara Kannada", "Vijayapura", "Yadgir"],
-            // Note: You can easily add more states here following the exact same format: "State Name": ["Dist 1", "Dist 2"],
         };
 
-        const stateInput = document.getElementById('state');
-        const stateList = document.getElementById('state-list');
-        const districtInput = document.getElementById('district');
-        const districtList = document.getElementById('district-list');
+        const stateSelect = document.getElementById('state');
+        const districtSelect = document.getElementById('district');
 
-        // 1. Populate the State Dropdown on page load
+        // Populate States on Load
         window.addEventListener('DOMContentLoaded', () => {
             const states = Object.keys(indiaData).sort();
             states.forEach(state => {
-                const option = document.createElement('option');
+                let option = document.createElement('option');
                 option.value = state;
-                stateList.appendChild(option);
+                option.text = state;
+                stateSelect.appendChild(option);
             });
         });
 
-        // 2. Listen for State changes to populate the District Dropdown
-        stateInput.addEventListener('input', function() {
-            const selectedState = this.value;
-            
-            // Clear current districts
-            districtList.innerHTML = '';
-            districtInput.value = '';
-
-            if (indiaData[selectedState]) {
-                // If a valid state is typed/selected, populate districts
-                districtInput.placeholder = "Type to search District";
-                const districts = indiaData[selectedState].sort();
-                
-                districts.forEach(district => {
-                    const option = document.createElement('option');
-                    option.value = district;
-                    districtList.appendChild(option);
-                });
-            } else {
-                // If invalid state, lock the district field
-                districtInput.placeholder = "Select State first";
-            }
+        // Update Districts when State Changes
+        stateSelect.addEventListener('change', function() {
+            populateDistricts(this.value);
         });
+
+        function populateDistricts(selectedState, selectedDistrict = "") {
+            districtSelect.innerHTML = '<option value="" disabled selected>Select District</option>'; // Reset
+            
+            if (indiaData[selectedState]) {
+                const districts = indiaData[selectedState].sort();
+                districts.forEach(district => {
+                    let option = document.createElement('option');
+                    option.value = district;
+                    option.text = district;
+                    districtSelect.appendChild(option);
+                });
+                
+                if(selectedDistrict) {
+                    districtSelect.value = selectedDistrict;
+                }
+            }
+        }
     </script>
 
     <script type="module">
@@ -170,8 +193,7 @@
             projectId: "jamba-wear",
             storageBucket: "jamba-wear.firebasestorage.app",
             messagingSenderId: "679544590258",
-            appId: "1:679544590258:web:eac3841e5f555e3fb89eab",
-            measurementId: "G-8XSNJG079Z"
+            appId: "1:679544590258:web:eac3841e5f555e3fb89eab"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -179,18 +201,16 @@
         const db = getFirestore(app);
 
         let currentUserUid = null;
+        let originalAddressData = {}; // Stores the database version to revert if cancelled
 
-        // Form Elements
+        // UI Elements
         const form = document.getElementById('address-form');
-        const nameInput = document.getElementById('name');
-        const phoneInput = document.getElementById('phone');
-        const pincodeInput = document.getElementById('pincode');
-        const stateDOM = document.getElementById('state');
-        const districtDOM = document.getElementById('district');
-        const landmarkInput = document.getElementById('landmark');
-        const address1Input = document.getElementById('address1');
-        const address2Input = document.getElementById('address2');
+        const inputs = form.querySelectorAll('.input-field');
+        const helperText = document.getElementById('helper-text');
         
+        const editBtn = document.getElementById('edit-btn');
+        const actionButtons = document.getElementById('action-buttons');
+        const cancelBtn = document.getElementById('cancel-btn');
         const saveBtn = document.getElementById('save-btn');
         const statusMsg = document.getElementById('status-msg');
 
@@ -203,40 +223,64 @@
             }
         });
 
-        // READ FROM DATABASE
+        // --- LOCK/UNLOCK LOGIC ---
+        function setFormState(isEditing) {
+            inputs.forEach(input => input.disabled = !isEditing);
+            
+            if (isEditing) {
+                editBtn.style.display = 'none';
+                actionButtons.style.display = 'grid';
+                helperText.innerText = "Make your changes and click Save.";
+                helperText.style.color = "#d2b48c"; // Accent color
+            } else {
+                editBtn.style.display = 'block';
+                actionButtons.style.display = 'none';
+                helperText.innerText = "Your saved delivery details. Click Edit to make changes.";
+                helperText.style.color = "#777";
+            }
+        }
+
+        editBtn.addEventListener('click', () => setFormState(true));
+
+        cancelBtn.addEventListener('click', () => {
+            // Revert to original data
+            populateFormFields(originalAddressData);
+            setFormState(false);
+        });
+
+        // --- FIREBASE LOGIC ---
+        function populateFormFields(data) {
+            document.getElementById('name').value = data.name || '';
+            document.getElementById('phone').value = data.phone || '';
+            document.getElementById('pincode').value = data.pincode || '';
+            document.getElementById('landmark').value = data.landmark || '';
+            document.getElementById('address1').value = data.address1 || '';
+            document.getElementById('address2').value = data.address2 || '';
+            
+            if (data.state) {
+                document.getElementById('state').value = data.state;
+                // Force populate district dropdown, then select the saved district
+                populateDistricts(data.state, data.district);
+            } else {
+                document.getElementById('state').value = "";
+                document.getElementById('district').innerHTML = '<option value="" disabled selected>Select District</option>';
+            }
+        }
+
         async function loadSavedAddress(uid) {
             try {
                 const docRef = doc(db, "users", uid);
                 const docSnap = await getDoc(docRef);
 
-                if (docSnap.exists()) {
-                    const data = docSnap.data().address;
-                    if(data) {
-                        nameInput.value = data.name || '';
-                        phoneInput.value = data.phone || '';
-                        pincodeInput.value = data.pincode || '';
-                        landmarkInput.value = data.landmark || '';
-                        address1Input.value = data.address1 || '';
-                        address2Input.value = data.address2 || '';
-                        
-                        // Set State and forcefully trigger the district population logic
-                        if (data.state) {
-                            stateDOM.value = data.state;
-                            stateDOM.dispatchEvent(new Event('input')); 
-                        }
-                        
-                        // Set District after the list has been generated
-                        if (data.district) {
-                            districtDOM.value = data.district;
-                        }
-                    }
+                if (docSnap.exists() && docSnap.data().address) {
+                    originalAddressData = docSnap.data().address;
+                    populateFormFields(originalAddressData);
                 }
             } catch (error) {
                 console.error("Error loading address:", error);
             }
         }
 
-        // WRITE TO DATABASE
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUserUid) return;
@@ -244,25 +288,31 @@
             saveBtn.innerText = "Saving...";
             saveBtn.disabled = true;
 
-            const addressData = {
-                name: nameInput.value,
-                phone: phoneInput.value,
-                pincode: pincodeInput.value,
-                state: stateDOM.value,
-                district: districtDOM.value,
-                landmark: landmarkInput.value,
-                address1: address1Input.value,
-                address2: address2Input.value
+            const newAddressData = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                pincode: document.getElementById('pincode').value,
+                state: document.getElementById('state').value,
+                district: document.getElementById('district').value,
+                landmark: document.getElementById('landmark').value,
+                address1: document.getElementById('address1').value,
+                address2: document.getElementById('address2').value
             };
 
             try {
                 await setDoc(doc(db, "users", currentUserUid), { 
-                    address: addressData 
+                    address: newAddressData 
                 }, { merge: true });
 
+                // Update the backup copy so "Cancel" uses the new data next time
+                originalAddressData = newAddressData;
+                
                 statusMsg.innerText = "Address updated successfully!";
                 statusMsg.className = "success";
                 statusMsg.style.display = "block";
+                
+                // Lock the form again
+                setFormState(false);
                 
                 setTimeout(() => { statusMsg.style.display = "none"; }, 3000);
 
