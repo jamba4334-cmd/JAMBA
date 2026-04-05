@@ -23,7 +23,7 @@
         .item-meta { font-size: 12px; color: #777; margin-bottom: 8px; }
         .item-price { font-weight: bold; font-size: 16px; }
         
-        /* Adjusted Remove Button */
+        /* Adjusted Remove Button (Bottom Right) */
         .remove-btn { position: absolute; bottom: 15px; right: 15px; color: #ff4d4d; font-size: 12px; cursor: pointer; font-weight: bold; }
         .remove-btn:hover { text-decoration: underline; }
 
@@ -90,6 +90,7 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <script type="module">
+        // Firebase Setup
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -128,6 +129,7 @@
                     document.getElementById('pay-btn').disabled = true;
                 }
             } else {
+                // Redirect to login if they try to access cart without being signed in
                 window.location.href = "login.html?redirect=cart";
             }
         });
@@ -179,13 +181,13 @@
             document.getElementById('grand-total').innerText = '₹' + total.toLocaleString('en-IN');
         };
 
-        // --- NEW QUANTITY FUNCTIONS ---
+        // --- QUANTITY FUNCTIONS ---
         window.updateQty = (index, change) => {
             let cart = JSON.parse(localStorage.getItem('jambaCart')) || [];
             let currentQty = parseInt(cart[index].quantity) || 1;
             let newQty = currentQty + change;
             
-            if (newQty < 1) return; // Prevent 0 or negative
+            if (newQty < 1) return; // Prevent quantity from dropping to 0 or below
             
             cart[index].quantity = newQty;
             localStorage.setItem('jambaCart', JSON.stringify(cart));
@@ -218,8 +220,8 @@
             }
 
             const options = {
-                "key": "rzp_live_XXXXXXXXXXXXXX", // REPLACE WITH YOUR LIVE KEY
-                "amount": finalAmount * 100, // Razorpay works in paise
+                "key": "rzp_live_XXXXXXXXXXXXXX", // IMPORTANT: Replace with your actual Live Key
+                "amount": finalAmount * 100, // Razorpay calculates in paise
                 "currency": "INR",
                 "name": "JAMBA WEAR",
                 "description": "Purchase from Official Store",
@@ -250,19 +252,23 @@
                     totalAmount: finalAmount,
                     status: "processing",
                     createdAt: serverTimestamp(),
-                    shippingAddress: savedAddress 
+                    shippingAddress: savedAddress // Takes a snapshot of the current address
                 };
 
                 await addDoc(collection(db, "orders"), orderData);
-                localStorage.removeItem('jambaCart');
+                
+                // Clear the cart after successful payment
+                localStorage.removeItem('jambaCart'); 
+                
+                // Redirect user to their orders page
                 window.location.href = "orders.html";
             } catch (e) {
                 console.error("Order Save Error:", e);
-                alert("Payment Success, but Database failed. Save your payment ID: " + paymentId);
+                alert("Payment Success, but Database failed. Save your payment ID for reference: " + paymentId);
             }
         }
 
-        // Initialize cart on load
+        // Initialize cart when the page loads
         renderCart();
     </script>
 </body>
