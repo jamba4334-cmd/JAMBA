@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JAMBA | Private Access</title>
+    <style>
+        :root { --primary: #1a1a1a; --bg: #f8f8f8; }
+        body { font-family: 'Helvetica Neue', Arial; background: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .login-box { background: white; padding: 40px; width: 350px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-radius: 2px; }
+        .logo { height: 25px; margin-bottom: 20px; }
+        h2 { font-size: 14px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 30px; color: #555; }
+        .google-btn { background: white; border: 1px solid #ddd; padding: 12px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .google-btn:hover { background: #f1f1f1; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <img src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/assets/JAMBA.png" class="logo">
+        <h2>Partner Portal Access</h2>
+        <p style="font-size: 11px; color: #888; margin-bottom: 20px;">Please sign in to access the Admin or Seller dashboard.</p>
+        
+        <button class="google-btn" onclick="loginWithGoogle()">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18">
+            Sign in with Google
+        </button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // Use your same Firebase Config from index.html
+        const firebaseConfig = { /* PASTE YOUR CONFIG HERE */ };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        window.loginWithGoogle = () => {
+            signInWithPopup(auth, provider).then(async (result) => {
+                const token = await result.user.getIdToken();
+                // Send to Python Backend to verify role
+                const response = await fetch('https://your-render-app.onrender.com/api/check-role', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: token })
+                });
+                const data = await response.json();
+
+                if (data.role === 'admin') window.location.href = "admin.html";
+                else if (data.role === 'seller') window.location.href = "seller.html";
+                else alert("Access Denied: You do not have partner permissions.");
+            });
+        };
+    </script>
+</body>
+</html>
