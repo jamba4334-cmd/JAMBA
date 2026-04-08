@@ -1,1 +1,39 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JAMBA | Admin Control</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f4; margin: 0; display: flex; }
+        .sidebar { width: 250px; background: #1a1a1a; color: white; height: 100vh; padding: 20px; }
+        .main { flex: 1; padding: 40px; }
+        .card { background: white; padding: 20px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .btn-approve { background: #27ae60; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 4px; }
+        .btn-excel { background: #2980b9; color: white; border: none; padding: 12px; width: 100%; cursor: pointer; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>JAMBA Admin</h2>
+        <p>Logged in as: <span id="admin-email">...</span></p>
+        <button class="btn-excel" onclick="downloadReport()">Download Sales Excel</button>
+        <br><br>
+        <a href="../index.html" style="color: gray;">View Public Shop</a>
+    </div>
+
+    <div class="main">
+        <h1>Pending Approvals</h1>
+        <div id="pending-list">
+            <p>Loading pending products...</p>
+        </div>
+    </div>
+
+    <script>
+        // JS Logic: 
+        // 1. Check if user is Admin (Firebase Auth + Backend Role Check)
+        // 2. Fetch products where status == "pending"
+        // 3. On click "Approve", send POST request to Render backend
+    </script>
+</body>
+</html>
