@@ -1,1 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JAMBA | Seller Portal</title>
+    <style>
+        body { font-family: sans-serif; background: #fafafa; padding: 50px; }
+        .upload-container { max-width: 500px; background: white; padding: 30px; margin: auto; border-radius: 8px; border: 1px solid #ddd; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; box-sizing: border-box; }
+        .btn-upload { background: #1a1a1a; color: white; width: 100%; padding: 15px; border: none; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="upload-container">
+        <h2>Upload New Product</h2>
+        <p style="font-size: 13px; color: #666;">Fill in details to send for Admin approval.</p>
+        
+        <form id="upload-form">
+            <input type="text" id="title" placeholder="Product Title (e.g. Bodo Waistcoat)" required>
+            <input type="number" id="price" placeholder="Price (₹)" required>
+            
+            <select id="category">
+                <option value="Men">Men</option>
+                <option value="Women">Women</option>
+                <option value="Kids">Kids</option>
+            </select>
 
+            <input type="file" id="image-file" accept="image/*" required>
+            <textarea id="description" placeholder="Short description..."></textarea>
+            
+            <button type="submit" class="btn-upload">Submit for Review</button>
+        </form>
+    </div>
+
+    <script>
+        // JS Logic:
+        // 1. Upload image to Firebase Storage first -> Get URL
+        // 2. Send Title, Price, URL, and seller_uid to Python Backend
+        // 3. Backend saves it to MongoDB with status: "pending"
+    </script>
+</body>
+</html>
