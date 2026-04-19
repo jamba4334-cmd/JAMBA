@@ -42,15 +42,16 @@
             background-position: 0 0, 5px 5px; 
         }
 
-        /* --- HEADER --- */
+        /* --- HEADER (SYNCED WITH INDEX) --- */
         .top-bar { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            padding: 12px 20px; 
+            padding: 0 20px; 
             position: fixed; 
             top: 0; 
             width: 100%; 
+            height: var(--nav-height);
             box-sizing: border-box; 
             background-color: rgba(255, 255, 255, 0.98); 
             backdrop-filter: blur(10px); 
@@ -58,20 +59,30 @@
             z-index: 1000; 
         }
 
-        .logo img { 
-            height: 28px; 
-            display: block; 
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 5px 0;
         }
 
-        .right-actions { display: flex; align-items: center; gap: 25px; }
+        .logo img { 
+            width: 220px; 
+            height: auto; 
+            display: block;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .logo img:hover { transform: scale(1.03); }
+
+        .right-actions { display: flex; align-items: center; gap: 20px; }
         
-        /* --- VERTICAL ACTION STYLES --- */
         .action-item { 
             display: flex; 
-            flex-direction: column; /* Changed to column to put text on bottom */
+            flex-direction: column; 
             align-items: center; 
+            justify-content: center;
             cursor: pointer; 
-            position: relative;
             text-decoration: none;
             color: var(--primary);
         }
@@ -81,8 +92,7 @@
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-top: 4px; /* Space between icon and text below it */
-            margin-left: 0; /* Resetting previous horizontal margin */
+            margin-top: 4px; 
         }
 
         .nav-icon { 
@@ -90,33 +100,35 @@
             height: 22px; 
             fill: none; 
             stroke: var(--primary); 
-            stroke-width: 1.8; 
+            stroke-width: 2; 
             stroke-linecap: round; 
             stroke-linejoin: round; 
         }
 
+        /* --- CART & PROFILE --- */
+        .cart-icon-wrapper { position: relative; display: flex; align-items: center; justify-content: center; }
         .cart-badge { 
             position: absolute; 
-            top: -8px; 
-            right: -8px; /* Adjusted for centered vertical layout */
+            top: -5px; 
+            right: -8px; 
             background-color: var(--accent); 
             color: #fff; 
             font-size: 9px; 
             font-weight: bold; 
-            height: 15px; 
-            min-width: 15px; 
-            border-radius: 50%; 
+            height: 14px; 
+            min-width: 14px; 
+            border-radius: 7px; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             padding: 0 3px;
+            box-sizing: border-box;
         }
 
-        /* --- PROFILE DROPDOWN --- */
-        .profile-wrapper { position: relative; }
+        .profile-wrapper { position: relative; display: flex; align-items: center; }
         .dropdown-menu { 
             position: absolute; 
-            top: 45px; 
+            top: 50px; 
             right: 0; 
             width: 180px; 
             background-color: white; 
@@ -129,18 +141,18 @@
             border: 1px solid #eaeaea; 
         }
         .dropdown-menu.show { display: flex; }
-        .dropdown-header { padding: 15px; font-weight: bold; font-size: 14px; background-color: #fafafa; border-bottom: 1px solid #eaeaea; }
+        .dropdown-header { padding: 15px; font-weight: bold; font-size: 14px; background-color: #fafafa; border-bottom: 1px solid #eaeaea; color: var(--primary); }
         .dropdown-menu a { padding: 12px 15px; font-size: 13px; color: var(--text-main); border-bottom: 1px solid #f5f5f5; transition: 0.2s; }
         .dropdown-menu a:hover { background-color: #f9f9f9; color: var(--primary); }
 
         /* --- CATEGORIES & GRID --- */
         .category-scroll { display: flex; overflow-x: auto; gap: 12px; padding: 15px 15px 5px; scrollbar-width: none; }
         .category-scroll::-webkit-scrollbar { display: none; }
-        .chip { padding: 8px 20px; background-color: white; border: 1px solid #ddd; border-radius: 20px; font-size: 12px; white-space: nowrap; color: var(--text-main); transition: 0.2s; }
+        .chip { padding: 8px 20px; background-color: white; border: 1px solid #ddd; border-radius: 20px; font-size: 13px; white-space: nowrap; color: var(--text-main); box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: 0.2s; }
         .chip.active { background-color: var(--primary); color: white; border-color: var(--primary); }
 
         .category-header { text-align: center; padding: 40px 20px; background-color: white; margin-bottom: 20px; border-bottom: 1px solid #eaeaea; }
-        .category-title { font-size: 24px; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 10px 0; }
+        .category-title { font-size: 20px; letter-spacing: 1px; text-transform: uppercase; font-weight: bold; margin: 0 0 10px 0; }
         .category-subtitle { color: var(--text-light); font-size: 14px; margin: 0; }
 
         .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 15px; }
@@ -151,8 +163,8 @@
         .product-price { margin: 0; color: var(--primary); font-size: 14px; font-weight: bold; }
 
         @media (min-width: 768px) {
-            .top-bar { padding: 15px 5%; }
-            .logo img { width: 240px; }
+            .top-bar { padding: 0 5%; }
+            .logo img { height: 70px; }
             .category-scroll { padding: 15px 5% 5px; } 
             .category-header { padding: 60px 20px; }
             .category-title { font-size: 32px; }
@@ -171,7 +183,7 @@
         
         <div class="right-actions">
             <a href="cart.html" class="action-item">
-                <div style="position: relative; display: flex; align-items: center; justify-content: center;">
+                <div class="cart-icon-wrapper">
                     <svg class="nav-icon" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
                     <span class="cart-badge" id="cart-count">0</span>
                 </div>
@@ -294,4 +306,4 @@
         });
     </script>
 </body>
-</html>```
+</html>
