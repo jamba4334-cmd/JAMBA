@@ -68,7 +68,7 @@
         /* --- VERTICAL ACTION STYLES --- */
         .action-item { 
             display: flex; 
-            flex-direction: column; /* Stacks text below icon */
+            flex-direction: column; /* Changed to column to put text on bottom */
             align-items: center; 
             cursor: pointer; 
             position: relative;
@@ -81,7 +81,8 @@
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-top: 4px; /* Space between icon and text */
+            margin-top: 4px; /* Space between icon and text below it */
+            margin-left: 0; /* Resetting previous horizontal margin */
         }
 
         .nav-icon { 
@@ -97,7 +98,7 @@
         .cart-badge { 
             position: absolute; 
             top: -8px; 
-            left: 14px; 
+            right: -8px; /* Adjusted for centered vertical layout */
             background-color: var(--accent); 
             color: #fff; 
             font-size: 9px; 
@@ -144,7 +145,6 @@
 
         .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 15px; }
         .product-card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.04); transition: 0.2s; cursor: pointer; }
-        .product-card:active { transform: scale(0.98); }
         .product-image { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-bottom: 1px solid #f0f0f0; }
         .product-info { padding: 12px; }
         .product-title { margin: 0 0 6px 0; font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -152,6 +152,7 @@
 
         @media (min-width: 768px) {
             .top-bar { padding: 15px 5%; }
+            .logo img { width: 240px; }
             .category-scroll { padding: 15px 5% 5px; } 
             .category-header { padding: 60px 20px; }
             .category-title { font-size: 32px; }
@@ -170,7 +171,7 @@
         
         <div class="right-actions">
             <a href="cart.html" class="action-item">
-                <div style="position: relative;">
+                <div style="position: relative; display: flex; align-items: center; justify-content: center;">
                     <svg class="nav-icon" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
                     <span class="cart-badge" id="cart-count">0</span>
                 </div>
@@ -293,4 +294,4 @@
         });
     </script>
 </body>
-</html>
+</html>```
