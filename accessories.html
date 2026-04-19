@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>JAMBA WEAR | Accessories</title>
+    <meta name="title" content="JAMBA WEAR | Authentic Accessories">
+    <meta name="description" content="Complete your look with official JAMBA WEAR accessories. Featuring traditional Bodo Aronai, Assamese Gamusa, and premium handloom add-ons.">
+    <meta name="keywords" content="JAMBA WEAR, Bodo Aronai, Assamese Gamusa, traditional accessories, streetwear accessories, ethnic add-ons">
+    <meta name="robots" content="index, follow">
+
+    <style>
+        /* --- GLOBAL STYLES --- */
+        :root {
+            --primary: #1a1a1a;
+            --accent: #d2b48c;
+            --bg: #f8f8f8;
+            --text-main: #333;
+            --text-light: #777;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg);
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: var(--primary);
+            padding-top: 75px; 
+            padding-bottom: 40px;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* --- PROMO BANNER --- */
+        .promo-banner {
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 8px 0;
+            background-image: linear-gradient(45deg, rgba(255,255,255,0.05) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05)), 
+                              linear-gradient(45deg, rgba(255,255,255,0.05) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05));
+            background-size: 10px 10px;
+            background-position: 0 0, 5px 5px;
+        }
+
+        /* --- HEADER & ICONS --- */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            z-index: 1000;
+        }
+
+        .logo img { height: 28px; display: block; }
+        
+        .right-actions { display: flex; align-items: center; gap: 30px; } 
+
+        .nav-icon { width: 22px; height: 22px; fill: none; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        .icon-btn-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+
+        .icon-label { font-size: 9px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); }
+
+        /* --- DESKTOP LOGIN BUTTON --- */
+        .login-nav-btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 1px solid var(--primary);
+            white-space: nowrap;
+        }
+        .login-nav-btn:hover { background-color: transparent; color: var(--primary); }
+
+        /* --- CART BADGE --- */
+        .cart-icon-wrapper { position: relative; display: inline-block; line-height: 0; }
+        .cart-badge {
+            position: absolute; top: -6px; right: -8px; background-color: var(--accent); color: #fff;
+            font-size: 10px; font-weight: bold; height: 16px; min-width: 16px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; padding: 0 4px; box-sizing: border-box;
+        }
+
+        /* --- PROFILE DROPDOWN --- */
+        .profile-wrapper { position: relative; }
+        .dropdown-menu {
+            position: absolute; top: 45px; right: -10px; width: 180px; background-color: white; border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1); display: none; flex-direction: column; overflow: hidden; z-index: 1001; border: 1px solid #eaeaea;
+        }
+        .dropdown-menu.show { display: flex; }
+        .dropdown-header { padding: 15px; font-weight: bold; font-size: 14px; background-color: #fafafa; border-bottom: 1px solid #eaeaea; color: var(--primary); }
+        .dropdown-menu a { padding: 12px 15px; font-size: 13px; color: var(--text-main); border-bottom: 1px solid #f5f5f5; transition: background 0.2s; }
+        .dropdown-menu a.logout-link { border-top: 1px solid #eaeaea; border-bottom: none; color: #d9534f; font-weight: bold; } 
+        .dropdown-menu a:hover { background-color: #f9f9f9; color: var(--primary); }
+
+        /* --- CATEGORIES & GRID --- */
+        .category-scroll { display: flex; overflow-x: auto; gap: 12px; padding: 15px 15px 5px; scrollbar-width: none; }
+        .category-scroll::-webkit-scrollbar { display: none; }
+        .chip { padding: 8px 20px; background-color: white; border: 1px solid #ddd; border-radius: 20px; font-size: 13px; white-space: nowrap; color: var(--text-main); box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: all 0.2s; }
+        .chip.active { background-color: var(--primary); color: white; border-color: var(--primary); }
+
+        .section-header { display: flex; justify-content: space-between; align-items: flex-end; padding: 0 15px; margin: 30px 0 25px; text-align: center; }
+        .section-header-centered { justify-content: center; flex-direction: column; align-items: center; gap: 10px; margin-top: 20px; }
+        .section-title { margin: 0; font-size: 24px; letter-spacing: 2px; text-transform: uppercase; }
+        .section-subtitle { font-size: 14px; color: var(--text-light); }
+        
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 15px; }
+        .product-card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.04); text-align: left; transition: transform 0.2s; cursor: pointer; }
+        .product-card:active { transform: scale(0.98); }
+        .product-image { width: 100%; aspect-ratio: 1 / 1; background-color: #eaeaea; object-fit: cover; border-bottom: 1px solid #f0f0f0; } /* Adjusted to 1/1 square for accessories */
+        .product-info { padding: 12px; }
+        .product-title { margin: 0 0 6px 0; font-size: 13px; color: var(--text-main); font-weight: 500; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .product-price { margin: 0; color: var(--primary); font-size: 14px; font-weight: bold; }
+
+        /* --- RESPONSIVE LOGIC --- */
+        .desktop-only { display: block; }
+        .mobile-only { display: none !important; }
+
+        @media (max-width: 768px) {
+            .desktop-only { display: none !important; } 
+            .mobile-only { display: block !important; } 
+            .right-actions { gap: 20px; } 
+        }
+
+        @media (min-width: 769px) {
+            .product-grid { grid-template-columns: repeat(4, 1fr); padding: 0 5%; gap: 30px; }
+            .section-header { padding: 0 5%; margin: 40px 0 35px; }
+            .category-scroll { padding: 10px 5%; justify-content: center; }
+            .top-bar { padding: 15px 5%; }
+            .right-actions { gap: 35px; } 
+        }
+
+        /* --- AUTHENTICATION STATE MAGIC --- */
+        body:not(.logged-in) #dropdown-logout-link { display: none !important; }
+        body.logged-in #header-login-btn,
+        body.logged-in #dropdown-login-link { display: none !important; }
+        body.logged-in #dropdown-logout-link { display: block !important; }
+
+        /* --- SEO STYLES --- */
+        .seo-footer { text-align: center; padding: 40px 20px; background-color: #f8f8f8; color: #555; border-top: 1px solid #eaeaea; margin-top: 50px; }
+        .seo-footer-brand { font-weight: 800; font-size: 16px; margin-bottom: 5px; color: #1a1a1a; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+
+    <header class="top-bar">
+        <div class="logo">
+            <a href="index.html">
+                <img src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/assets/JAMBA.png" alt="JAMBA WEAR Official Brand Logo">
+            </a>
+        </div>
+        
+        <div class="right-actions">
+            <button id="header-login-btn" class="login-nav-btn desktop-only" onclick="handleAuthAction()">Login / Signup</button>
+
+            <a href="cart.html" class="icon-btn-container">
+                <div class="cart-icon-wrapper">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                    <span class="cart-badge" id="cart-count">0</span>
+                </div>
+                <span class="icon-label">Cart</span>
+            </a>
+
+            <div class="profile-wrapper">
+                <div class="icon-btn-container" id="profile-btn">
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span class="icon-label">Profile</span>
+                </div>
+                
+                <div class="dropdown-menu" id="dropdown-menu">
+                    <div class="dropdown-header" id="user-display-name">Hi, JAMBA Member</div>
+                    
+                    <a href="javascript:void(0)" id="dropdown-login-link" class="mobile-only" onclick="handleAuthAction()" style="font-weight: bold; color: var(--accent);">Login / Signup</a>
+                    
+                    <a href="orders.html">Orders</a>
+                    <a href="address.html">Address</a>
+                    <a href="#">Wishlist</a>
+                    <a href="#">Contact Us</a>
+
+                    <a href="javascript:void(0)" id="dropdown-logout-link" class="logout-link" onclick="handleAuthAction()">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="promo-banner">Free Shipping on Orders Over ₹2000</div>
+
+    <div class="category-scroll">
+        <a href="index.html" class="chip">All</a>
+        <a href="shirts.html" class="chip">Shirts</a>
+        <a href="waistcoats.html" class="chip">Waistcoats</a>
+        <a href="trousers.html" class="chip">Trousers</a>
+        <a href="accessories.html" class="chip active">Accessories</a>
+    </div>
+
+    <div class="section-header section-header-centered">
+        <h2 class="section-title">Accessories</h2>
+        <p class="section-subtitle">Traditional accents for the modern wardrobe.</p>
+    </div>
+
+    <section class="product-grid">
+        <div class="product-card" onclick="window.location.href='product-aronai.html'">
+            <img class="product-image" src="https://placehold.co/400x400/eaeaea/777?text=Bodo+Aronai" alt="JAMBA WEAR Traditional Bodo Aronai">
+            <div class="product-info">
+                <h3 class="product-title">Premium Bodo Aronai</h3>
+                <p class="product-price">₹899</p>
+            </div>
+        </div>
+
+        <div class="product-card" onclick="window.location.href='product-gamusa.html'">
+            <img class="product-image" src="https://placehold.co/400x400/eaeaea/777?text=Assamese+Gamusa" alt="JAMBA WEAR Authentic Assamese Gamusa">
+            <div class="product-info">
+                <h3 class="product-title">Handwoven Assamese Gamusa</h3>
+                <p class="product-price">₹599</p>
+            </div>
+        </div>
+
+        <div class="product-card" onclick="window.location.href='product-brooch.html'">
+            <img class="product-image" src="https://placehold.co/400x400/eaeaea/777?text=Brass+Brooch" alt="JAMBA WEAR Brass Traditional Brooch">
+            <div class="product-info">
+                <h3 class="product-title">Traditional Brass Brooch</h3>
+                <p class="product-price">₹349</p>
+            </div>
+        </div>
+
+        <div class="product-card" onclick="window.location.href='product-scarf.html'">
+            <img class="product-image" src="https://placehold.co/400x400/eaeaea/777?text=Linen+Scarf" alt="JAMBA WEAR Linen Blend Scarf">
+            <div class="product-info">
+                <h3 class="product-title">Linen Blend Scarf</h3>
+                <p class="product-price">₹799</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="seo-footer">
+        <p class="seo-footer-brand">JAMBA WEAR</p>
+        <p style="font-size: 13px; margin: 0;">Authentic Assamese and Bodo Fashion. Designed for the culture.</p>
+        <p style="font-size: 12px; margin-top: 15px; color: #888;">&copy; 2026 JAMBA WEAR. All rights reserved.</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBgH8hpWJ97mqLFfoDDW9A_78pR5YjEmxo",
+            authDomain: "jamba-wear.firebaseapp.com",
+            projectId: "jamba-wear",
+            storageBucket: "jamba-wear.firebasestorage.app",
+            messagingSenderId: "679544590258",
+            appId: "1:679544590258:web:eac3841e5f555e3fb89eab",
+            measurementId: "G-8XSNJG079Z"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        window.handleAuthAction = () => {
+            if (auth.currentUser) {
+                signOut(auth).then(() => alert("Logged out successfully"));
+            } else {
+                window.location.href = "login.html";
+            }
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            const userDisplay = document.getElementById('user-display-name');
+            
+            if (user) {
+                document.body.classList.add('logged-in'); 
+                userDisplay.innerText = "Hi, " + (user.displayName || user.phoneNumber || "Member");
+            } else {
+                document.body.classList.remove('logged-in');
+                userDisplay.innerText = "Hi, JAMBA Member";
+            }
+        });
+    </script>
+
+    <script>
+        // Cart Logic
+        function updateCartBadge() {
+            const cart = JSON.parse(localStorage.getItem('jambaCart')) || [];
+            const badge = document.getElementById('cart-count');
+            let totalItems = 0;
+            cart.forEach(item => totalItems += item.quantity);
+            badge.innerText = totalItems;
+            badge.style.display = totalItems === 0 ? 'none' : 'flex';
+        }
+        updateCartBadge();
+
+        // Dropdown Logic
+        const profileBtn = document.getElementById('profile-btn');
+        const dropdownMenu = document.getElementById('dropdown-menu');
+
+        profileBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+        });
+
+        window.addEventListener('click', function(e) {
+            if (!dropdownMenu.contains(e.target) && !profileBtn.contains(e.target)) {
+                dropdownMenu.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
