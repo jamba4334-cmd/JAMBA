@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>JAMBA WEAR | Accessories</title>
-    <meta name="title" content="JAMBA WEAR | Authentic Accessories">
-    <meta name="description" content="Complete your look with official JAMBA WEAR accessories. Featuring traditional Bodo Aronai, Assamese Gamusa, and premium handloom add-ons.">
-    <meta name="keywords" content="JAMBA WEAR, Bodo Aronai, Assamese Gamusa, traditional accessories, streetwear accessories, ethnic add-ons">
+    <title>JAMBA WEAR | Jewelry & Accessories</title>
+    <meta name="title" content="JAMBA WEAR | Authentic Jewelry & Accessories">
+    <meta name="description" content="Complete your look with official JAMBA WEAR jewelry. Featuring traditional Assamese Jonbiri necklaces, Thuriya earrings, and handcrafted bracelets.">
+    <meta name="keywords" content="JAMBA WEAR, traditional jewelry, Assamese jewelry, Jonbiri, Gamkharu, Bodo accessories, ethnic add-ons">
     <meta name="robots" content="index, follow">
 
     <style>
@@ -63,7 +63,7 @@
             z-index: 1000;
         }
 
-        .logo img { height: 28px; display: block; }
+        .logo img { height: 38px; display: block; transition: height 0.3s ease; }
         
         .right-actions { display: flex; align-items: center; gap: 30px; } 
 
@@ -131,7 +131,7 @@
         .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 15px; }
         .product-card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.04); text-align: left; transition: transform 0.2s; cursor: pointer; }
         .product-card:active { transform: scale(0.98); }
-        .product-image { width: 100%; aspect-ratio: 1 / 1; background-color: #eaeaea; object-fit: cover; border-bottom: 1px solid #f0f0f0; } /* Adjusted to 1/1 square for accessories */
+        .product-image { width: 100%; aspect-ratio: 1 / 1; background-color: #eaeaea; object-fit: cover; border-bottom: 1px solid #f0f0f0; } 
         .product-info { padding: 12px; }
         .product-title { margin: 0 0 6px 0; font-size: 13px; color: var(--text-main); font-weight: 500; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .product-price { margin: 0; color: var(--primary); font-size: 14px; font-weight: bold; }
@@ -147,6 +147,7 @@
         }
 
         @media (min-width: 769px) {
+            .logo img { height: 55px; }
             .product-grid { grid-template-columns: repeat(4, 1fr); padding: 0 5%; gap: 30px; }
             .section-header { padding: 0 5%; margin: 40px 0 35px; }
             .category-scroll { padding: 10px 5%; justify-content: center; }
@@ -200,14 +201,11 @@
                 
                 <div class="dropdown-menu" id="dropdown-menu">
                     <div class="dropdown-header" id="user-display-name">Hi, JAMBA Member</div>
-                    
                     <a href="javascript:void(0)" id="dropdown-login-link" class="mobile-only" onclick="handleAuthAction()" style="font-weight: bold; color: var(--accent);">Login / Signup</a>
-                    
                     <a href="orders.html">Orders</a>
                     <a href="address.html">Address</a>
                     <a href="#">Wishlist</a>
                     <a href="#">Contact Us</a>
-
                     <a href="javascript:void(0)" id="dropdown-logout-link" class="logout-link" onclick="handleAuthAction()">Logout</a>
                 </div>
             </div>
@@ -221,44 +219,45 @@
         <a href="shirts.html" class="chip">Shirts</a>
         <a href="waistcoats.html" class="chip">Waistcoats</a>
         <a href="trousers.html" class="chip">Trousers</a>
+        <a href="aronai.html" class="chip">Aronai</a>
         <a href="accessories.html" class="chip active">Accessories</a>
     </div>
 
     <div class="section-header section-header-centered">
-        <h2 class="section-title">Accessories</h2>
+        <h2 class="section-title">Jewelry & Accessories</h2>
         <p class="section-subtitle">Traditional accents for the modern wardrobe.</p>
     </div>
 
     <section class="product-grid">
-        <div class="product-card" onclick="window.location.href='product-aronai.html'">
-            <img class="product-image" src="https://placehold.co/400x400/eaeaea/777?text=Bodo+Aronai" alt="JAMBA WEAR Traditional Bodo Aronai">
+        <div class="product-card" onclick="window.location.href='product-earrings.html'">
+            <img class="product-image" src="https://placehold.co/400x400/eaeaea/777?text=Thuriya+Earrings" alt="Gold-Plated Thuriya Earrings">
             <div class="product-info">
-                <h3 class="product-title">Premium Bodo Aronai</h3>
-                <p class="product-price">₹899</p>
+                <h3 class="product-title">Gold-Plated Thuriya Earrings</h3>
+                <p class="product-price">₹1,299</p>
             </div>
         </div>
 
-        <div class="product-card" onclick="window.location.href='product-gamusa.html'">
-            <img class="product-image" src="https://placehold.co/400x400/eaeaea/777?text=Assamese+Gamusa" alt="JAMBA WEAR Authentic Assamese Gamusa">
+        <div class="product-card" onclick="window.location.href='product-necklace.html'">
+            <img class="product-image" src="https://placehold.co/400x400/eaeaea/777?text=Jonbiri+Necklace" alt="Assamese Jonbiri Motif Necklace">
             <div class="product-info">
-                <h3 class="product-title">Handwoven Assamese Gamusa</h3>
-                <p class="product-price">₹599</p>
+                <h3 class="product-title">Assamese Jonbiri Necklace</h3>
+                <p class="product-price">₹2,499</p>
             </div>
         </div>
 
-        <div class="product-card" onclick="window.location.href='product-brooch.html'">
-            <img class="product-image" src="https://placehold.co/400x400/eaeaea/777?text=Brass+Brooch" alt="JAMBA WEAR Brass Traditional Brooch">
+        <div class="product-card" onclick="window.location.href='product-bracelet.html'">
+            <img class="product-image" src="https://placehold.co/400x400/eaeaea/777?text=Gamkharu+Bracelet" alt="Traditional Gamkharu Bracelet">
             <div class="product-info">
-                <h3 class="product-title">Traditional Brass Brooch</h3>
-                <p class="product-price">₹349</p>
+                <h3 class="product-title">Traditional Gamkharu Bracelet</h3>
+                <p class="product-price">₹1,899</p>
             </div>
         </div>
 
-        <div class="product-card" onclick="window.location.href='product-scarf.html'">
-            <img class="product-image" src="https://placehold.co/400x400/eaeaea/777?text=Linen+Scarf" alt="JAMBA WEAR Linen Blend Scarf">
+        <div class="product-card" onclick="window.location.href='product-bangle.html'">
+            <img class="product-image" src="https://placehold.co/400x400/eaeaea/777?text=Muthi+Bangle" alt="Handcrafted Muthi Bangle">
             <div class="product-info">
-                <h3 class="product-title">Linen Blend Scarf</h3>
-                <p class="product-price">₹799</p>
+                <h3 class="product-title">Handcrafted Muthi Bangle</h3>
+                <p class="product-price">₹1,499</p>
             </div>
         </div>
     </section>
@@ -296,7 +295,6 @@
 
         onAuthStateChanged(auth, (user) => {
             const userDisplay = document.getElementById('user-display-name');
-            
             if (user) {
                 document.body.classList.add('logged-in'); 
                 userDisplay.innerText = "Hi, " + (user.displayName || user.phoneNumber || "Member");
@@ -308,7 +306,6 @@
     </script>
 
     <script>
-        // Cart Logic
         function updateCartBadge() {
             const cart = JSON.parse(localStorage.getItem('jambaCart')) || [];
             const badge = document.getElementById('cart-count');
@@ -319,7 +316,6 @@
         }
         updateCartBadge();
 
-        // Dropdown Logic
         const profileBtn = document.getElementById('profile-btn');
         const dropdownMenu = document.getElementById('dropdown-menu');
 
