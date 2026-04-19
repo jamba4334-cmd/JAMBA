@@ -75,8 +75,13 @@
             z-index: 1000;
         }
 
-        .logo img { height: 28px; display: block; }
-        
+        /* --- RESPONSIVE LOGO SIZING --- */
+        .logo img { 
+            height: 38px; 
+            display: block; 
+            transition: height 0.3s ease;
+        }
+
         .right-actions { display: flex; align-items: center; gap: 30px; } 
 
         .nav-icon { width: 22px; height: 22px; fill: none; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
@@ -166,6 +171,9 @@
         }
 
         @media (min-width: 769px) {
+            .logo img { 
+                height: 55px; /* Larger logo on desktop */
+            }
             .hero { flex-direction: row; height: 60vh; padding: 20px 5%; }
             .hero-banner { height: 100%; flex: 1; }
             .product-grid { grid-template-columns: repeat(4, 1fr); padding: 0 5%; gap: 30px; }
@@ -273,7 +281,7 @@
             <img class="product-image" src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/waistcoat.png" alt="JAMBA WEAR Classic Linen Waistcoat">
             <div class="product-info">
                 <h3 class="product-title">Classic Linen Waistcoat</h3>
-                <p class="product-price">₹ 1</p>
+                <p class="product-price">₹2,999</p>
             </div>
         </div>
 
@@ -290,6 +298,14 @@
             <div class="product-info">
                 <h3 class="product-title">Pleated Wool Trousers</h3>
                 <p class="product-price">₹1,699</p>
+            </div>
+        </div>
+
+        <div class="product-card" onclick="window.location.href='product-aronai.html'">
+            <img class="product-image" src="https://placehold.co/400x400/eaeaea/777?text=Bodo+Aronai" alt="JAMBA WEAR Traditional Bodo Aronai">
+            <div class="product-info">
+                <h3 class="product-title">Premium Bodo Aronai</h3>
+                <p class="product-price">₹899</p>
             </div>
         </div>
     </section>
