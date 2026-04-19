@@ -12,7 +12,7 @@
             --bg: #f8f8f8;
             --text-main: #333;
             --text-light: #777;
-            --nav-height: 90px; /* Slightly taller for vertical labels */
+            --nav-height: 80px;
         }
 
         body { 
@@ -47,11 +47,10 @@
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            padding: 0 20px; 
+            padding: 12px 20px; 
             position: fixed; 
             top: 0; 
             width: 100%; 
-            height: var(--nav-height);
             box-sizing: border-box; 
             background-color: rgba(255, 255, 255, 0.98); 
             backdrop-filter: blur(10px); 
@@ -60,37 +59,34 @@
         }
 
         .logo img { 
-            width: 180px; 
-            height: auto; 
+            height: 28px; 
             display: block; 
-            transition: 0.3s;
         }
 
-        .right-actions { display: flex; align-items: center; gap: 20px; }
+        .right-actions { display: flex; align-items: center; gap: 25px; }
         
         /* --- VERTICAL ACTION STYLES --- */
         .action-item { 
             display: flex; 
-            flex-direction: column; /* Stack Icon on top of Text */
+            flex-direction: column; /* Stacks text below icon */
             align-items: center; 
-            justify-content: center;
             cursor: pointer; 
             position: relative;
-            min-width: 50px;
-        }
-
-        .nav-text {
-            font-size: 9px; /* Slightly smaller for bottom placement */
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            margin-top: 4px; /* Space between icon and text */
+            text-decoration: none;
             color: var(--primary);
         }
 
+        .nav-text {
+            font-size: 9px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px; /* Space between icon and text */
+        }
+
         .nav-icon { 
-            width: 20px; 
-            height: 20px; 
+            width: 22px; 
+            height: 22px; 
             fill: none; 
             stroke: var(--primary); 
             stroke-width: 1.8; 
@@ -100,27 +96,26 @@
 
         .cart-badge { 
             position: absolute; 
-            top: -5px; 
-            right: 8px; 
+            top: -8px; 
+            left: 14px; 
             background-color: var(--accent); 
             color: #fff; 
             font-size: 9px; 
             font-weight: bold; 
-            height: 14px; 
-            min-width: 14px; 
+            height: 15px; 
+            min-width: 15px; 
             border-radius: 50%; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             padding: 0 3px;
-            z-index: 2;
         }
 
         /* --- PROFILE DROPDOWN --- */
         .profile-wrapper { position: relative; }
         .dropdown-menu { 
             position: absolute; 
-            top: 50px; 
+            top: 45px; 
             right: 0; 
             width: 180px; 
             background-color: white; 
@@ -143,20 +138,24 @@
         .chip { padding: 8px 20px; background-color: white; border: 1px solid #ddd; border-radius: 20px; font-size: 12px; white-space: nowrap; color: var(--text-main); transition: 0.2s; }
         .chip.active { background-color: var(--primary); color: white; border-color: var(--primary); }
 
-        .category-header { text-align: center; padding: 40px 20px; background: white; border-bottom: 1px solid #eaeaea; }
-        .category-title { font-size: 24px; letter-spacing: 2px; text-transform: uppercase; margin: 0; }
+        .category-header { text-align: center; padding: 40px 20px; background-color: white; margin-bottom: 20px; border-bottom: 1px solid #eaeaea; }
+        .category-title { font-size: 24px; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 10px 0; }
+        .category-subtitle { color: var(--text-light); font-size: 14px; margin: 0; }
 
-        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 20px 15px; }
-        .product-card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.04); cursor: pointer; }
-        .product-image { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; }
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 15px; }
+        .product-card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.04); transition: 0.2s; cursor: pointer; }
+        .product-card:active { transform: scale(0.98); }
+        .product-image { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-bottom: 1px solid #f0f0f0; }
         .product-info { padding: 12px; }
-        .product-title { margin: 0 0 6px 0; font-size: 13px; font-weight: 500; }
+        .product-title { margin: 0 0 6px 0; font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .product-price { margin: 0; color: var(--primary); font-size: 14px; font-weight: bold; }
 
         @media (min-width: 768px) {
-            .top-bar { padding: 0 5%; }
-            .logo img { width: 220px; }
-            .product-grid { grid-template-columns: repeat(4, 1fr); padding: 40px 5%; gap: 30px; }
+            .top-bar { padding: 15px 5%; }
+            .category-scroll { padding: 15px 5% 5px; } 
+            .category-header { padding: 60px 20px; }
+            .category-title { font-size: 32px; }
+            .product-grid { grid-template-columns: repeat(4, 1fr); padding: 0 5%; gap: 30px; }
         }
     </style>
 </head>
@@ -171,8 +170,10 @@
         
         <div class="right-actions">
             <a href="cart.html" class="action-item">
-                <span class="cart-badge" id="cart-count">0</span>
-                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                <div style="position: relative;">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                    <span class="cart-badge" id="cart-count">0</span>
+                </div>
                 <span class="nav-text">Cart</span>
             </a>
 
@@ -203,20 +204,46 @@
 
     <section class="category-header">
         <h1 class="category-title">Men's Collection</h1>
+        <p class="category-subtitle">Elevated essentials and modern tailoring.</p>
     </section>
 
     <section class="product-grid" id="product-grid">
         <div class="product-card" data-category="waistcoat" onclick="window.location.href='product1.html'">
-            <img class="product-image" src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/waistcoat.png">
+            <img class="product-image" src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/waistcoat.png" alt="Linen Waistcoat">
             <div class="product-info">
                 <h3 class="product-title">Classic Linen Waistcoat</h3>
                 <p class="product-price">₹2,999</p>
             </div>
         </div>
+
         <div class="product-card" data-category="shirt" onclick="window.location.href='product2.html'">
-            <img class="product-image" src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/Pinkshirt.png">
+            <img class="product-image" src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/Pinkshirt.png" alt="Oxford Shirt">
             <div class="product-info">
                 <h3 class="product-title">Tailored Oxford Shirt</h3>
+                <p class="product-price">₹1,699</p>
+            </div>
+        </div>
+
+        <div class="product-card" data-category="shirt" onclick="window.location.href='product4.html'">
+            <img class="product-image" src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/Blueshirt.png" alt="Knit Polo">
+            <div class="product-info">
+                <h3 class="product-title">Silk-Blend Knit Polo</h3>
+                <p class="product-price">₹1,699</p>
+            </div>
+        </div>
+
+        <div class="product-card" data-category="aronai" onclick="window.location.href='product5.html'">
+            <div class="product-image" style="background-color: var(--accent); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px; letter-spacing: 1px;">JAMBA ARONAI</div>
+            <div class="product-info">
+                <h3 class="product-title">Traditional Bodo Aronai</h3>
+                <p class="product-price">₹1,299</p>
+            </div>
+        </div>
+
+        <div class="product-card" data-category="shirt" onclick="window.location.href='product3.html'">
+            <img class="product-image" src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/GoldenShirt.png" alt="Wool Trousers">
+            <div class="product-info">
+                <h3 class="product-title">Pleated Wool Trousers</h3>
                 <p class="product-price">₹1,699</p>
             </div>
         </div>
@@ -243,6 +270,26 @@
             if (!dropdownMenu.contains(e.target) && !profileBtn.contains(e.target)) { 
                 dropdownMenu.classList.remove('show'); 
             }
+        });
+
+        const chips = document.querySelectorAll('.chip');
+        const products = document.querySelectorAll('.product-card');
+
+        chips.forEach(chip => {
+            chip.addEventListener('click', function(e) {
+                e.preventDefault();
+                chips.forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+
+                const filterValue = this.getAttribute('data-filter');
+                products.forEach(product => {
+                    if (filterValue === 'all' || product.getAttribute('data-category') === filterValue) {
+                        product.style.display = 'block';
+                    } else {
+                        product.style.display = 'none';
+                    }
+                });
+            });
         });
     </script>
 </body>
