@@ -10,6 +10,12 @@
     <meta name="keywords" content="JAMBA WEAR, Bodo waistcoat, Assamese traditional patterns, Guwahati fashion brand, streetwear, ethnic wear, men's fashion">
     <meta name="robots" content="index, follow">
 
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jamba4334-cmd.github.io/">
+    <meta property="og:title" content="JAMBA WEAR | Premium Bodo & Assamese Streetwear">
+    <meta property="og:description" content="Shop the official JAMBA WEAR store. Premium Bodo waistcoats and modern streetwear.">
+    <meta property="og:image" content="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/assets/JAMBA.png">
+
     <style>
         /* --- GLOBAL THEME STYLES --- */
         :root {
@@ -18,7 +24,7 @@
             --bg: #f8f8f8;
             --text-main: #333;
             --text-light: #777;
-            --nav-height: 80px; /* Defined height for consistency */
+            --nav-height: 80px;
         }
 
         body {
@@ -65,13 +71,6 @@
             z-index: 1000;
         }
 
-        /* --- OPTIMIZED LOGO SIZE --- */
-        .logo {
-            display: flex;
-            align-items: center;
-            padding: 5px 0;
-        }
-        
         .logo img { 
             width: 220px; 
             height: auto; 
@@ -80,16 +79,13 @@
             transition: transform 0.3s ease;
         }
 
-        .logo img:hover {
-            transform: scale(1.03);
-        }
+        .logo img:hover { transform: scale(1.03); }
 
         .right-actions { display: flex; align-items: center; gap: 20px; } 
 
-        /* --- UPDATED ACTION ITEM STYLES --- */
         .action-item {
             display: flex;
-            flex-direction: column; /* Stacks text below icon */
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             text-decoration: none;
@@ -106,6 +102,23 @@
         }
 
         .nav-icon { width: 22px; height: 22px; fill: none; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* --- LOGIN BUTTON --- */
+        .login-nav-btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border: 1px solid var(--primary);
+            white-space: nowrap;
+            transition: 0.3s;
+        }
+        .login-nav-btn:hover { background-color: transparent; color: var(--primary); }
 
         /* --- CART & PROFILE --- */
         .cart-icon-wrapper { position: relative; display: flex; align-items: center; justify-content: center; }
@@ -124,6 +137,14 @@
         .dropdown-header { padding: 15px; font-weight: bold; font-size: 14px; background-color: #fafafa; border-bottom: 1px solid #eaeaea; color: var(--primary); }
         .dropdown-menu a { padding: 12px 15px; font-size: 13px; color: var(--text-main); border-bottom: 1px solid #f5f5f5; transition: background 0.2s; }
         .dropdown-menu a:hover { background-color: #f9f9f9; color: var(--primary); }
+        
+        /* Logout Link Styling */
+        .logout-link { color: #d9534f !important; font-weight: bold; border-top: 1px solid #eee; }
+
+        /* --- AUTH STATE HIDING --- */
+        body.logged-in #header-login-btn,
+        body.logged-in #dropdown-login-link { display: none !important; }
+        body:not(.logged-in) #dropdown-logout-link { display: none !important; }
 
         /* --- CATEGORY CHIPS --- */
         .category-scroll { display: flex; overflow-x: auto; gap: 12px; padding: 15px 15px 5px; scrollbar-width: none; }
@@ -137,8 +158,9 @@
         .hero-banner video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
         .shop-btn { position: relative; z-index: 2; padding: 14px 32px; background-color: white; color: var(--primary); font-size: 13px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; border: none; border-radius: 4px; cursor: pointer; transition: 0.3s; }
 
-        .section-header { padding: 30px 15px 15px; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; padding: 30px 15px 15px; }
         .section-title { margin: 0; font-size: 20px; letter-spacing: 1px; text-transform: uppercase; font-weight: bold; }
+        .view-all { font-size: 12px; text-decoration: underline; color: var(--text-light); }
 
         .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 15px; }
         .product-card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.04); text-align: left; transition: transform 0.2s; cursor: pointer; }
@@ -147,10 +169,12 @@
         .product-title { margin: 0 0 6px 0; font-size: 13px; color: var(--text-main); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .product-price { margin: 0; color: var(--primary); font-size: 14px; font-weight: bold; }
 
+        .seo-footer { text-align: center; padding: 40px 20px; background-color: #fff; border-top: 1px solid #eee; margin-top: 40px; }
+
         /* --- RESPONSIVE ADAPTATION --- */
         @media (min-width: 768px) {
             .top-bar { padding: 0 5%; }
-            .logo img { height: 70px; }
+            .logo img { height: 60px; }
             .hero { flex-direction: row; padding: 20px 5%; height: 500px; }
             .hero-banner { flex: 1; height: 100%; }
             .product-grid { grid-template-columns: repeat(4, 1fr); padding: 0 5%; gap: 30px; }
@@ -169,6 +193,8 @@
         </div>
         
         <div class="right-actions">
+            <button id="header-login-btn" class="login-nav-btn" onclick="handleAuthAction()">Login / Signup</button>
+
             <a href="cart.html" class="action-item">
                 <div class="cart-icon-wrapper">
                     <svg class="nav-icon" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
@@ -183,11 +209,13 @@
                     <span class="nav-text">Profile</span>
                 </div>
                 <div class="dropdown-menu" id="dropdown-menu">
-                    <div class="dropdown-header">Hi, JAMBA Member</div>
-                    <a href="#">Orders</a>
-                    <a href="#">Address</a>
+                    <div class="dropdown-header" id="user-display-name">Hi, JAMBA Member</div>
+                    <a href="login.html" id="dropdown-login-link">Login / Signup</a>
+                    <a href="orders.html">Orders</a>
+                    <a href="address.html">Address</a>
                     <a href="#">Wishlist</a>
                     <a href="#">Contact Us</a>
+                    <a href="javascript:void(0)" id="dropdown-logout-link" class="logout-link" onclick="handleAuthAction()">Logout</a>
                 </div>
             </div>
         </div>
@@ -200,7 +228,7 @@
         <a href="men.html" class="chip">Men's</a>
         <a href="women.html" class="chip">Women's</a>
         <a href="waistcoats.html" class="chip">Waistcoats</a>
-        <a href="aronai.html" class="chip">Aronai</a>
+        <a href="dokhona.html" class="chip">Dokhona</a>
     </div>
 
     <section class="hero">
@@ -220,6 +248,7 @@
 
     <div class="section-header">
         <h2 class="section-title">New Arrivals</h2>
+        <a href="all-products.html" class="view-all">View All</a>
     </div>
 
     <section class="product-grid">
@@ -239,7 +268,53 @@
         </div>
     </section>
 
+    <footer class="seo-footer">
+        <p><strong>JAMBA WEAR</strong></p>
+        <p style="font-size: 12px; color: #888;">&copy; 2026 Authentic Bodo & Assamese Fashion.</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBgH8hpWJ97mqLFfoDDW9A_78pR5YjEmxo",
+            authDomain: "jamba-wear.firebaseapp.com",
+            projectId: "jamba-wear",
+            storageBucket: "jamba-wear.firebasestorage.app",
+            messagingSenderId: "679544590258",
+            appId: "1:679544590258:web:eac3841e5f555e3fb89eab",
+            measurementId: "G-8XSNJG079Z"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Global function for buttons
+        window.handleAuthAction = () => {
+            if (auth.currentUser) {
+                signOut(auth).then(() => {
+                    window.location.reload();
+                });
+            } else {
+                window.location.href = "login.html";
+            }
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            const userDisplay = document.getElementById('user-display-name');
+            if (user) {
+                document.body.classList.add('logged-in');
+                userDisplay.innerText = "Hi, " + (user.displayName || "Member");
+            } else {
+                document.body.classList.remove('logged-in');
+                userDisplay.innerText = "Hi, JAMBA Member";
+            }
+        });
+    </script>
+
     <script>
+        // UI Logic
         function updateCartBadge() {
             const cart = JSON.parse(localStorage.getItem('jambaCart')) || [];
             const badge = document.getElementById('cart-count');
@@ -252,15 +327,11 @@
 
         const profileBtn = document.getElementById('profile-btn');
         const dropdownMenu = document.getElementById('dropdown-menu');
-        profileBtn.addEventListener('click', function(e) { 
+        profileBtn.addEventListener('click', (e) => { 
             e.stopPropagation(); 
             dropdownMenu.classList.toggle('show'); 
         });
-        window.addEventListener('click', function(e) {
-            if (!dropdownMenu.contains(e.target) && !profileBtn.contains(e.target)) { 
-                dropdownMenu.classList.remove('show'); 
-            }
-        });
+        window.addEventListener('click', () => dropdownMenu.classList.remove('show'));
     </script>
 </body>
 </html>
