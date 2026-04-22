@@ -138,7 +138,6 @@
         .dropdown-menu a { padding: 12px 15px; font-size: 13px; color: var(--text-main); border-bottom: 1px solid #f5f5f5; transition: background 0.2s; }
         .dropdown-menu a:hover { background-color: #f9f9f9; color: var(--primary); }
         
-        /* Logout Link Styling */
         .logout-link { color: #d9534f !important; font-weight: bold; border-top: 1px solid #eee; }
 
         /* --- AUTH STATE HIDING --- */
@@ -159,27 +158,26 @@
         .shop-btn { position: relative; z-index: 2; padding: 14px 32px; background-color: white; color: var(--primary); font-size: 13px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; border: none; border-radius: 4px; cursor: pointer; transition: 0.3s; }
 
         .section-header { display: flex; justify-content: space-between; align-items: center; padding: 30px 15px 15px; }
-        .section-title { margin: 0; font-size: 20px; letter-spacing: 1px; text-transform: uppercase; font-weight: bold; }
-        .view-all { font-size: 12px; text-decoration: underline; color: var(--text-light); }
+        .section-title { margin: 0; font-size: 18px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; border-left: 3px solid var(--accent); padding-left: 10px; }
+        .view-all { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-light); text-decoration: none; }
 
-        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 15px; }
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 15px; margin-bottom: 30px; }
         .product-card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.04); text-align: left; transition: transform 0.2s; cursor: pointer; }
         .product-image { width: 100%; aspect-ratio: 3 / 4; background-color: #eaeaea; object-fit: cover; border-bottom: 1px solid #f0f0f0; }
         .product-info { padding: 12px; }
-        .product-title { margin: 0 0 6px 0; font-size: 13px; color: var(--text-main); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .product-price { margin: 0; color: var(--primary); font-size: 14px; font-weight: bold; }
+        .product-title { margin: 0 0 6px 0; font-size: 12px; color: var(--text-main); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .product-price { margin: 0; color: var(--primary); font-size: 13px; font-weight: bold; }
 
-        .seo-footer { text-align: center; padding: 40px 20px; background-color: #fff; border-top: 1px solid #eee; margin-top: 40px; }
+        .seo-footer { text-align: center; padding: 60px 20px; background-color: #fff; border-top: 1px solid #eee; margin-top: 40px; }
 
-        /* --- RESPONSIVE ADAPTATION --- */
+        /* --- RESPONSIVE --- */
         @media (min-width: 768px) {
             .top-bar { padding: 0 5%; }
             .logo img { height: 60px; }
             .hero { flex-direction: row; padding: 20px 5%; height: 500px; }
             .hero-banner { flex: 1; height: 100%; }
-            .product-grid { grid-template-columns: repeat(4, 1fr); padding: 0 5%; gap: 30px; }
+            .product-grid { grid-template-columns: repeat(4, 1fr); padding: 0 5%; gap: 25px; }
             .section-header { padding: 50px 5% 20px; }
-            .category-scroll { padding: 15px 5% 5px; }
         }
     </style>
 </head>
@@ -247,30 +245,40 @@
     </section>
 
     <div class="section-header">
-        <h2 class="section-title">New Arrivals</h2>
-        <a href="all-products.html" class="view-all">View All</a>
+        <h2 class="section-title">Women's Collection</h2>
+        <a href="women.html" class="view-all">View All</a>
     </div>
 
     <section class="product-grid">
-        <div class="product-card" onclick="window.location.href='product1.html'">
-            <img class="product-image" src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/waistcoat.png" alt="Linen Waistcoat">
-            <div class="product-info">
-                <h3 class="product-title">Classic Linen Waistcoat</h3>
-                <p class="product-price">₹2,999</p>
-            </div>
-        </div>
-        <div class="product-card" onclick="window.location.href='product2.html'">
-            <img class="product-image" src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/Pinkshirt.png" alt="Oxford Shirt">
-            <div class="product-info">
-                <h3 class="product-title">Tailored Oxford Shirt</h3>
-                <p class="product-price">₹1,699</p>
-            </div>
-        </div>
+        <div class="product-card" onclick="window.location.href='product-w1.html'"><img class="product-image" src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/waistcoat.png" alt="W1"><div class="product-info"><h3 class="product-title">Traditional Dokhona Style</h3><p class="product-price">₹4,499</p></div></div>
+        <div class="product-card" onclick="window.location.href='product-w2.html'"><img class="product-image" src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/Pinkshirt.png" alt="W2"><div class="product-info"><h3 class="product-title">Handloom Wrap Top</h3><p class="product-price">₹1,299</p></div></div>
+        <div class="product-card"><img class="product-image" src="https://via.placeholder.com/300x400?text=Women+3" alt="W3"><div class="product-info"><h3 class="product-title">Assamese Motif Saree</h3><p class="product-price">₹5,999</p></div></div>
+        <div class="product-card"><img class="product-image" src="https://via.placeholder.com/300x400?text=Women+4" alt="W4"><div class="product-info"><h3 class="product-title">Ethnic Peplum Jacket</h3><p class="product-price">₹2,199</p></div></div>
+        <div class="product-card"><img class="product-image" src="https://via.placeholder.com/300x400?text=Women+5" alt="W5"><div class="product-info"><h3 class="product-title">Floral Border Stole</h3><p class="product-price">₹899</p></div></div>
+        <div class="product-card"><img class="product-image" src="https://via.placeholder.com/300x400?text=Women+6" alt="W6"><div class="product-info"><h3 class="product-title">Premium Cotton Kurti</h3><p class="product-price">₹1,699</p></div></div>
+        <div class="product-card"><img class="product-image" src="https://via.placeholder.com/300x400?text=Women+7" alt="W7"><div class="product-info"><h3 class="product-title">Traditional Beaded Set</h3><p class="product-price">₹1,499</p></div></div>
+        <div class="product-card"><img class="product-image" src="https://via.placeholder.com/300x400?text=Women+8" alt="W8"><div class="product-info"><h3 class="product-title">Silk Fusion Dress</h3><p class="product-price">₹3,299</p></div></div>
+    </section>
+
+    <div class="section-header">
+        <h2 class="section-title">Men's Collection</h2>
+        <a href="men.html" class="view-all">View All</a>
+    </div>
+
+    <section class="product-grid">
+        <div class="product-card" onclick="window.location.href='product1.html'"><img class="product-image" src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/waistcoat.png" alt="M1"><div class="product-info"><h3 class="product-title">Classic Bodo Waistcoat</h3><p class="product-price">₹2,999</p></div></div>
+        <div class="product-card" onclick="window.location.href='product2.html'"><img class="product-image" src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/Pinkshirt.png" alt="M2"><div class="product-info"><h3 class="product-title">Modern Oxford Shirt</h3><p class="product-price">₹1,699</p></div></div>
+        <div class="product-card"><img class="product-image" src="https://via.placeholder.com/300x400?text=Men+3" alt="M3"><div class="product-info"><h3 class="product-title">Ethnic Print Tee</h3><p class="product-price">₹999</p></div></div>
+        <div class="product-card"><img class="product-image" src="https://via.placeholder.com/300x400?text=Men+4" alt="M4"><div class="product-info"><h3 class="product-title">Mandarin Collar Blazer</h3><p class="product-price">₹4,999</p></div></div>
+        <div class="product-card"><img class="product-image" src="https://via.placeholder.com/300x400?text=Men+5" alt="M5"><div class="product-info"><h3 class="product-title">Tailored Ethnic Trousers</h3><p class="product-price">₹2,499</p></div></div>
+        <div class="product-card"><img class="product-image" src="https://via.placeholder.com/300x400?text=Men+6" alt="M6"><div class="product-info"><h3 class="product-title">Handspun Cotton Kurta</h3><p class="product-price">₹1,899</p></div></div>
+        <div class="product-card"><img class="product-image" src="https://via.placeholder.com/300x400?text=Men+7" alt="M7"><div class="product-info"><h3 class="product-title">Signature Gamusa Scarf</h3><p class="product-price">₹599</p></div></div>
+        <div class="product-card"><img class="product-image" src="https://via.placeholder.com/300x400?text=Men+8" alt="M8"><div class="product-info"><h3 class="product-title">Patterned Canvas Tote</h3><p class="product-price">₹799</p></div></div>
     </section>
 
     <footer class="seo-footer">
         <p><strong>JAMBA WEAR</strong></p>
-        <p style="font-size: 12px; color: #888;">&copy; 2026 Authentic Bodo & Assamese Fashion.</p>
+        <p style="font-size: 12px; color: #888;">&copy; 2026 Authentic Bodo & Assamese Fashion. Designed in Assam.</p>
     </footer>
 
     <script type="module">
@@ -290,7 +298,6 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Global function for buttons
         window.handleAuthAction = () => {
             if (auth.currentUser) {
                 signOut(auth).then(() => {
@@ -314,7 +321,6 @@
     </script>
 
     <script>
-        // UI Logic
         function updateCartBadge() {
             const cart = JSON.parse(localStorage.getItem('jambaCart')) || [];
             const badge = document.getElementById('cart-count');
