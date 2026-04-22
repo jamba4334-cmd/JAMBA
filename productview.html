@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">JAMBA WEAR | Product Detail</title>
+    
+    <style>
+        /* --- GLOBAL THEME STYLES (Synced with index.html) --- */
+        :root {
+            --primary: #1a1a1a;
+            --accent: #d2b48c;
+            --bg: #f8f8f8;
+            --text-main: #333;
+            --text-light: #777;
+            --nav-height: 80px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg);
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: var(--primary);
+            padding-top: var(--nav-height); 
+            padding-bottom: 40px;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* --- SYNCED TOP BAR & NAVIGATION --- */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: var(--nav-height);
+            box-sizing: border-box;
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            z-index: 1000;
+        }
+
+        .logo img { 
+            width: 220px; 
+            height: auto; 
+            display: block;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .logo img:hover { transform: scale(1.02); }
+
+        .right-actions { display: flex; align-items: center; gap: 20px; } 
+
+        .action-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--primary);
+        }
+
+        .nav-text {
+            font-size: 9px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        .nav-icon { width: 22px; height: 22px; fill: none; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* --- CART BADGE --- */
+        .cart-icon-wrapper { position: relative; display: flex; align-items: center; justify-content: center; }
+        .cart-badge {
+            position: absolute; top: -5px; right: -8px; background-color: var(--accent); color: #fff;
+            font-size: 9px; font-weight: bold; height: 14px; min-width: 14px; border-radius: 7px;
+            display: flex; align-items: center; justify-content: center; padding: 0 3px; box-sizing: border-box;
+        }
+
+        /* --- PROFILE DROPDOWN --- */
+        .profile-wrapper { position: relative; display: flex; align-items: center; }
+        .dropdown-menu {
+            position: absolute; top: 50px; right: 0; width: 180px; background-color: white; border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1); display: none; flex-direction: column; overflow: hidden; z-index: 1001; border: 1px solid #eaeaea;
+        }
+        .dropdown-menu.show { display: flex; }
+        .dropdown-header { padding: 15px; font-weight: bold; font-size: 14px; background-color: #fafafa; border-bottom: 1px solid #eaeaea; color: var(--primary); }
+        .dropdown-menu a { padding: 12px 15px; font-size: 13px; color: var(--text-main); border-bottom: 1px solid #f5f5f5; transition: background 0.2s; }
+        .dropdown-menu a:hover { background-color: #f9f9f9; color: var(--primary); }
+        
+        .logout-link { color: #d9534f !important; font-weight: bold; border-top: 1px solid #eee; }
+
+        /* --- PRODUCT LAYOUT --- */
+        .back-nav { padding: 15px 20px 0; }
+        .back-link { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: var(--text-light); transition: 0.2s; cursor: pointer;}
+        .back-link:hover { color: var(--primary); }
+
+        .product-container { display: flex; flex-direction: column; gap: 30px; padding: 20px; max-width: 1100px; margin: 0 auto; }
+        
+        .product-image-box { flex: 1.2; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .product-image-box img { width: 100%; height: auto; display: block; object-fit: cover; aspect-ratio: 3/4; }
+
+        .product-details { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+        .brand-name { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-light); margin: 0; }
+        .product-title { font-size: 26px; font-weight: 400; margin: 0; line-height: 1.2; letter-spacing: 0.5px; }
+        .product-price { font-size: 22px; font-weight: bold; color: var(--primary); margin: 0; }
+        
+        .divider { height: 1px; background-color: #eee; width: 100%; margin: 5px 0; }
+        .product-desc { font-size: 14px; color: var(--text-main); line-height: 1.6; margin: 0; }
+
+        /* Size Selector */
+        .size-section { margin-top: 10px; }
+        .size-label { font-size: 11px; font-weight: bold; text-transform: uppercase; margin-bottom: 12px; display: block; letter-spacing: 1.5px; color: var(--text-light); }
+        .size-options { display: flex; gap: 10px; }
+        .size-btn { width: 50px; height: 50px; border: 1px solid #ddd; background: white; border-radius: 4px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .size-btn.selected { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .add-to-cart-btn { background-color: var(--primary); color: white; border: none; padding: 18px; width: 100%; font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; border-radius: 4px; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .add-to-cart-btn:hover { background-color: #333; }
+        
+        .error-state { text-align: center; padding: 100px 20px; }
+
+        /* --- RESPONSIVE ADJUSTMENTS --- */
+        @media (min-width: 768px) {
+            .top-bar { padding: 0 5%; }
+            .logo img { height: 60px; }
+            .product-container { flex-direction: row; gap: 60px; padding: 40px 5%; align-items: flex-start; }
+            .product-details { position: sticky; top: 120px; }
+            .back-nav { padding: 30px 5% 0; }
+        }
+
+        @media (max-width: 767px) {
+            .logo img { width: 140px; }
+            .top-bar { padding: 0 10px; }
+            .right-actions { gap: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="top-bar">
+        <div class="logo">
+            <a href="index.html">
+                <img src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/assets/JAMBA.png" alt="JAMBA WEAR Logo">
+            </a>
+        </div>
+        
+        <div class="right-actions">
+            <a href="cart.html" class="action-item">
+                <div class="cart-icon-wrapper">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                    <span class="cart-badge" id="cart-count">0</span>
+                </div>
+                <span class="nav-text">Cart</span>
+            </a>
+
+            <div class="profile-wrapper">
+                <div class="action-item" id="profile-btn">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <span class="nav-text">Profile</span>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu">
+                    <div class="dropdown-header" id="user-display-name">Hi, JAMBA Member</div>
+                    <a href="login.html" id="dropdown-login-link">Login / Signup</a>
+                    <a href="orders.html">Orders</a>
+                    <a href="address.html">Address</a>
+                    <a href="#">Wishlist</a>
+                    <a href="#">Contact Us</a>
+                    <a href="javascript:void(0)" id="dropdown-logout-link" class="logout-link" onclick="handleAuthAction()">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="back-nav">
+        <span class="back-link" onclick="window.history.back()">← Back to Collections</span>
+    </div>
+
+    <main id="main-content">
+        </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBgH8hpWJ97mqLFfoDDW9A_78pR5YjEmxo",
+            authDomain: "jamba-wear.firebaseapp.com",
+            projectId: "jamba-wear",
+            storageBucket: "jamba-wear.firebasestorage.app",
+            messagingSenderId: "679544590258",
+            appId: "1:679544590258:web:eac3841e5f555e3fb89eab",
+            measurementId: "G-8XSNJG079Z"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // --- AUTH LOGIC ---
+        window.handleAuthAction = () => {
+            if (auth.currentUser) {
+                signOut(auth).then(() => { window.location.reload(); });
+            } else {
+                window.location.href = "login.html";
+            }
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            const userDisplay = document.getElementById('user-display-name');
+            const loginLink = document.getElementById('dropdown-login-link');
+            const logoutLink = document.getElementById('dropdown-logout-link');
+            if (user) {
+                userDisplay.innerText = "Hi, " + (user.displayName || "Member");
+                loginLink.style.display = 'none';
+                logoutLink.style.display = 'block';
+            } else {
+                userDisplay.innerText = "Hi, JAMBA Member";
+                loginLink.style.display = 'block';
+                logoutLink.style.display = 'none';
+            }
+        });
+
+        // --- PRODUCT DATABASE ---
+        const products = [
+            { id: 101, title: "Traditional Dokhona Style", price: "₹4,499", priceNum: 4499, img: "https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Women/B-R%20waist.png", desc: "Authentic Bodo Dokhona pattern reimagined for the modern woman." },
+            { id: 102, title: "Handloom Wrap Top", price: "₹1,299", priceNum: 1299, img: "https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Women/pink.png", desc: "Versatile wrap top featuring traditional motifs." },
+            { id: 201, title: "Classic Bodo Waistcoat", price: "₹2,999", priceNum: 2999, img: "https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Men/Black%20Waistcoat.png", desc: "Signature black waistcoat with golden Bodo thread-work." },
+            { id: 202, title: "Modern Oxford Shirt", price: "₹1,699", priceNum: 1699, img: "https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Men/Pinkshirt.png", desc: "Premium Oxford cotton in a soft pink hue." },
+            { id: 203, title: "Golden Accent Shirt", price: "₹2,999", priceNum: 2999, img: "https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Men/Goldwhiteshirt.png", desc: "White cotton with royal golden accents on collar and cuffs." },
+            { id: 204, title: "Endi Silk Red Shirt", price: "₹1,699", priceNum: 1699, img: "https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Men/Endi%20Red.png", desc: "Authentic Endi silk shirt in deep red. Culturally rich and breathable." }
+        ];
+
+        // --- RENDER LOGIC ---
+        const params = new URLSearchParams(window.location.search);
+        const productId = parseInt(params.get('id'));
+        const currentProduct = products.find(p => p.id === productId);
+        const mainContent = document.getElementById('main-content');
+        let selectedSize = 'M'; // Default
+
+        if (currentProduct) {
+            document.getElementById('page-title').innerText = `JAMBA | ${currentProduct.title}`;
+            mainContent.innerHTML = `
+                <div class="product-container">
+                    <div class="product-image-box"><img src="${currentProduct.img}" alt="${currentProduct.title}"></div>
+                    <div class="product-details">
+                        <p class="brand-name">JAMBA WEAR | LUXURY ETHNIC</p>
+                        <h1 class="product-title">${currentProduct.title}</h1>
+                        <p class="product-price">${currentProduct.price}</p>
+                        <div class="divider"></div>
+                        <p class="product-desc">${currentProduct.desc}</p>
+                        <div class="size-section">
+                            <span class="size-label">Select Size</span>
+                            <div class="size-options">
+                                <button class="size-btn" onclick="selectSize(this, 'S')">S</button>
+                                <button class="size-btn selected" onclick="selectSize(this, 'M')">M</button>
+                                <button class="size-btn" onclick="selectSize(this, 'L')">L</button>
+                                <button class="size-btn" onclick="selectSize(this, 'XL')">XL</button>
+                            </div>
+                        </div>
+                        <button class="add-to-cart-btn" id="add-btn" onclick="addToCart()">Add to Cart</button>
+                    </div>
+                </div>
+            `;
+        } else {
+            mainContent.innerHTML = `
+                <div class="error-state">
+                    <h2>Item Not Found</h2>
+                    <a href="index.html" class="back-link">Return to Shop</a>
+                </div>`;
+        }
+
+        // --- UI FUNCTIONS ---
+        window.selectSize = function(btn, size) {
+            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedSize = size;
+        };
+
+        window.addToCart = function() {
+            if(!currentProduct) return;
+            let cart = JSON.parse(localStorage.getItem('jambaCart')) || [];
+            const existingItem = cart.find(i => i.id === currentProduct.id && i.size === selectedSize);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: currentProduct.id,
+                    title: currentProduct.title,
+                    price: currentProduct.priceNum,
+                    image: currentProduct.img,
+                    size: selectedSize,
+                    quantity: 1
+                });
+            }
+
+            localStorage.setItem('jambaCart', JSON.stringify(cart));
+            syncBadge();
+            
+            const btn = document.getElementById('add-btn');
+            btn.innerText = "✓ Added to Cart";
+            btn.style.backgroundColor = "#27ae60";
+            setTimeout(() => {
+                btn.innerText = "Add to Cart";
+                btn.style.backgroundColor = "";
+            }, 2000);
+        };
+
+        // --- UTILS ---
+        const pBtn = document.getElementById('profile-btn');
+        const dMenu = document.getElementById('dropdown-menu');
+        pBtn.addEventListener('click', (e) => { e.stopPropagation(); dMenu.classList.toggle('show'); });
+        window.addEventListener('click', () => dMenu.classList.remove('show'));
+
+        function syncBadge() {
+            const cart = JSON.parse(localStorage.getItem('jambaCart')) || [];
+            const badge = document.getElementById('cart-count');
+            let total = cart.reduce((s, i) => s + i.quantity, 0);
+            badge.innerText = total;
+            badge.style.display = total === 0 ? 'none' : 'flex';
+        }
+        syncBadge();
+    </script>
+</body>
+</html>
