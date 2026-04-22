@@ -140,11 +140,6 @@
         
         .logout-link { color: #d9534f !important; font-weight: bold; border-top: 1px solid #eee; }
 
-        /* --- AUTH STATE HIDING --- */
-        body.logged-in #header-login-btn,
-        body.logged-in #dropdown-login-link { display: none !important; }
-        body:not(.logged-in) #dropdown-logout-link { display: none !important; }
-
         /* --- CATEGORY CHIPS --- */
         .category-scroll { display: flex; overflow-x: auto; gap: 12px; padding: 15px 15px 5px; scrollbar-width: none; }
         .category-scroll::-webkit-scrollbar { display: none; }
@@ -170,7 +165,7 @@
 
         .seo-footer { text-align: center; padding: 60px 20px; background-color: #fff; border-top: 1px solid #eee; margin-top: 40px; }
 
-        /* --- RESPONSIVE --- */
+        /* --- RESPONSIVE ADJUSTMENTS --- */
         @media (min-width: 768px) {
             .top-bar { padding: 0 5%; }
             .logo img { height: 60px; }
@@ -180,17 +175,10 @@
             .section-header { padding: 50px 5% 20px; }
         }
 
-        /* NEW: MOBILE LOGO ADJUSTMENT */
         @media (max-width: 767px) {
-            .logo img {
-                width: 140px; /* Reduced for mobile */
-            }
-            .top-bar {
-                padding: 0 10px; 
-            }
-            .right-actions {
-                gap: 12px;
-            }
+            .logo img { width: 140px; }
+            .top-bar { padding: 0 10px; }
+            .right-actions { gap: 12px; }
         }
     </style>
 </head>
@@ -263,10 +251,22 @@
     </div>
 
     <section class="product-grid">
-        <div class="product-card" onclick="window.location.href='product-w1.html'"><img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Women/B-R%20waist.png" alt="Traditional Dokhona" href="product.html"><div class="product-info"><h3 class="product-title">Traditional Dokhona Style</h3><p class="product-price">₹4,499</p></div></div>
-        <div class="product-card" onclick="window.location.href='product-w2.html'"><img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Women/pink.png" alt="Handloom Wrap Top" href="product.html"><div class="product-info"><h3 class="product-title">Handloom Wrap Top</h3><p class="product-price">₹1,299</p></div></div>
-        <div class="product-card" onclick="window.location.href='product-w1.html'"><img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Women/blue.png" alt="Women's Blue Outfit" alt="Dokhona Pink" href="product.html"><div class="product-info"><h3 class="product-title">Floral Dokhona</h3><p class="product-price">₹4,499</p></div></div>
-        <div class="product-card" onclick="window.location.href='product-w2.html'"><img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Women/BG.png" alt="Women's BG Outfit" alt="Woven Top" href="product.html"><div class="product-info"><h3 class="product-title">Modern Handloom Top</h3><p class="product-price">₹1,299</p></div></div>
+        <div class="product-card" onclick="window.location.href='productview.html?id=101'">
+            <img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Women/B-R%20waist.png" alt="Traditional Dokhona">
+            <div class="product-info"><h3 class="product-title">Traditional Dokhona Style</h3><p class="product-price">₹4,499</p></div>
+        </div>
+        <div class="product-card" onclick="window.location.href='productview.html?id=102'">
+            <img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Women/pink.png" alt="Handloom Wrap Top">
+            <div class="product-info"><h3 class="product-title">Handloom Wrap Top</h3><p class="product-price">₹1,299</p></div>
+        </div>
+        <div class="product-card" onclick="window.location.href='productview.html?id=103'">
+            <img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Women/blue.png" alt="Floral Dokhona">
+            <div class="product-info"><h3 class="product-title">Floral Floral Dokhona</h3><p class="product-price">₹4,499</p></div>
+        </div>
+        <div class="product-card" onclick="window.location.href='productview.html?id=104'">
+            <img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Women/BG.png" alt="Modern Handloom Top">
+            <div class="product-info"><h3 class="product-title">Modern Handloom Top</h3><p class="product-price">₹1,299</p></div>
+        </div>
     </section>
 
     <div class="section-header">
@@ -275,15 +275,27 @@
     </div>
 
     <section class="product-grid">
-        <div class="product-card" onclick="window.location.href='product1.html'"><img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Men/Black%20Waistcoat.png" alt="Black Waistcoat" href="product.html"><div class="product-info"><h3 class="product-title">Classic Bodo Waistcoat</h3><p class="product-price">₹2,999</p></div></div>
-        <div class="product-card" onclick="window.location.href='product2.html'"><img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Men/Pinkshirt.png" alt="Pink Oxford Shirt" href="product.html"><div class="product-info"><h3 class="product-title">Modern Oxford Shirt</h3><p class="product-price">₹1,699</p></div></div>
-        <div class="product-card" onclick="window.location.href='product3.html'"><img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Men/Goldwhiteshirt.png" alt="Gold White Shirt" href="product.html"><div class="product-info"><h3 class="product-title">Golden Accent Shirt</h3><p class="product-price">₹2,999</p></div></div>
-        <div class="product-card" onclick="window.location.href='product4.html'"><img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Men/Endi%20Red.png" alt="Endi Red Shirt" href="product.html"><div class="product-info"><h3 class="product-title">Endi Silk Red Shirt</h3><p class="product-price">₹1,699</p></div></div>
+        <div class="product-card" onclick="window.location.href='productview.html?id=201'">
+            <img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Men/Black%20Waistcoat.png" alt="Black Waistcoat">
+            <div class="product-info"><h3 class="product-title">Classic Bodo Waistcoat</h3><p class="product-price">₹2,999</p></div>
+        </div>
+        <div class="product-card" onclick="window.location.href='productview.html?id=202'">
+            <img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Men/Pinkshirt.png" alt="Pink Oxford Shirt">
+            <div class="product-info"><h3 class="product-title">Modern Oxford Shirt</h3><p class="product-price">₹1,699</p></div>
+        </div>
+        <div class="product-card" onclick="window.location.href='productview.html?id=203'">
+            <img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Men/Goldwhiteshirt.png" alt="Gold White Shirt">
+            <div class="product-info"><h3 class="product-title">Golden Accent Shirt</h3><p class="product-price">₹2,999</p></div>
+        </div>
+        <div class="product-card" onclick="window.location.href='productview.html?id=204'">
+            <img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Men/Endi%20Red.png" alt="Endi Red Shirt">
+            <div class="product-info"><h3 class="product-title">Endi Silk Red Shirt</h3><p class="product-price">₹1,699</p></div>
+        </div>
     </section>
 
     <footer class="seo-footer">
         <p><strong>JAMBA WEAR</strong></p>
-        <p style="font-size: 12px; color: #888;">&copy; 2026 Authentic Bodo & Assamese Fashion. Designed in Assam.</p>
+        <p style="font-size: 12px; color: #888;">&copy; 2026 Authentic Bodo Fashion. Designed in Bodoland.</p>
     </footer>
 
     <script type="module">
@@ -305,9 +317,7 @@
 
         window.handleAuthAction = () => {
             if (auth.currentUser) {
-                signOut(auth).then(() => {
-                    window.location.reload();
-                });
+                signOut(auth).then(() => { window.location.reload(); });
             } else {
                 window.location.href = "login.html";
             }
@@ -315,12 +325,22 @@
 
         onAuthStateChanged(auth, (user) => {
             const userDisplay = document.getElementById('user-display-name');
+            const loginBtn = document.getElementById('header-login-btn');
+            const dropdownLogin = document.getElementById('dropdown-login-link');
+            const dropdownLogout = document.getElementById('dropdown-logout-link');
+
             if (user) {
                 document.body.classList.add('logged-in');
                 userDisplay.innerText = "Hi, " + (user.displayName || "Member");
+                loginBtn.style.display = 'none';
+                dropdownLogin.style.display = 'none';
+                dropdownLogout.style.display = 'block';
             } else {
                 document.body.classList.remove('logged-in');
                 userDisplay.innerText = "Hi, JAMBA Member";
+                loginBtn.style.display = 'block';
+                dropdownLogin.style.display = 'block';
+                dropdownLogout.style.display = 'none';
             }
         });
     </script>
