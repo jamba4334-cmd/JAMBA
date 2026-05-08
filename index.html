@@ -364,5 +364,21 @@
         });
         window.addEventListener('click', () => dropdownMenu.classList.remove('show'));
     </script>
+
+    <script>
+        // At the top of your script
+const API_BASE_URL = "https://jamba-backend.your-subdomain.workers.dev"; 
+
+// Example: How you would use it for the "Buy Now" button
+async function handlePayment(productId) {
+    // We combine the base URL with the specific "route"
+    const response = await fetch(`${API_BASE_URL}/api/create-order`, {
+        method: 'POST',
+        body: JSON.stringify({ id: productId })
+    });
+    const data = await response.json();
+    console.log("Order details from Python:", data);
+}
+    </script>
 </body>
 </html>
