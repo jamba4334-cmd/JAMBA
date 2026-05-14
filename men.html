@@ -105,6 +105,23 @@
             stroke-linejoin: round; 
         }
 
+        /* --- LOGIN BUTTON --- */
+        .login-nav-btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border: 1px solid var(--primary);
+            white-space: nowrap;
+            transition: 0.3s;
+        }
+        .login-nav-btn:hover { background-color: transparent; color: var(--primary); }
+
         /* --- CART & PROFILE --- */
         .cart-icon-wrapper { position: relative; display: flex; align-items: center; justify-content: center; }
         .cart-badge { 
@@ -144,6 +161,7 @@
         .dropdown-header { padding: 15px; font-weight: bold; font-size: 14px; background-color: #fafafa; border-bottom: 1px solid #eaeaea; color: var(--primary); }
         .dropdown-menu a { padding: 12px 15px; font-size: 13px; color: var(--text-main); border-bottom: 1px solid #f5f5f5; transition: 0.2s; }
         .dropdown-menu a:hover { background-color: #f9f9f9; color: var(--primary); }
+        .logout-link { color: #d9534f !important; font-weight: bold; border-top: 1px solid #eee; }
 
         /* --- CATEGORIES & GRID --- */
         .category-scroll { display: flex; overflow-x: auto; gap: 12px; padding: 15px 15px 5px; scrollbar-width: none; }
@@ -182,6 +200,8 @@
         </div>
         
         <div class="right-actions">
+            <button id="header-login-btn" class="login-nav-btn" onclick="handleAuthAction()">Login</button>
+
             <a href="cart.html" class="action-item">
                 <div class="cart-icon-wrapper">
                     <svg class="nav-icon" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
@@ -196,11 +216,13 @@
                     <span class="nav-text">Profile</span>
                 </div>
                 <div class="dropdown-menu" id="dropdown-menu">
-                    <div class="dropdown-header">Hi, JAMBA Member</div>
+                    <div class="dropdown-header" id="user-display-name">Hi, JAMBA Member</div>
+                    <a href="login.html" id="dropdown-login-link">Login / Signup</a>
                     <a href="#">Orders</a>
                     <a href="#">Address</a>
                     <a href="#">Wishlist</a>
                     <a href="#">Contact Us</a>
+                    <a href="javascript:void(0)" id="dropdown-logout-link" class="logout-link" onclick="handleAuthAction()">Logout</a>
                 </div>
             </div>
         </div>
@@ -211,7 +233,7 @@
     <div class="category-scroll">
         <a href="#" class="chip active" data-filter="all">All Men's</a>
         <a href="#" class="chip" data-filter="shirt">Shirt</a>
-        <a href="#" class="chip" data-filter="waistcoat">Waist Coat</a>
+        <a href="#" class="chip" data-filter="waistcoat">Waistcoat</a>
         <a href="#" class="chip" data-filter="aronai">Aronai</a>
     </div>
 
@@ -221,48 +243,11 @@
     </section>
 
     <section class="product-grid" id="product-grid">
-        <div class="product-card" data-category="waistcoat" onclick="window.location.href='product1.html'">
-            <img class="product-image" src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/waistcoat.png" alt="Linen Waistcoat">
-            <div class="product-info">
-                <h3 class="product-title">Classic Linen Waistcoat</h3>
-                <p class="product-price">₹2,999</p>
-            </div>
-        </div>
-
-        <div class="product-card" data-category="shirt" onclick="window.location.href='product2.html'">
-            <img class="product-image" src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/Pinkshirt.png" alt="Oxford Shirt">
-            <div class="product-info">
-                <h3 class="product-title">Tailored Oxford Shirt</h3>
-                <p class="product-price">₹1,699</p>
-            </div>
-        </div>
-
-        <div class="product-card" data-category="shirt" onclick="window.location.href='product4.html'">
-            <img class="product-image" src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/Blueshirt.png" alt="Knit Polo">
-            <div class="product-info">
-                <h3 class="product-title">Silk-Blend Knit Polo</h3>
-                <p class="product-price">₹1,699</p>
-            </div>
-        </div>
-
-        <div class="product-card" data-category="aronai" onclick="window.location.href='product5.html'">
-            <div class="product-image" style="background-color: var(--accent); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px; letter-spacing: 1px;">JAMBA ARONAI</div>
-            <div class="product-info">
-                <h3 class="product-title">Traditional Bodo Aronai</h3>
-                <p class="product-price">₹1,299</p>
-            </div>
-        </div>
-
-        <div class="product-card" data-category="shirt" onclick="window.location.href='product3.html'">
-            <img class="product-image" src="https://cdn.jsdelivr.net/gh/jamba4334-cmd/JAMBA@main/GoldenShirt.png" alt="Wool Trousers">
-            <div class="product-info">
-                <h3 class="product-title">Pleated Wool Trousers</h3>
-                <p class="product-price">₹1,699</p>
-            </div>
-        </div>
+        <p style="padding: 15px; color: var(--text-light); grid-column: 1 / -1;">Loading latest styles...</p>
     </section>
 
     <script>
+        // Update Cart Badge
         function updateCartBadge() {
             const cart = JSON.parse(localStorage.getItem('jambaCart')) || [];
             const badge = document.getElementById('cart-count');
@@ -273,6 +258,7 @@
         }
         updateCartBadge();
 
+        // Profile Dropdown
         const profileBtn = document.getElementById('profile-btn');
         const dropdownMenu = document.getElementById('dropdown-menu');
         profileBtn.addEventListener('click', function(e) { 
@@ -285,25 +271,134 @@
             }
         });
 
-        const chips = document.querySelectorAll('.chip');
-        const products = document.querySelectorAll('.product-card');
+        // Filter Logic (Runs after Firebase loads products)
+        function initializeFilters() {
+            const chips = document.querySelectorAll('.chip');
+            
+            chips.forEach(chip => {
+                chip.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    chips.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
 
-        chips.forEach(chip => {
-            chip.addEventListener('click', function(e) {
-                e.preventDefault();
-                chips.forEach(c => c.classList.remove('active'));
-                this.classList.add('active');
+                    const filterValue = this.getAttribute('data-filter').toLowerCase();
+                    const products = document.querySelectorAll('.product-card');
 
-                const filterValue = this.getAttribute('data-filter');
-                products.forEach(product => {
-                    if (filterValue === 'all' || product.getAttribute('data-category') === filterValue) {
-                        product.style.display = 'block';
-                    } else {
-                        product.style.display = 'none';
-                    }
+                    products.forEach(product => {
+                        const productCategory = product.getAttribute('data-category').toLowerCase();
+                        // Display if 'all' is selected, OR if the Firebase category includes the filter word
+                        if (filterValue === 'all' || productCategory.includes(filterValue)) {
+                            product.style.display = 'block';
+                        } else {
+                            product.style.display = 'none';
+                        }
+                    });
                 });
             });
+        }
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBgH8hpWJ97mqLFfoDDW9A_78pR5YjEmxo",
+            authDomain: "jamba-wear.firebaseapp.com",
+            projectId: "jamba-wear",
+            storageBucket: "jamba-wear.firebasestorage.app",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // --- AUTHENTICATION LOGIC ---
+        window.handleAuthAction = () => {
+            if (auth.currentUser) signOut(auth).then(() => { window.location.reload(); });
+            else window.location.href = "login.html";
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            const userDisplay = document.getElementById('user-display-name');
+            const loginBtn = document.getElementById('header-login-btn');
+            const dropdownLogin = document.getElementById('dropdown-login-link');
+            const dropdownLogout = document.getElementById('dropdown-logout-link');
+
+            if (user) {
+                document.body.classList.add('logged-in');
+                if(userDisplay) userDisplay.innerText = "Hi, " + (user.displayName || "Member");
+                if(loginBtn) loginBtn.style.display = 'none';
+                if(dropdownLogin) dropdownLogin.style.display = 'none';
+                if(dropdownLogout) dropdownLogout.style.display = 'block';
+            } else {
+                document.body.classList.remove('logged-in');
+                if(userDisplay) userDisplay.innerText = "Hi, JAMBA Member";
+                if(loginBtn) loginBtn.style.display = 'block';
+                if(dropdownLogin) dropdownLogin.style.display = 'block';
+                if(dropdownLogout) dropdownLogout.style.display = 'none';
+            }
         });
+
+        // --- FETCH MEN'S PRODUCTS ---
+        async function loadCategoryProducts() {
+            const grid = document.getElementById('product-grid');
+            if(!grid) return;
+
+            try {
+                const querySnapshot = await getDocs(collection(db, "products"));
+                grid.innerHTML = '';
+                let hasProducts = false;
+
+                querySnapshot.forEach((doc) => {
+                    const product = doc.data();
+                    const category = (product.category || "").toLowerCase();
+
+                    // FILTER: ONLY SHOW MEN'S PRODUCTS
+                    if (category.includes('men') && !category.includes('women')) {
+                        hasProducts = true;
+                        
+                        const productId = product.item_id || doc.id;
+                        const title = product.title || "Unnamed Product";
+                        const price = product.selling_price || 0;
+                        const originalPrice = product.original_price || price;
+                        const imgUrl = (product.images && product.images.length > 0) ? product.images[0] : "https://via.placeholder.com/300x400";
+
+                        // Discount Strikethrough Logic
+                        let priceHtml = `<p class="product-price">₹${price}</p>`;
+                        if (originalPrice > price) {
+                            priceHtml = `<p class="product-price">₹${price} <span style="text-decoration:line-through; color:#999; font-size:11px; margin-left:5px;">₹${originalPrice}</span></p>`;
+                        }
+
+                        // data-category is saved so the UI chips can filter it further (e.g., "shirt - men")
+                        const productCardHtml = `
+                            <div class="product-card" data-category="${category}" onclick="window.location.href='productview.html?id=${productId}'">
+                                <img class="product-image" src="${imgUrl}" alt="${title}">
+                                <div class="product-info">
+                                    <h3 class="product-title">${title}</h3>
+                                    ${priceHtml}
+                                </div>
+                            </div>
+                        `;
+                        grid.innerHTML += productCardHtml;
+                    }
+                });
+
+                if (!hasProducts) {
+                    grid.innerHTML = '<p style="grid-column: 1 / -1; padding: 15px; color: var(--text-light); text-align: center;">No men\'s products currently available.</p>';
+                } else {
+                    // Activate the chip filtering logic only after products are loaded
+                    initializeFilters();
+                }
+
+            } catch (error) {
+                console.error("Error fetching products:", error);
+                grid.innerHTML = '<p style="grid-column: 1 / -1; color:red; text-align: center;">Failed to load products.</p>';
+            }
+        }
+
+        loadCategoryProducts();
     </script>
 </body>
 </html>
