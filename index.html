@@ -34,7 +34,7 @@
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             color: var(--primary);
             padding-top: var(--nav-height); 
-            padding-bottom: 40px;
+            padding-bottom: 0px;
         }
 
         a { text-decoration: none; color: inherit; }
@@ -154,7 +154,8 @@
 
         .section-header { display: flex; justify-content: space-between; align-items: center; padding: 30px 15px 15px; }
         .section-title { margin: 0; font-size: 18px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; border-left: 3px solid var(--accent); padding-left: 10px; }
-        .view-all { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-light); text-decoration: none; }
+        .view-all { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-light); text-decoration: none; border-bottom: 1px solid transparent; transition: 0.2s; }
+        .view-all:hover { border-color: var(--accent); color: var(--primary); }
 
         .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 15px; margin-bottom: 30px; }
         .product-card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.04); text-align: left; transition: transform 0.2s; cursor: pointer; }
@@ -165,7 +166,6 @@
 
         .seo-footer { text-align: center; padding: 60px 20px; background-color: #fff; border-top: 1px solid #eee; margin-top: 40px; }
 
-        /* --- RESPONSIVE ADJUSTMENTS --- */
         @media (min-width: 768px) {
             .top-bar { padding: 0 5%; }
             .logo img { height: 60px; }
@@ -226,8 +226,8 @@
         <a href="index.html" class="chip active">All</a>
         <a href="men.html" class="chip">Men's</a>
         <a href="women.html" class="chip">Women's</a>
-        <a href="waistcoats.html" class="chip">Waistcoats</a>
-        <a href="dokhona.html" class="chip">Dokhona</a>
+        <a href="men.html" class="chip">Waistcoats</a>
+        <a href="women.html" class="chip">Dokhona</a>
     </div>
 
     <section class="hero">
@@ -270,36 +270,29 @@
             <a href="refunds.html" style="text-decoration: underline;">Cancellation & Refunds</a>
             <a href="contact.html" style="text-decoration: underline;">Contact Us</a>
         </div>
-        <p style="font-size: 12px; color: #888;">&copy; 2026 Authentic Bodo Fashion</p>
-        <p style="font-size: 12px; color: #888;">Made in Bodoland</p>
+        <p style="font-size: 12px; color: #888;">&copy; 2026 Authentic Bodo Fashion. Designed in Assam.</p>
     </footer>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, query, where, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBgH8hpWJ97mqLFfoDDW9A_78pR5YjEmxo",
             authDomain: "jamba-wear.firebaseapp.com",
             projectId: "jamba-wear",
             storageBucket: "jamba-wear.firebasestorage.app",
-            messagingSenderId: "679544590258",
-            appId: "1:679544590258:web:eac3841e5f555e3fb89eab",
-            measurementId: "G-8XSNJG079Z"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // --- 1. AUTHENTICATION LOGIC ---
+        // --- AUTH ACTION ---
         window.handleAuthAction = () => {
-            if (auth.currentUser) {
-                signOut(auth).then(() => { window.location.reload(); });
-            } else {
-                window.location.href = "login.html";
-            }
+            if (auth.currentUser) signOut(auth).then(() => { window.location.reload(); });
+            else window.location.href = "login.html";
         };
 
         onAuthStateChanged(auth, (user) => {
@@ -323,74 +316,71 @@
             }
         });
 
-        // --- 2. FETCH PRODUCTS FROM FIRESTORE ---
-        async function loadStorefrontProducts() {
+        // --- HERO LOAD LOGIC ---
+        async function loadHeroProducts() {
             const womensGrid = document.getElementById('womens-collection-grid');
             const mensGrid = document.getElementById('mens-collection-grid');
 
             try {
+                // Fetch ALL products to filter manually (Firestore 'where' can be picky with multiple categories)
                 const querySnapshot = await getDocs(collection(db, "products"));
                 
                 womensGrid.innerHTML = '';
                 mensGrid.innerHTML = '';
 
-                if (querySnapshot.empty) {
-                    womensGrid.innerHTML = '<p style="grid-column: 1 / -1;">No women\'s products found.</p>';
-                    mensGrid.innerHTML = '<p style="grid-column: 1 / -1;">No men\'s products found.</p>';
-                    return;
-                }
+                let womenCount = 0;
+                let menCount = 0;
 
                 querySnapshot.forEach((doc) => {
                     const product = doc.data();
-                    
-                    const productId = product.item_id || doc.id;
-                    const title = product.title || "Unnamed Product";
-                    const price = product.selling_price || 0;
-                    const originalPrice = product.original_price || price;
-                    const imgUrl = (product.images && product.images.length > 0) ? product.images[0] : "https://via.placeholder.com/300x400";
                     const category = (product.category || "").toLowerCase();
+                    const placement = (product.placement || "regular").toLowerCase();
 
-                    // ADDED: Discount Strikethrough Logic
-                    let priceHtml = `<p class="product-price">₹${price}</p>`;
-                    if (originalPrice > price) {
-                        priceHtml = `<p class="product-price">₹${price} <span style="text-decoration:line-through; color:#999; font-size:11px; margin-left:5px;">₹${originalPrice}</span></p>`;
-                    }
+                    // ONLY SHOW HERO PRODUCTS ON HOMEPAGE
+                    if (placement === "hero") {
+                        
+                        const productId = product.item_id || doc.id;
+                        const title = product.title || "Unnamed Product";
+                        const price = product.selling_price || 0;
+                        const originalPrice = product.original_price || price;
+                        const imgUrl = (product.images && product.images.length > 0) ? product.images[0] : "https://via.placeholder.com/300x400";
 
-                    const productCardHtml = `
-                        <div class="product-card" onclick="window.location.href='productview.html?id=${productId}'">
-                            <img class="product-image" src="${imgUrl}" alt="${title}">
-                            <div class="product-info">
-                                <h3 class="product-title">${title}</h3>
-                                ${priceHtml}
+                        let priceHtml = `<p class="product-price">₹${price}</p>`;
+                        if (originalPrice > price) {
+                            priceHtml = `<p class="product-price">₹${price} <span style="text-decoration:line-through; color:#999; font-size:11px; margin-left:5px;">₹${originalPrice}</span></p>`;
+                        }
+
+                        const productCardHtml = `
+                            <div class="product-card" onclick="window.location.href='productview.html?id=${productId}'">
+                                <img class="product-image" src="${imgUrl}" alt="${title}">
+                                <div class="product-info">
+                                    <h3 class="product-title">${title}</h3>
+                                    ${priceHtml}
+                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
 
-                    // Sort into the correct grid based on category text
-                    if (category.includes('women')) {
-                        womensGrid.innerHTML += productCardHtml;
-                    } else if (category.includes('men')) {
-                        mensGrid.innerHTML += productCardHtml;
-                    } else {
-                        // Fallback if gender isn't clearly specified
-                        mensGrid.innerHTML += productCardHtml;
+                        // SORT AND LIMIT TO 4
+                        if (category.includes('women') && womenCount < 4) {
+                            womensGrid.innerHTML += productCardHtml;
+                            womenCount++;
+                        } else if (category.includes('men') && !category.includes('women') && menCount < 4) {
+                            mensGrid.innerHTML += productCardHtml;
+                            menCount++;
+                        }
                     }
                 });
 
-                // Fallback messages if a category is completely empty
-                if (womensGrid.innerHTML === '') womensGrid.innerHTML = '<p style="grid-column: 1 / -1;">No women\'s products currently available.</p>';
-                if (mensGrid.innerHTML === '') mensGrid.innerHTML = '<p style="grid-column: 1 / -1;">No men\'s products currently available.</p>';
+                // Fill with placeholders or messages if hero count is low
+                if (womenCount === 0) womensGrid.innerHTML = '<p style="grid-column: 1 / -1; color: #888;">Select "Hero Placement" in Admin to feature items here.</p>';
+                if (menCount === 0) mensGrid.innerHTML = '<p style="grid-column: 1 / -1; color: #888;">Select "Hero Placement" in Admin to feature items here.</p>';
 
             } catch (error) {
-                console.error("Error fetching products:", error);
-                womensGrid.innerHTML = '<p style="grid-column: 1 / -1; color:red;">Failed to load products.</p>';
-                mensGrid.innerHTML = '<p style="grid-column: 1 / -1; color:red;">Failed to load products.</p>';
+                console.error("Error loading heroes:", error);
             }
         }
 
-        // Run the loader immediately
-        loadStorefrontProducts();
-
+        loadHeroProducts();
     </script>
 
     <script>
