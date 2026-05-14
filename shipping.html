@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAMBA WEAR | Shipping Policy</title>
+    <style>
+        /* --- GLOBAL THEME STYLES --- */
+        :root {
+            --primary: #1a1a1a;
+            --accent: #d2b48c;
+            --bg: #f8f8f8;
+            --text-main: #333;
+            --text-light: #777;
+            --nav-height: 80px;
+        }
+
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background-color: var(--bg); 
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+            color: var(--primary); 
+            padding-top: var(--nav-height); 
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        a { text-decoration: none; color: inherit; }
+
+        /* --- HEADER --- */
+        .top-bar { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 0 20px; position: fixed; top: 0; width: 100%; height: var(--nav-height);
+            box-sizing: border-box; background-color: rgba(255, 255, 255, 0.98); 
+            backdrop-filter: blur(10px); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04); z-index: 1000; 
+        }
+        .logo img { width: 220px; height: auto; display: block; object-fit: contain; transition: transform 0.3s ease; }
+        .logo img:hover { transform: scale(1.02); }
+
+        .right-actions { display: flex; align-items: center; gap: 20px; } 
+        .action-item { display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; color: var(--primary); }
+        .nav-text { font-size: 9px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+        .nav-icon { width: 22px; height: 22px; fill: none; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        .login-nav-btn { background-color: var(--primary); color: white; padding: 8px 14px; border-radius: 4px; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; border: 1px solid var(--primary); white-space: nowrap; transition: 0.3s; }
+        .login-nav-btn:hover { background-color: transparent; color: var(--primary); }
+
+        .cart-icon-wrapper { position: relative; display: flex; align-items: center; justify-content: center; }
+        .cart-badge { position: absolute; top: -5px; right: -8px; background-color: var(--accent); color: #fff; font-size: 9px; font-weight: bold; height: 14px; min-width: 14px; border-radius: 7px; display: flex; align-items: center; justify-content: center; padding: 0 3px; box-sizing: border-box; }
+
+        .profile-wrapper { position: relative; display: flex; align-items: center; }
+        .dropdown-menu { position: absolute; top: 50px; right: 0; width: 180px; background-color: white; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); display: none; flex-direction: column; overflow: hidden; z-index: 1001; border: 1px solid #eaeaea; }
+        .dropdown-menu.show { display: flex; }
+        .dropdown-header { padding: 15px; font-weight: bold; font-size: 14px; background-color: #fafafa; border-bottom: 1px solid #eaeaea; color: var(--primary); }
+        .dropdown-menu a { padding: 12px 15px; font-size: 13px; color: var(--text-main); border-bottom: 1px solid #f5f5f5; transition: 0.2s; }
+        .dropdown-menu a:hover { background-color: #f9f9f9; color: var(--primary); }
+        .logout-link { color: #d9534f !important; font-weight: bold; border-top: 1px solid #eee; }
+
+        /* --- POLICY DOCUMENT STYLES --- */
+        .policy-container {
+            flex: 1;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            border: 1px solid #eaeaea;
+        }
+
+        .policy-container h1 {
+            font-size: 28px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .policy-container .last-updated {
+            font-size: 12px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            display: block;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 20px;
+        }
+
+        .policy-container h2 {
+            font-size: 18px;
+            margin-top: 30px;
+            color: var(--primary);
+        }
+
+        .policy-container p, .policy-container li {
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--text-main);
+            margin-bottom: 15px;
+        }
+
+        .seo-footer { text-align: center; padding: 60px 20px; background-color: #fff; border-top: 1px solid #eee; margin-top: auto; }
+
+        @media (min-width: 768px) {
+            .top-bar { padding: 0 5%; }
+            .logo img { height: 60px; }
+        }
+        @media (max-width: 767px) {
+            .logo img { width: 140px; }
+            .top-bar { padding: 0 10px; }
+            .right-actions { gap: 12px; }
+            .policy-container { margin: 20px; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="top-bar">
+        <div class="logo">
+            <a href="index.html">
+                <img src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/assets/JAMBA.png" alt="JAMBA WEAR Logo">
+            </a>
+        </div>
+        
+        <div class="right-actions">
+            <button id="header-login-btn" class="login-nav-btn" onclick="handleAuthAction()">Login</button>
+
+            <a href="cart.html" class="action-item">
+                <div class="cart-icon-wrapper">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                    <span class="cart-badge" id="cart-count">0</span>
+                </div>
+                <span class="nav-text">Cart</span>
+            </a>
+
+            <div class="profile-wrapper">
+                <div class="action-item" id="profile-btn">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <span class="nav-text">Profile</span>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu">
+                    <div class="dropdown-header" id="user-display-name">Hi, JAMBA Member</div>
+                    <a href="login.html" id="dropdown-login-link">Login / Signup</a>
+                    <a href="orders.html">Orders</a>
+                    <a href="address.html">Address</a>
+                    <a href="#">Wishlist</a>
+                    <a href="contact.html">Contact Us</a>
+                    <a href="javascript:void(0)" id="dropdown-logout-link" class="logout-link" onclick="handleAuthAction()">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="policy-container">
+        <h1>Shipping Policy</h1>
+        <span class="last-updated">Last Updated: May 2026</span>
+
+        <p>At JAMBA WEAR, we strive to deliver your authentic apparel as quickly and safely as possible. Please review our shipping practices below.</p>
+
+        <h2>1. Processing Time</h2>
+        <p>All orders are processed and dispatched within 1 to 2 business days (excluding weekends and public holidays) after receiving your order confirmation email. You will receive another notification when your order has shipped.</p>
+
+        <h2>2. Delivery Estimates</h2>
+        <ul>
+            <li><strong>Assam & Northeast India:</strong> 2 to 4 business days.</li>
+            <li><strong>Rest of India:</strong> 5 to 7 business days.</li>
+        </ul>
+        <p><em>Note: Delivery delays can occasionally occur due to high volume, bad weather, or logistical issues beyond our control.</em></p>
+
+        <h2>3. Shipping Rates</h2>
+        <p>We are pleased to offer <strong>Free Standard Shipping</strong> on all orders totaling ₹2000 or more. For orders under ₹2000, a flat shipping rate will be calculated and displayed at checkout before you finalize your purchase.</p>
+
+        <h2>4. Order Tracking</h2>
+        <p>Once your order has dispatched, you will receive an email and/or SMS containing your tracking number and a link to trace the journey of your package in real-time.</p>
+    </main>
+
+    <footer class="seo-footer">
+        <p><strong>JAMBA WEAR</strong></p>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin: 15px 0; font-size: 12px; color: #555;">
+            <a href="terms.html" style="text-decoration: underline;">Terms & Conditions</a>
+            <a href="privacy.html" style="text-decoration: underline;">Privacy Policy</a>
+            <a href="shipping.html" style="text-decoration: underline;">Shipping Policy</a>
+            <a href="refunds.html" style="text-decoration: underline;">Cancellation & Refunds</a>
+            <a href="contact.html" style="text-decoration: underline;">Contact Us</a>
+        </div>
+        <p style="font-size: 12px; color: #888;">&copy; 2026 Authentic Bodo Fashion. Designed in Assam.</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBgH8hpWJ97mqLFfoDDW9A_78pR5YjEmxo",
+            authDomain: "jamba-wear.firebaseapp.com",
+            projectId: "jamba-wear",
+            storageBucket: "jamba-wear.firebasestorage.app"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        window.handleAuthAction = () => {
+            if (auth.currentUser) { signOut(auth).then(() => { window.location.reload(); }); } 
+            else { window.location.href = "login.html"; }
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            const userDisplay = document.getElementById('user-display-name');
+            const loginBtn = document.getElementById('header-login-btn');
+            const dropdownLogin = document.getElementById('dropdown-login-link');
+            const dropdownLogout = document.getElementById('dropdown-logout-link');
+
+            if (user) {
+                if(userDisplay) userDisplay.innerText = "Hi, " + (user.displayName || "Member");
+                if(loginBtn) loginBtn.style.display = 'none';
+                if(dropdownLogin) dropdownLogin.style.display = 'none';
+                if(dropdownLogout) dropdownLogout.style.display = 'block';
+            } else {
+                if(userDisplay) userDisplay.innerText = "Hi, JAMBA Member";
+                if(loginBtn) loginBtn.style.display = 'block';
+                if(dropdownLogin) dropdownLogin.style.display = 'block';
+                if(dropdownLogout) dropdownLogout.style.display = 'none';
+            }
+        });
+    </script>
+
+    <script>
+        function updateCartBadge() {
+            const cart = JSON.parse(localStorage.getItem('jambaCart')) || [];
+            const badge = document.getElementById('cart-count');
+            let totalItems = 0;
+            cart.forEach(item => totalItems += item.quantity);
+            badge.innerText = totalItems;
+            badge.style.display = totalItems === 0 ? 'none' : 'flex';
+        }
+        updateCartBadge();
+
+        const profileBtn = document.getElementById('profile-btn');
+        const dropdownMenu = document.getElementById('dropdown-menu');
+        profileBtn.addEventListener('click', (e) => { e.stopPropagation(); dropdownMenu.classList.toggle('show'); });
+        window.addEventListener('click', () => dropdownMenu.classList.remove('show'));
+    </script>
+</body>
+</html>
