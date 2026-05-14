@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>JAMBA WEAR | Authentic Bodo & Assamese Fashion</title>
+    <title>JAMBA WEAR | Authentic Bodo Fashion</title>
     <meta name="title" content="JAMBA WEAR | Authentic Bodo & Assamese Fashion">
     <meta name="description" content="Shop the official JAMBA WEAR store. Premium Bodo waistcoats, traditional Assamese patterns, and modern streetwear designed in Assam.">
     <meta name="keywords" content="JAMBA WEAR, Bodo waistcoat, Assamese traditional patterns, Guwahati fashion brand, streetwear, ethnic wear, men's fashion">
@@ -249,48 +249,16 @@
         <h2 class="section-title">Women's Collection</h2>
         <a href="women.html" class="view-all">View All</a>
     </div>
-
-    <section class="product-grid">
-        <div class="product-card" onclick="window.location.href='productview.html?id=101'">
-            <img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Women/B-R%20waist.png" alt="Traditional Dokhona">
-            <div class="product-info"><h3 class="product-title">Traditional Dokhona Style</h3><p class="product-price">₹20</p></div>
-        </div>
-        <div class="product-card" onclick="window.location.href='productview.html?id=102'">
-            <img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Women/pink.png" alt="Handloom Wrap Top">
-            <div class="product-info"><h3 class="product-title">Handloom Wrap Top</h3><p class="product-price">₹20</p></div>
-        </div>
-        <div class="product-card" onclick="window.location.href='productview.html?id=103'">
-            <img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Women/blue.png" alt="Floral Dokhona">
-            <div class="product-info"><h3 class="product-title">Floral Floral Dokhona</h3><p class="product-price">₹4,499</p></div>
-        </div>
-        <div class="product-card" onclick="window.location.href='productview.html?id=104'">
-            <img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Women/BG.png" alt="Modern Handloom Top">
-            <div class="product-info"><h3 class="product-title">Modern Handloom Top</h3><p class="product-price">₹1,299</p></div>
-        </div>
+    <section class="product-grid" id="womens-collection-grid">
+        <p style="padding: 15px; color: var(--text-light); grid-column: 1 / -1;">Loading latest styles...</p>
     </section>
 
     <div class="section-header">
         <h2 class="section-title">Men's Collection</h2>
         <a href="men.html" class="view-all">View All</a>
     </div>
-
-    <section class="product-grid">
-        <div class="product-card" onclick="window.location.href='productview.html?id=201'">
-            <img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Men/Black%20Waistcoat.png" alt="Black Waistcoat">
-            <div class="product-info"><h3 class="product-title">Classic Bodo Waistcoat</h3><p class="product-price">₹2,999</p></div>
-        </div>
-        <div class="product-card" onclick="window.location.href='productview.html?id=202'">
-            <img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Men/Pinkshirt.png" alt="Pink Oxford Shirt">
-            <div class="product-info"><h3 class="product-title">Modern Oxford Shirt</h3><p class="product-price">₹1,699</p></div>
-        </div>
-        <div class="product-card" onclick="window.location.href='productview.html?id=203'">
-            <img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Men/Goldwhiteshirt.png" alt="Gold White Shirt">
-            <div class="product-info"><h3 class="product-title">Golden Accent Shirt</h3><p class="product-price">₹2,999</p></div>
-        </div>
-        <div class="product-card" onclick="window.location.href='productview.html?id=204'">
-            <img class="product-image" src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/Product/Men/Endi%20Red.png" alt="Endi Red Shirt">
-            <div class="product-info"><h3 class="product-title">Endi Silk Red Shirt</h3><p class="product-price">₹1,699</p></div>
-        </div>
+    <section class="product-grid" id="mens-collection-grid">
+        <p style="padding: 15px; color: var(--text-light); grid-column: 1 / -1;">Loading latest styles...</p>
     </section>
 
     <footer class="seo-footer">
@@ -301,10 +269,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-
-        const API_BASE_URL = "https://jamba-backend.user.workers.dev"; // Paste your actual URL here
-        
         const firebaseConfig = {
             apiKey: "AIzaSyBgH8hpWJ97mqLFfoDDW9A_78pR5YjEmxo",
             authDomain: "jamba-wear.firebaseapp.com",
@@ -317,7 +283,9 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app);
 
+        // --- 1. AUTHENTICATION LOGIC ---
         window.handleAuthAction = () => {
             if (auth.currentUser) {
                 signOut(auth).then(() => { window.location.reload(); });
@@ -346,6 +314,70 @@
                 dropdownLogout.style.display = 'none';
             }
         });
+
+        // --- 2. FETCH PRODUCTS FROM FIRESTORE ---
+        async function loadStorefrontProducts() {
+            const womensGrid = document.getElementById('womens-collection-grid');
+            const mensGrid = document.getElementById('mens-collection-grid');
+
+            try {
+                const querySnapshot = await getDocs(collection(db, "products"));
+                
+                womensGrid.innerHTML = '';
+                mensGrid.innerHTML = '';
+
+                if (querySnapshot.empty) {
+                    womensGrid.innerHTML = '<p style="grid-column: 1 / -1;">No women\'s products found.</p>';
+                    mensGrid.innerHTML = '<p style="grid-column: 1 / -1;">No men\'s products found.</p>';
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    const product = doc.data();
+                    
+                    // Use item_id or doc.id for the link
+                    const productId = product.item_id || doc.id;
+                    const title = product.title || "Unnamed Product";
+                    const price = product.selling_price || 0;
+                    const imgUrl = (product.images && product.images.length > 0) ? product.images[0] : "https://via.placeholder.com/300x400";
+                    const category = (product.category || "").toLowerCase();
+
+                    // Using your exact HTML structure and CSS classes for the product cards
+                    const productCardHtml = `
+                        <div class="product-card" onclick="window.location.href='productview.html?id=${productId}'">
+                            <img class="product-image" src="${imgUrl}" alt="${title}">
+                            <div class="product-info">
+                                <h3 class="product-title">${title}</h3>
+                                <p class="product-price">₹${price}</p>
+                            </div>
+                        </div>
+                    `;
+
+                    // Sort into the correct grid based on category text
+                    if (category.includes('women')) {
+                        womensGrid.innerHTML += productCardHtml;
+                    } else if (category.includes('men')) {
+                        mensGrid.innerHTML += productCardHtml;
+                    } else {
+                        // Fallback if gender isn't clearly specified
+                        mensGrid.innerHTML += productCardHtml;
+                    }
+                });
+
+                // Fallback messages if a category is completely empty
+                if (womensGrid.innerHTML === '') womensGrid.innerHTML = '<p style="grid-column: 1 / -1;">No women\'s products currently available.</p>';
+                if (mensGrid.innerHTML === '') mensGrid.innerHTML = '<p style="grid-column: 1 / -1;">No men\'s products currently available.</p>';
+
+            } catch (error) {
+                console.error("Error fetching products:", error);
+                womensGrid.innerHTML = '<p style="grid-column: 1 / -1; color:red;">Failed to load products.</p>';
+                mensGrid.innerHTML = '<p style="grid-column: 1 / -1; color:red;">Failed to load products.</p>';
+            }
+        }
+
+        // Run the loader immediately
+        loadStorefrontProducts();
+
     </script>
 
     <script>
@@ -366,22 +398,6 @@
             dropdownMenu.classList.toggle('show'); 
         });
         window.addEventListener('click', () => dropdownMenu.classList.remove('show'));
-    </script>
-
-    <script>
-        // At the top of your script
-const API_BASE_URL = "https://jamba-backend.your-subdomain.workers.dev"; 
-
-// Example: How you would use it for the "Buy Now" button
-async function handlePayment(productId) {
-    // We combine the base URL with the specific "route"
-    const response = await fetch(`${API_BASE_URL}/api/create-order`, {
-        method: 'POST',
-        body: JSON.stringify({ id: productId })
-    });
-    const data = await response.json();
-    console.log("Order details from Python:", data);
-}
     </script>
 </body>
 </html>
