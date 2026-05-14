@@ -263,7 +263,14 @@
 
     <footer class="seo-footer">
         <p><strong>JAMBA WEAR</strong></p>
-        <p style="font-size: 12px; color: #888;">&copy; 2026 Authentic Bodo Fashion. Designed in Bodoland.</p>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin: 15px 0; font-size: 12px; color: #555;">
+            <a href="terms.html" style="text-decoration: underline;">Terms & Conditions</a>
+            <a href="privacy.html" style="text-decoration: underline;">Privacy Policy</a>
+            <a href="shipping.html" style="text-decoration: underline;">Shipping Policy</a>
+            <a href="refunds.html" style="text-decoration: underline;">Cancellation & Refunds</a>
+            <a href="contact.html" style="text-decoration: underline;">Contact Us</a>
+        </div>
+        <p style="font-size: 12px; color: #888;">&copy; 2026 Authentic Bodo Fashion. Designed in Assam.</p>
     </footer>
 
     <script type="module">
@@ -335,20 +342,25 @@
                 querySnapshot.forEach((doc) => {
                     const product = doc.data();
                     
-                    // Use item_id or doc.id for the link
                     const productId = product.item_id || doc.id;
                     const title = product.title || "Unnamed Product";
                     const price = product.selling_price || 0;
+                    const originalPrice = product.original_price || price;
                     const imgUrl = (product.images && product.images.length > 0) ? product.images[0] : "https://via.placeholder.com/300x400";
                     const category = (product.category || "").toLowerCase();
 
-                    // Using your exact HTML structure and CSS classes for the product cards
+                    // ADDED: Discount Strikethrough Logic
+                    let priceHtml = `<p class="product-price">₹${price}</p>`;
+                    if (originalPrice > price) {
+                        priceHtml = `<p class="product-price">₹${price} <span style="text-decoration:line-through; color:#999; font-size:11px; margin-left:5px;">₹${originalPrice}</span></p>`;
+                    }
+
                     const productCardHtml = `
                         <div class="product-card" onclick="window.location.href='productview.html?id=${productId}'">
                             <img class="product-image" src="${imgUrl}" alt="${title}">
                             <div class="product-info">
                                 <h3 class="product-title">${title}</h3>
-                                <p class="product-price">₹${price}</p>
+                                ${priceHtml}
                             </div>
                         </div>
                     `;
