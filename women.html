@@ -22,7 +22,7 @@
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
             color: var(--primary); 
             padding-top: var(--nav-height); 
-            padding-bottom: 0px; /* Adjusted to accommodate footer */
+            padding-bottom: 0px; 
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -169,36 +169,37 @@
         /* --- CATEGORY CHIPS --- */
         .category-scroll { display: flex; overflow-x: auto; gap: 12px; padding: 15px 15px 5px; scrollbar-width: none; }
         .category-scroll::-webkit-scrollbar { display: none; }
-        .chip { padding: 8px 20px; background-color: white; border: 1px solid #ddd; border-radius: 20px; font-size: 13px; white-space: nowrap; color: var(--text-main); box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: all 0.2s; }
+        .chip { padding: 8px 20px; background-color: white; border: 1px solid #ddd; border-radius: 20px; font-size: 13px; white-space: nowrap; color: var(--text-main); box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: 0.2s; }
         .chip.active { background-color: var(--primary); color: white; border-color: var(--primary); }
 
         /* --- CATEGORY HEADER --- */
-        .category-header { text-align: center; padding: 30px 20px 40px; background-color: white; margin-bottom: 20px; border-bottom: 1px solid #eaeaea; }
-        .category-title { font-size: 20px; letter-spacing: 1px; text-transform: uppercase; font-weight: bold; margin: 0 0 10px 0; color: var(--primary); }
+        .category-header { text-align: center; padding: 40px 20px; background-color: white; margin-bottom: 20px; border-bottom: 1px solid #eaeaea; }
+        .category-title { font-size: 20px; letter-spacing: 1px; text-transform: uppercase; font-weight: bold; margin: 0 0 10px 0; }
         .category-subtitle { color: var(--text-light); font-size: 14px; margin: 0; }
 
         /* --- PRODUCT GRID --- */
         .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 15px; flex: 1; margin-bottom: 40px; }
-        .product-card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.04); text-align: left; transition: transform 0.2s; cursor: pointer; }
-        
-        .product-image { 
-            width: 100%; 
-            aspect-ratio: 3 / 4; 
-            background-color: #eaeaea; 
-            object-fit: cover; 
-            border-bottom: 1px solid #f0f0f0; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            color: #999; 
-            font-size: 12px; 
+        .product-card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.04); transition: 0.2s; cursor: pointer; position: relative; }
+        .product-image { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-bottom: 1px solid #f0f0f0; transition: 0.3s; }
+        .product-info { padding: 12px; }
+        .product-title { margin: 0 0 6px 0; font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .product-price { margin: 0; color: var(--primary); font-size: 14px; font-weight: bold; }
+
+        /* --- OOS BADGE STYLE --- */
+        .oos-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(220, 38, 38, 0.95);
+            color: white;
+            padding: 6px 10px;
+            font-size: 10px;
+            font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1px;
+            border-radius: 4px;
+            z-index: 10;
         }
-
-        .product-info { padding: 12px; }
-        .product-title { margin: 0 0 6px 0; font-size: 13px; color: var(--text-main); font-weight: 500; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .product-price { margin: 0; color: var(--primary); font-size: 14px; font-weight: bold; }
 
         /* --- SEO FOOTER --- */
         .seo-footer { text-align: center; padding: 60px 20px; background-color: #fff; border-top: 1px solid #eee; margin-top: auto; }
@@ -207,7 +208,7 @@
             .top-bar { padding: 0 5%; }
             .logo img { height: 70px; }
             .category-scroll { padding: 15px 5% 5px; } 
-            .category-header { padding: 50px 20px; margin-bottom: 40px; }
+            .category-header { padding: 60px 20px; margin-bottom: 40px; }
             .category-title { font-size: 32px; letter-spacing: 3px; }
             .product-grid { grid-template-columns: repeat(4, 1fr); padding: 0 5%; gap: 30px; }
         }
@@ -241,8 +242,8 @@
                 <div class="dropdown-menu" id="dropdown-menu">
                     <div class="dropdown-header" id="user-display-name">Hi, JAMBA Member</div>
                     <a href="login.html" id="dropdown-login-link">Login / Signup</a>
-                    <a href="#">Orders</a>
-                    <a href="#">Address</a>
+                    <a href="orders.html">Orders</a>
+                    <a href="address.html">Address</a>
                     <a href="#">Wishlist</a>
                     <a href="contact.html">Contact Us</a>
                     <a href="javascript:void(0)" id="dropdown-logout-link" class="logout-link" onclick="handleAuthAction()">Logout</a>
@@ -323,7 +324,6 @@
 
                     products.forEach(product => {
                         const productCategory = product.getAttribute('data-category').toLowerCase();
-                        // Display if 'all' is selected, OR if the Firebase category includes the filter word
                         if (filterValue === 'all' || productCategory.includes(filterValue)) {
                             product.style.display = 'block'; 
                         } else {
@@ -390,6 +390,10 @@
 
                 querySnapshot.forEach((doc) => {
                     const product = doc.data();
+                    
+                    // --- 1. THE HIDE LOGIC ---
+                    if (product.isHidden === true) return; 
+
                     const category = (product.category || "").toLowerCase();
 
                     // FILTER: ONLY SHOW WOMEN'S PRODUCTS
@@ -402,6 +406,11 @@
                         const originalPrice = product.original_price || price;
                         const imgUrl = (product.images && product.images.length > 0) ? product.images[0] : "https://via.placeholder.com/300x400";
 
+                        // --- 2. THE OUT OF STOCK LOGIC ---
+                        const isOOS = product.isOutOfStock === true;
+                        const oosBadgeHtml = isOOS ? `<div class="oos-badge">Out of Stock</div>` : '';
+                        const imgStyle = isOOS ? `style="opacity: 0.5;"` : '';
+
                         // Discount Strikethrough Logic
                         let priceHtml = `<p class="product-price">₹${price}</p>`;
                         if (originalPrice > price) {
@@ -411,7 +420,8 @@
                         // data-category is saved so the UI chips can filter it further
                         const productCardHtml = `
                             <div class="product-card" data-category="${category}" onclick="window.location.href='productview.html?id=${productId}'">
-                                <img class="product-image" src="${imgUrl}" alt="${title}">
+                                ${oosBadgeHtml}
+                                <img class="product-image" src="${imgUrl}" alt="${title}" ${imgStyle}>
                                 <div class="product-info">
                                     <h3 class="product-title">${title}</h3>
                                     ${priceHtml}
