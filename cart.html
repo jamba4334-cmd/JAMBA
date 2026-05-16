@@ -23,7 +23,6 @@
         .item-meta { font-size: 12px; color: #777; margin-bottom: 8px; }
         .item-price { font-weight: bold; font-size: 16px; }
         
-        /* Adjusted Remove Button (Bottom Right) */
         .remove-btn { position: absolute; bottom: 15px; right: 15px; color: #ff4d4d; font-size: 12px; cursor: pointer; font-weight: bold; }
         .remove-btn:hover { text-decoration: underline; }
 
@@ -90,7 +89,6 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <script type="module">
-        // Firebase Setup
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -108,8 +106,9 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // ⚠️ IMPORTANT: UPDATE THIS TO YOUR DEPLOYED PYTHON URL BEFORE GOING LIVE
-        const BACKEND_URL = "http://127.0.0.1:10000"; 
+        // ⚠️ LIVE PRODUCTION URL CONFIGURATION
+        // Replace this exact text with your hosting URL (e.g., "https://jamba-backend.onrender.com")
+        const BACKEND_URL = "https://your-deployed-flask-url.com"; 
 
         let currentUser = null;
         let savedAddress = null;
@@ -173,8 +172,7 @@
                             <p class="item-price">₹${(item.price * item.quantity).toLocaleString('en-IN')}</p>
                         </div>
                         <span class="remove-btn" onclick="removeItem(${index})">REMOVE</span>
-                    </div>
-                `;
+                    </div>`;
             });
 
             finalAmount = total;
@@ -183,14 +181,11 @@
             document.getElementById('grand-total').innerText = '₹' + total.toLocaleString('en-IN');
         };
 
-        // --- QUANTITY FUNCTIONS ---
         window.updateQty = (index, change) => {
             let cart = JSON.parse(localStorage.getItem('jambaCart')) || [];
             let currentQty = parseInt(cart[index].quantity) || 1;
             let newQty = currentQty + change;
-            
             if (newQty < 1) return; 
-            
             cart[index].quantity = newQty;
             localStorage.setItem('jambaCart', JSON.stringify(cart));
             renderCart();
@@ -199,9 +194,7 @@
         window.setQty = (index, value) => {
             let cart = JSON.parse(localStorage.getItem('jambaCart')) || [];
             let newQty = parseInt(value);
-            
             if (isNaN(newQty) || newQty < 1) newQty = 1; 
-            
             cart[index].quantity = newQty;
             localStorage.setItem('jambaCart', JSON.stringify(cart));
             renderCart();
@@ -214,15 +207,10 @@
             renderCart();
         };
 
-        // 3. PYTHON BACKEND & RAZORPAY INTEGRATION
+        // 3. SECURE CHECKOUT FLOW HOOKS
         window.startPayment = async () => {
             if (!savedAddress) {
                 alert("Please save your shipping address first!");
-                return;
-            }
-
-            if (finalAmount <= 0) {
-                alert("Your cart total must be greater than ₹0 to checkout.");
                 return;
             }
 
@@ -234,7 +222,7 @@
             const customerEmail = currentUser.email || "guest@jambawear.com";
 
             try {
-                // STEP 1: Ask Python to calculate true price and generate Razorpay Order
+                // Call Python server to create a tamper-proof backend check on prices
                 const res = await fetch(`${BACKEND_URL}/create-order`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -243,22 +231,22 @@
 
                 if (!res.ok) {
                     const errorData = await res.json();
-                    throw new Error(errorData.error || "Failed to create order on server.");
+                    throw new Error(errorData.error || "Failed to establish database transaction.");
                 }
 
                 const order = await res.json();
 
-                // STEP 2: Open Razorpay using the secure server-generated Order ID
+                // Open checkout overlay using verification context
                 const options = {
                     "key": "rzp_test_SZxdNM9vw8sb9u", 
                     "amount": order.amount,
                     "currency": order.currency,
                     "name": "JAMBA WEAR",
-                    "description": "Purchase from Official Store",
+                    "description": "Official Store Procurement Pipeline",
                     "image": "https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/assets/JAMBA.png",
-                    "order_id": order.id, // The secure ID from Python
+                    "order_id": order.id, 
                     "handler": async function (response) {
-                        payBtn.innerText = "Verifying Payment...";
+                        payBtn.innerText = "Verifying Transaction...";
                         await verifyPaymentWithBackend(response);
                     },
                     "prefill": {
@@ -271,21 +259,19 @@
 
                 const rzp = new Razorpay(options);
                 rzp.on('payment.failed', function (response){
-                    alert("Razorpay Error: " + response.error.description);
-                    console.error(response.error);
+                    alert("Razorpay Network Fault: " + response.error.description);
                     payBtn.disabled = false;
                     payBtn.innerText = "Proceed to Payment";
                 });
                 rzp.open();
 
             } catch (err) {
-                alert("Checkout Error: " + err.message);
+                alert("Network Routing Interrupted: " + err.message + "\nMake sure your Flask service backend is active and running.");
                 payBtn.disabled = false;
                 payBtn.innerText = "Proceed to Payment";
             }
         };
 
-        // STEP 3: Confirm payment success with Python and clean up
         async function verifyPaymentWithBackend(paymentData) {
             try {
                 const res = await fetch(`${BACKEND_URL}/api/verify-payment`, {
@@ -294,16 +280,12 @@
                     body: JSON.stringify(paymentData)
                 });
 
-                if (!res.ok) throw new Error("Payment verification failed on the server.");
-
-                // Clear the cart
+                if (!res.ok) throw new Error("Signature verification match rejected.");
                 localStorage.removeItem('jambaCart'); 
-                
-                // Redirect user to orders page
                 window.location.href = "orders.html";
             } catch (err) {
-                console.error("Verification Error:", err);
-                alert("Payment captured but verification failed. Save this Payment ID: " + paymentData.razorpay_payment_id);
+                console.error("Verification Loop Broken:", err);
+                alert("Payment cleared from ledger, verification timeout. Reference ID: " + paymentData.razorpay_payment_id);
                 document.getElementById('pay-btn').disabled = false;
                 document.getElementById('pay-btn').innerText = "Proceed to Payment";
             }
