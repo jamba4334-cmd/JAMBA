@@ -93,7 +93,7 @@
         // Firebase Setup
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBgH8hpWJ97mqLFfoDDW9A_78pR5YjEmxo",
@@ -107,6 +107,9 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+
+        // ⚠️ IMPORTANT: UPDATE THIS TO YOUR DEPLOYED PYTHON URL BEFORE GOING LIVE
+        const BACKEND_URL = "http://127.0.0.1:10000"; 
 
         let currentUser = null;
         let savedAddress = null;
@@ -186,7 +189,7 @@
             let currentQty = parseInt(cart[index].quantity) || 1;
             let newQty = currentQty + change;
             
-            if (newQty < 1) return; // Prevent quantity from dropping to 0 or below
+            if (newQty < 1) return; 
             
             cart[index].quantity = newQty;
             localStorage.setItem('jambaCart', JSON.stringify(cart));
@@ -211,8 +214,8 @@
             renderCart();
         };
 
-        // 3. RAZORPAY & FIREBASE INTEGRATION (BULLETPROOF TEST VERSION)
-        window.startPayment = () => {
+        // 3. PYTHON BACKEND & RAZORPAY INTEGRATION
+        window.startPayment = async () => {
             if (!savedAddress) {
                 alert("Please save your shipping address first!");
                 return;
@@ -223,65 +226,89 @@
                 return;
             }
 
-            const options = {
-                "key": "rzp_test_SZxdNM9vw8sb9u", // Your new Test Key
-                "amount": finalAmount * 100, // Razorpay calculates in paise
-                "currency": "INR",
-                "name": "JAMBA WEAR",
-                "description": "Purchase from Official Store",
-                "image": "https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/assets/JAMBA.png",
-                "handler": async function (response) {
-                    await saveOrderToFirebase(response.razorpay_payment_id);
-                },
-                // FORCING PERFECT DUMMY DATA TO BYPASS RAZORPAY VALIDATION CRASHES
-                "prefill": {
-                    "name": "JAMBA Customer",
-                    "email": "test@jambawear.com",
-                    "contact": "9876543210"
-                },
-                "theme": { "color": "#1a1a1a" }
-            };
+            const payBtn = document.getElementById('pay-btn');
+            payBtn.disabled = true;
+            payBtn.innerText = "Processing Securely...";
 
-            const rzp = new Razorpay(options);
+            const cart = JSON.parse(localStorage.getItem('jambaCart')) || [];
+            const customerEmail = currentUser.email || "guest@jambawear.com";
 
-            // THIS WILL CATCH THE EXACT ERROR IF IT STILL FAILS
-            rzp.on('payment.failed', function (response){
-                alert("Razorpay Error: " + response.error.description);
-                console.error(response.error);
-            });
-
-            rzp.open();
-        };
-
-        async function saveOrderToFirebase(paymentId) {
-            const cart = JSON.parse(localStorage.getItem('jambaCart'));
-            
             try {
-                const orderData = {
-                    customerId: currentUser.uid,
-                    customerContact: currentUser.email || currentUser.phoneNumber || savedAddress.phone,
-                    razorpay_id: paymentId,
-                    items: cart,
-                    totalAmount: finalAmount,
-                    status: "processing",
-                    createdAt: serverTimestamp(),
-                    shippingAddress: savedAddress // Takes a snapshot of the current address
+                // STEP 1: Ask Python to calculate true price and generate Razorpay Order
+                const res = await fetch(`${BACKEND_URL}/create-order`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ cart: cart, customer: customerEmail })
+                });
+
+                if (!res.ok) {
+                    const errorData = await res.json();
+                    throw new Error(errorData.error || "Failed to create order on server.");
+                }
+
+                const order = await res.json();
+
+                // STEP 2: Open Razorpay using the secure server-generated Order ID
+                const options = {
+                    "key": "rzp_test_SZxdNM9vw8sb9u", 
+                    "amount": order.amount,
+                    "currency": order.currency,
+                    "name": "JAMBA WEAR",
+                    "description": "Purchase from Official Store",
+                    "image": "https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/assets/JAMBA.png",
+                    "order_id": order.id, // The secure ID from Python
+                    "handler": async function (response) {
+                        payBtn.innerText = "Verifying Payment...";
+                        await verifyPaymentWithBackend(response);
+                    },
+                    "prefill": {
+                        "name": savedAddress.name || "JAMBA Customer",
+                        "email": customerEmail,
+                        "contact": savedAddress.phone || ""
+                    },
+                    "theme": { "color": "#1a1a1a" }
                 };
 
-                await addDoc(collection(db, "orders"), orderData);
-                
-                // Clear the cart after successful payment
+                const rzp = new Razorpay(options);
+                rzp.on('payment.failed', function (response){
+                    alert("Razorpay Error: " + response.error.description);
+                    console.error(response.error);
+                    payBtn.disabled = false;
+                    payBtn.innerText = "Proceed to Payment";
+                });
+                rzp.open();
+
+            } catch (err) {
+                alert("Checkout Error: " + err.message);
+                payBtn.disabled = false;
+                payBtn.innerText = "Proceed to Payment";
+            }
+        };
+
+        // STEP 3: Confirm payment success with Python and clean up
+        async function verifyPaymentWithBackend(paymentData) {
+            try {
+                const res = await fetch(`${BACKEND_URL}/api/verify-payment`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(paymentData)
+                });
+
+                if (!res.ok) throw new Error("Payment verification failed on the server.");
+
+                // Clear the cart
                 localStorage.removeItem('jambaCart'); 
                 
-                // Redirect user to their orders page
+                // Redirect user to orders page
                 window.location.href = "orders.html";
-            } catch (e) {
-                console.error("Order Save Error:", e);
-                alert("Payment Success, but Database failed. Save your payment ID for reference: " + paymentId);
+            } catch (err) {
+                console.error("Verification Error:", err);
+                alert("Payment captured but verification failed. Save this Payment ID: " + paymentData.razorpay_payment_id);
+                document.getElementById('pay-btn').disabled = false;
+                document.getElementById('pay-btn').innerText = "Proceed to Payment";
             }
         }
 
-        // Initialize cart when the page loads
         renderCart();
     </script>
 </body>
