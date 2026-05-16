@@ -102,9 +102,9 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // ⚠️ LIVE PRODUCTION URL CONFIGURATION ⚠️
-        // REPLACE THIS STRING WITH YOUR RENDER/HEROKU APP URL (Ensure NO trailing slash at the end)
-        const BACKEND_URL = "YOUR_RENDER_URL_GOES_HERE"; 
+        // ✅ LIVE PRODUCTION URL CONFIGURATION
+        // Now pointing to your active Render server!
+        const BACKEND_URL = "https://jamba-backend.onrender.com"; 
 
         let currentUser = null;
         let savedAddress = null;
@@ -221,6 +221,12 @@
                     body: JSON.stringify({ cart: cart, customer: customerEmail })
                 });
 
+                // SMART ERROR HANDLING: Prevents the HTML/JSON crash if server goes to sleep
+                const contentType = res.headers.get("content-type");
+                if (!contentType || !contentType.includes("application/json")) {
+                    throw new Error(`The server at ${BACKEND_URL} returned a webpage instead of data. The server might be waking up or deployed incorrectly. Try again in 30 seconds.`);
+                }
+
                 if (!res.ok) {
                     const errorData = await res.json();
                     throw new Error(errorData.error || "Failed to establish database transaction.");
@@ -257,7 +263,7 @@
                 rzp.open();
 
             } catch (err) {
-                alert("Network Routing Interrupted: " + err.message + "\nMake sure your Flask service backend is active and running.");
+                alert("Network Interrupted: \n" + err.message);
                 payBtn.disabled = false;
                 payBtn.innerText = "Proceed to Payment";
             }
@@ -271,12 +277,19 @@
                     body: JSON.stringify(paymentData)
                 });
 
+                // SMART ERROR HANDLING
+                const contentType = res.headers.get("content-type");
+                if (!contentType || !contentType.includes("application/json")) {
+                    throw new Error("Verification failed: Server returned HTML instead of JSON.");
+                }
+
                 if (!res.ok) throw new Error("Signature verification match rejected.");
+                
                 localStorage.removeItem('jambaCart'); 
                 window.location.href = "orders.html";
             } catch (err) {
                 console.error("Verification Loop Broken:", err);
-                alert("Payment cleared from ledger, verification timeout. Reference ID: " + paymentData.razorpay_payment_id);
+                alert("Payment cleared from ledger, but backend verification failed.\n" + err.message);
                 document.getElementById('pay-btn').disabled = false;
                 document.getElementById('pay-btn').innerText = "Proceed to Payment";
             }
