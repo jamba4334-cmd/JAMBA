@@ -6,7 +6,7 @@
     <title id="page-title">JAMBA WEAR | Loading Product...</title>
     
     <style>
-        /* --- GLOBAL THEME STYLES (Synced with index.html) --- */
+        /* --- GLOBAL THEME STYLES --- */
         :root {
             --primary: #1a1a1a;
             --accent: #d2b48c;
@@ -95,7 +95,6 @@
         .dropdown-header { padding: 15px; font-weight: bold; font-size: 14px; background-color: #fafafa; border-bottom: 1px solid #eaeaea; color: var(--primary); }
         .dropdown-menu a { padding: 12px 15px; font-size: 13px; color: var(--text-main); border-bottom: 1px solid #f5f5f5; transition: background 0.2s; }
         .dropdown-menu a:hover { background-color: #f9f9f9; color: var(--primary); }
-        
         .logout-link { color: #d9534f !important; font-weight: bold; border-top: 1px solid #eee; }
 
         /* --- PRODUCT LAYOUT --- */
@@ -108,6 +107,7 @@
         .product-image-section { flex: 1.2; display: flex; flex-direction: column; gap: 10px; }
         .product-image-box { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .product-image-box img { width: 100%; height: auto; display: block; object-fit: cover; aspect-ratio: 3/4; transition: 0.3s; }
+        .product-image-box.oos-dim img { opacity: 0.5; } /* Dims image if OOS */
 
         /* --- IMAGE SLIDER THUMBNAILS --- */
         .slider-thumbnails { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; padding-bottom: 5px; }
@@ -117,6 +117,10 @@
         .slider-thumb.active { opacity: 1; border-color: var(--primary); }
 
         .product-details { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+        
+        /* OOS Badge styling */
+        .oos-text-badge { background-color: #dc2626; color: white; padding: 4px 8px; font-size: 10px; font-weight: bold; text-transform: uppercase; border-radius: 4px; display: inline-block; width: fit-content; letter-spacing: 1px; }
+
         .brand-name { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-light); margin: 0; }
         .product-title { font-size: 26px; font-weight: 400; margin: 0; line-height: 1.2; letter-spacing: 0.5px; }
         .product-price { font-size: 22px; font-weight: bold; color: var(--primary); margin: 0; }
@@ -124,7 +128,6 @@
         .divider { height: 1px; background-color: #eee; width: 100%; margin: 5px 0; }
         .product-desc { font-size: 14px; color: var(--text-main); line-height: 1.6; margin: 0; }
 
-        /* Safe Meta Details (No Seller Info) */
         .meta-details { background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #eee; font-size: 13px; color: var(--text-light); display: flex; flex-direction: column; gap: 8px; }
         .meta-item strong { color: var(--primary); font-weight: bold; width: 80px; display: inline-block; }
 
@@ -135,8 +138,16 @@
         .size-btn { width: 50px; height: 50px; border: 1px solid #ddd; background: white; border-radius: 4px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .size-btn.selected { background: var(--primary); color: white; border-color: var(--primary); }
 
-        .add-to-cart-btn { background-color: var(--primary); color: white; border: none; padding: 18px; width: 100%; font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; border-radius: 4px; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        /* ACTION BUTTONS */
+        .btn-container { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        
+        .buy-now-btn { background-color: var(--accent); color: white; border: none; padding: 18px; width: 100%; font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; border-radius: 4px; cursor: pointer; transition: 0.3s; }
+        .buy-now-btn:hover { background-color: #b58d4a; }
+        
+        .add-to-cart-btn { background-color: var(--primary); color: white; border: none; padding: 18px; width: 100%; font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; border-radius: 4px; cursor: pointer; transition: 0.3s; }
         .add-to-cart-btn:hover { background-color: #333; }
+        
+        .disabled-btn { background-color: #d1d5db !important; color: #6b7280 !important; cursor: not-allowed !important; pointer-events: none; border: 1px solid #d1d5db !important; }
         
         .loading-state { text-align: center; padding: 100px 20px; color: var(--text-light); font-weight: bold; text-transform: uppercase; letter-spacing: 2px; }
         .error-state { text-align: center; padding: 100px 20px; }
@@ -186,7 +197,7 @@
                     <a href="orders.html">Orders</a>
                     <a href="address.html">Address</a>
                     <a href="#">Wishlist</a>
-                    <a href="#">Contact Us</a>
+                    <a href="contact.html">Contact Us</a>
                     <a href="javascript:void(0)" id="dropdown-logout-link" class="logout-link" onclick="handleAuthAction()">Logout</a>
                 </div>
             </div>
@@ -253,7 +264,6 @@
             }
 
             try {
-                // First try searching by custom item_id (e.g. JW123456)
                 const q = query(collection(db, "products"), where("item_id", "==", urlId));
                 const querySnapshot = await getDocs(q);
 
@@ -262,7 +272,6 @@
                     globalProduct.id = globalProduct.item_id || querySnapshot.docs[0].id;
                     renderProductPage();
                 } else {
-                    // Fallback: try searching by exact Firestore Document ID
                     const docRef = doc(db, "products", urlId);
                     const docSnap = await getDoc(docRef);
                     if (docSnap.exists()) {
@@ -304,17 +313,42 @@
                 sliderHtml += `</div>`;
             }
 
+            // --- OUT OF STOCK LOGIC ---
+            const isOOS = globalProduct.isOutOfStock === true;
+            const oosBadgeHtml = isOOS ? `<div class="oos-text-badge">Currently Out of Stock</div>` : '';
+            const imgBoxClass = isOOS ? 'product-image-box oos-dim' : 'product-image-box';
+
+            let actionButtonsHtml = '';
+            if (isOOS) {
+                // If Out of Stock, render grayed-out disabled buttons
+                actionButtonsHtml = `
+                    <div class="btn-container">
+                        <button class="buy-now-btn disabled-btn">Out of Stock</button>
+                        <button class="add-to-cart-btn disabled-btn">Out of Stock</button>
+                    </div>
+                `;
+            } else {
+                // If In Stock, render active actionable buttons
+                actionButtonsHtml = `
+                    <div class="btn-container">
+                        <button class="buy-now-btn" onclick="buyNow()">Buy Now</button>
+                        <button class="add-to-cart-btn" id="add-btn" onclick="addToCart()">Add to Cart</button>
+                    </div>
+                `;
+            }
+
             // Render Layout
             mainContent.innerHTML = `
                 <div class="product-container">
                     <div class="product-image-section">
-                        <div class="product-image-box">
+                        <div class="${imgBoxClass}">
                             <img id="main-product-img" src="${mainImgUrl}" alt="${globalProduct.title}">
                         </div>
                         ${sliderHtml}
                     </div>
                     
                     <div class="product-details">
+                        ${oosBadgeHtml}
                         <p class="brand-name">JAMBA WEAR | LUXURY ETHNIC</p>
                         <h1 class="product-title">${globalProduct.title}</h1>
                         ${priceHtml}
@@ -336,7 +370,8 @@
                                 <button class="size-btn" onclick="selectSize(this, 'XL')">XL</button>
                             </div>
                         </div>
-                        <button class="add-to-cart-btn" id="add-btn" onclick="addToCart()">Add to Cart</button>
+                        
+                        ${actionButtonsHtml}
                     </div>
                 </div>
             `;
@@ -354,7 +389,6 @@
         // --- GLOBAL UI FUNCTIONS ---
         window.changeMainImage = function(newSrc, clickedThumb) {
             document.getElementById('main-product-img').src = newSrc;
-            // Update active state border
             document.querySelectorAll('.slider-thumb').forEach(thumb => thumb.classList.remove('active'));
             clickedThumb.classList.add('active');
         }
@@ -365,6 +399,7 @@
             selectedSize = size;
         };
 
+        // Standard Add To Cart
         window.addToCart = function() {
             if(!globalProduct) return;
             
@@ -394,6 +429,26 @@
                 btn.innerText = "Add to Cart";
                 btn.style.backgroundColor = "";
             }, 2000);
+        };
+
+        // --- NEW: DIRECT BUY NOW LOGIC ---
+        window.buyNow = function() {
+            if(!globalProduct) return;
+            
+            // This completely overwrites the cart array with ONLY the current item
+            const singleItemCart = [{
+                id: globalProduct.id,
+                title: globalProduct.title,
+                price: globalProduct.selling_price,
+                image: (globalProduct.images && globalProduct.images.length > 0) ? globalProduct.images[0] : "",
+                size: selectedSize,
+                quantity: 1
+            }];
+
+            localStorage.setItem('jambaCart', JSON.stringify(singleItemCart));
+            
+            // Redirect straight to cart/checkout flow
+            window.location.href = "cart.html";
         };
 
         // Fetch data when page loads
