@@ -15,7 +15,6 @@
         .container { max-width: 800px; margin: 20px auto; padding: 0 20px; }
         .page-title { font-size: 22px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 30px; border-bottom: 2px solid var(--primary); padding-bottom: 10px; display: inline-block; }
 
-        /* --- CART ITEMS --- */
         .cart-item { display: flex; gap: 15px; background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--border); position: relative; }
         .item-img { width: 80px; height: 100px; object-fit: cover; border-radius: 4px; }
         .item-info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
@@ -26,20 +25,17 @@
         .remove-btn { position: absolute; bottom: 15px; right: 15px; color: #ff4d4d; font-size: 12px; cursor: pointer; font-weight: bold; }
         .remove-btn:hover { text-decoration: underline; }
 
-        /* --- QUANTITY CONTROL --- */
         .qty-wrapper { display: flex; align-items: center; gap: 5px; margin-top: 5px; }
         .qty-btn { background: var(--border); border: none; width: 24px; height: 24px; border-radius: 4px; font-weight: bold; cursor: pointer; color: var(--primary); display: flex; align-items: center; justify-content: center; }
         .qty-btn:hover { background: #dcdcdc; }
         .qty-input { width: 35px; height: 24px; text-align: center; border: 1px solid var(--border); border-radius: 4px; font-size: 13px; font-weight: 600; padding: 0; }
         .qty-input::-webkit-outer-spin-button, .qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
-        /* --- ADDRESS CONFIRMATION BOX --- */
         .address-box { background: #fff; border: 1.5px dashed var(--accent); padding: 15px; border-radius: 8px; margin: 30px 0; }
         .address-header { font-size: 12px; font-weight: bold; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; display: flex; justify-content: space-between; }
         .address-text { font-size: 14px; line-height: 1.4; color: #555; }
         .no-address { color: #d9534f; font-weight: bold; }
 
-        /* --- SUMMARY & CHECKOUT --- */
         .summary { background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--border); }
         .summary-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
         .total-row { border-top: 1px solid #eee; padding-top: 15px; margin-top: 15px; font-weight: bold; font-size: 18px; }
@@ -106,15 +102,14 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // ⚠️ LIVE PRODUCTION URL CONFIGURATION
-        // Replace this exact text with your hosting URL (e.g., "https://jamba-backend.onrender.com")
-        const BACKEND_URL = "https://your-deployed-flask-url.com"; 
+        // ⚠️ LIVE PRODUCTION URL CONFIGURATION ⚠️
+        // REPLACE THIS STRING WITH YOUR RENDER/HEROKU APP URL (Ensure NO trailing slash at the end)
+        const BACKEND_URL = "YOUR_RENDER_URL_GOES_HERE"; 
 
         let currentUser = null;
         let savedAddress = null;
         let finalAmount = 0;
 
-        // 1. AUTH & ADDRESS SYNC
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
@@ -135,7 +130,6 @@
             }
         });
 
-        // 2. RENDER CART ITEMS
         window.renderCart = () => {
             const cart = JSON.parse(localStorage.getItem('jambaCart')) || [];
             const container = document.getElementById('cart-items-container');
@@ -207,7 +201,6 @@
             renderCart();
         };
 
-        // 3. SECURE CHECKOUT FLOW HOOKS
         window.startPayment = async () => {
             if (!savedAddress) {
                 alert("Please save your shipping address first!");
@@ -222,7 +215,6 @@
             const customerEmail = currentUser.email || "guest@jambawear.com";
 
             try {
-                // Call Python server to create a tamper-proof backend check on prices
                 const res = await fetch(`${BACKEND_URL}/create-order`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -236,7 +228,6 @@
 
                 const order = await res.json();
 
-                // Open checkout overlay using verification context
                 const options = {
                     "key": "rzp_test_SZxdNM9vw8sb9u", 
                     "amount": order.amount,
