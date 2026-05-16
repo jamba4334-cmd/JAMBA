@@ -330,23 +330,26 @@
                 sliderHtml += `</div>`;
             }
 
-            // --- VISUAL FORMATTING LOGIC FOR CATEGORY (No DB changes) ---
+            // --- VISUAL FORMATTING LOGIC FOR CATEGORY ---
             let displayCategory = globalProduct.category || 'N/A';
             if (displayCategory.includes('-')) {
                 const parts = displayCategory.split('-');
                 if (parts.length === 2) {
                     const p1 = parts[0].trim();
                     const p2 = parts[1].trim();
-                    // Put Men/Women first
                     if (p2.toLowerCase() === 'men' || p2.toLowerCase() === 'women') {
                         displayCategory = p2 + ' ' + p1;
                     } else if (p1.toLowerCase() === 'men' || p1.toLowerCase() === 'women') {
                         displayCategory = p1 + ' ' + p2;
                     } else {
-                        displayCategory = p1 + ' ' + p2; // Just remove hyphen if neither is gender
+                        displayCategory = p1 + ' ' + p2; 
                     }
                 }
             }
+
+            // --- DYNAMIC BRAND & SELLER DISPLAY ---
+            const displayBrand = globalProduct.brandName || 'JAMBA WEAR';
+            const displaySeller = globalProduct.sellerName || 'LUXURY ETHNIC';
 
             // --- OUT OF STOCK LOGIC ---
             const isOOS = globalProduct.isOutOfStock === true;
@@ -370,7 +373,7 @@
                 `;
             }
 
-            // Render Layout
+            // Render Layout inside the flex-1 main container
             mainContent.innerHTML = `
                 <div class="product-container" style="flex: 1; width: 100%;">
                     <div class="product-image-section">
@@ -382,7 +385,7 @@
                     
                     <div class="product-details">
                         ${oosBadgeHtml}
-                        <p class="brand-name">JAMBA WEAR | LUXURY ETHNIC</p>
+                        <p class="brand-name">${displayBrand} | ${displaySeller}</p>
                         <h1 class="product-title">${globalProduct.title}</h1>
                         ${priceHtml}
                         <div class="divider"></div>
