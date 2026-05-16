@@ -10,12 +10,6 @@
     <meta name="keywords" content="JAMBA WEAR, Bodo waistcoat, Assamese traditional patterns, Guwahati fashion brand, streetwear, ethnic wear, men's fashion">
     <meta name="robots" content="index, follow">
 
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://jamba4334-cmd.github.io/">
-    <meta property="og:title" content="JAMBA WEAR | Premium Bodo & Assamese Streetwear">
-    <meta property="og:description" content="Shop the official JAMBA WEAR store. Premium Bodo waistcoats and modern streetwear.">
-    <meta property="og:image" content="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/assets/JAMBA.png">
-
     <style>
         /* --- GLOBAL THEME STYLES --- */
         :root {
@@ -103,7 +97,6 @@
 
         .nav-icon { width: 22px; height: 22px; fill: none; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-        /* --- LOGIN BUTTON --- */
         .login-nav-btn {
             background-color: var(--primary);
             color: white;
@@ -120,7 +113,6 @@
         }
         .login-nav-btn:hover { background-color: transparent; color: var(--primary); }
 
-        /* --- CART & PROFILE --- */
         .cart-icon-wrapper { position: relative; display: flex; align-items: center; justify-content: center; }
         .cart-badge {
             position: absolute; top: -5px; right: -8px; background-color: var(--accent); color: #fff;
@@ -137,16 +129,13 @@
         .dropdown-header { padding: 15px; font-weight: bold; font-size: 14px; background-color: #fafafa; border-bottom: 1px solid #eaeaea; color: var(--primary); }
         .dropdown-menu a { padding: 12px 15px; font-size: 13px; color: var(--text-main); border-bottom: 1px solid #f5f5f5; transition: background 0.2s; }
         .dropdown-menu a:hover { background-color: #f9f9f9; color: var(--primary); }
-        
         .logout-link { color: #d9534f !important; font-weight: bold; border-top: 1px solid #eee; }
 
-        /* --- CATEGORY CHIPS --- */
         .category-scroll { display: flex; overflow-x: auto; gap: 12px; padding: 15px 15px 5px; scrollbar-width: none; }
         .category-scroll::-webkit-scrollbar { display: none; }
         .chip { padding: 8px 20px; background-color: white; border: 1px solid #ddd; border-radius: 20px; font-size: 13px; white-space: nowrap; color: var(--text-main); box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: all 0.2s; }
         .chip.active { background-color: var(--primary); color: white; border-color: var(--primary); }
 
-        /* --- HERO & PRODUCT GRID --- */
         .hero { display: flex; flex-direction: column; gap: 10px; padding: 10px; }
         .hero-banner { position: relative; height: 240px; border-radius: 8px; overflow: hidden; display: flex; justify-content: center; align-items: center; background-color: #000; }
         .hero-banner video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
@@ -158,11 +147,27 @@
         .view-all:hover { border-color: var(--accent); color: var(--primary); }
 
         .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 15px; margin-bottom: 30px; }
-        .product-card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.04); text-align: left; transition: transform 0.2s; cursor: pointer; }
-        .product-image { width: 100%; aspect-ratio: 3 / 4; background-color: #eaeaea; object-fit: cover; border-bottom: 1px solid #f0f0f0; }
+        .product-card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.04); text-align: left; transition: transform 0.2s; cursor: pointer; position: relative; }
+        .product-image { width: 100%; aspect-ratio: 3 / 4; background-color: #eaeaea; object-fit: cover; border-bottom: 1px solid #f0f0f0; transition: 0.3s; }
         .product-info { padding: 12px; }
         .product-title { margin: 0 0 6px 0; font-size: 12px; color: var(--text-main); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .product-price { margin: 0; color: var(--primary); font-size: 13px; font-weight: bold; }
+
+        /* --- OOS BADGE STYLE --- */
+        .oos-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(220, 38, 38, 0.95);
+            color: white;
+            padding: 6px 10px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            z-index: 10;
+        }
 
         .seo-footer { text-align: center; padding: 60px 20px; background-color: #fff; border-top: 1px solid #eee; margin-top: 40px; }
 
@@ -174,7 +179,6 @@
             .product-grid { grid-template-columns: repeat(4, 1fr); padding: 0 5%; gap: 25px; }
             .section-header { padding: 50px 5% 20px; }
         }
-
         @media (max-width: 767px) {
             .logo img { width: 140px; }
             .top-bar { padding: 0 10px; }
@@ -193,7 +197,6 @@
         
         <div class="right-actions">
             <button id="header-login-btn" class="login-nav-btn" onclick="handleAuthAction()">Login</button>
-
             <a href="cart.html" class="action-item">
                 <div class="cart-icon-wrapper">
                     <svg class="nav-icon" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
@@ -201,7 +204,6 @@
                 </div>
                 <span class="nav-text">Cart</span>
             </a>
-
             <div class="profile-wrapper">
                 <div class="action-item" id="profile-btn">
                     <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
@@ -283,16 +285,12 @@
             authDomain: "jamba-wear.firebaseapp.com",
             projectId: "jamba-wear",
             storageBucket: "jamba-wear.firebasestorage.app",
-            messagingSenderId: "679544590258",
-            appId: "1:679544590258:web:eac3841e5f555e3fb89eab",
-            measurementId: "G-8XSNJG079Z"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // --- 1. AUTHENTICATION LOGIC ---
         window.handleAuthAction = () => {
             if (auth.currentUser) signOut(auth).then(() => { window.location.reload(); });
             else window.location.href = "login.html";
@@ -301,25 +299,21 @@
         onAuthStateChanged(auth, (user) => {
             const userDisplay = document.getElementById('user-display-name');
             const loginBtn = document.getElementById('header-login-btn');
-            const dropdownLogin = document.getElementById('dropdown-login-link');
             const dropdownLogout = document.getElementById('dropdown-logout-link');
-
+            const dropdownLogin = document.getElementById('dropdown-login-link');
             if (user) {
-                document.body.classList.add('logged-in');
-                userDisplay.innerText = "Hi, " + (user.displayName || "Member");
-                loginBtn.style.display = 'none';
-                dropdownLogin.style.display = 'none';
-                dropdownLogout.style.display = 'block';
+                if(userDisplay) userDisplay.innerText = "Hi, " + (user.displayName || "Member");
+                if(loginBtn) loginBtn.style.display = 'none';
+                if(dropdownLogin) dropdownLogin.style.display = 'none';
+                if(dropdownLogout) dropdownLogout.style.display = 'block';
             } else {
-                document.body.classList.remove('logged-in');
-                userDisplay.innerText = "Hi, JAMBA Member";
-                loginBtn.style.display = 'block';
-                dropdownLogin.style.display = 'block';
-                dropdownLogout.style.display = 'none';
+                if(userDisplay) userDisplay.innerText = "Hi, JAMBA Member";
+                if(loginBtn) loginBtn.style.display = 'block';
+                if(dropdownLogin) dropdownLogin.style.display = 'block';
+                if(dropdownLogout) dropdownLogout.style.display = 'none';
             }
         });
 
-        // --- 2. FETCH PRODUCTS FROM FIRESTORE ---
         async function loadStorefrontProducts() {
             const womensGrid = document.getElementById('womens-collection-grid');
             const mensGrid = document.getElementById('mens-collection-grid');
@@ -329,27 +323,29 @@
                 womensGrid.innerHTML = '';
                 mensGrid.innerHTML = '';
 
-                if (querySnapshot.empty) {
-                    womensGrid.innerHTML = '<p style="grid-column: 1 / -1;">No women\'s products found.</p>';
-                    mensGrid.innerHTML = '<p style="grid-column: 1 / -1;">No men\'s products found.</p>';
-                    return;
-                }
-
                 let womenCount = 0;
                 let menCount = 0;
 
                 querySnapshot.forEach((doc) => {
                     const product = doc.data();
+                    
+                    // --- 1. THE HIDE LOGIC ---
+                    if (product.isHidden === true) return; // Completely skip if hidden
+                    
                     const placement = (product.placement || "regular").toLowerCase();
                     const category = (product.category || "").toLowerCase();
 
-                    // ONLY RENDER PRODUCTS SET TO HOMEPAGE HERO IN ADMIN
                     if (placement === "hero") {
                         const productId = product.item_id || doc.id;
                         const title = product.title || "Unnamed Product";
                         const price = product.selling_price || 0;
                         const originalPrice = product.original_price || price;
                         const imgUrl = (product.images && product.images.length > 0) ? product.images[0] : "https://via.placeholder.com/300x400";
+
+                        // --- 2. THE OUT OF STOCK LOGIC ---
+                        const isOOS = product.isOutOfStock === true;
+                        const oosBadgeHtml = isOOS ? `<div class="oos-badge">Out of Stock</div>` : '';
+                        const imgStyle = isOOS ? `style="opacity: 0.5;"` : '';
 
                         let priceHtml = `<p class="product-price">₹${price}</p>`;
                         if (originalPrice > price) {
@@ -358,7 +354,8 @@
 
                         const productCardHtml = `
                             <div class="product-card" onclick="window.location.href='productview.html?id=${productId}'">
-                                <img class="product-image" src="${imgUrl}" alt="${title}">
+                                ${oosBadgeHtml}
+                                <img class="product-image" src="${imgUrl}" alt="${title}" ${imgStyle}>
                                 <div class="product-info">
                                     <h3 class="product-title">${title}</h3>
                                     ${priceHtml}
@@ -366,7 +363,6 @@
                             </div>
                         `;
 
-                        // SORT AND LIMIT TO 4 PER COLLECTION RANGE
                         if (category.includes('women') && womenCount < 4) {
                             womensGrid.innerHTML += productCardHtml;
                             womenCount++;
@@ -380,39 +376,26 @@
                 if (womenCount === 0) womensGrid.innerHTML = '<p style="grid-column: 1 / -1; color: #888;">Select "Homepage Hero" in Admin to display items here.</p>';
                 if (menCount === 0) mensGrid.innerHTML = '<p style="grid-column: 1 / -1; color: #888;">Select "Homepage Hero" in Admin to display items here.</p>';
 
-            } catch (error) {
-                console.error("Error fetching products:", error);
-            }
+            } catch (error) { console.error("Error fetching products:", error); }
         }
 
-        // --- 3. DYNAMIC CMS HERO VIDEO LOADER ---
         async function listenToHeroVideos() {
             try {
                 const docRef = doc(db, "settings", "hero_banners");
                 const docSnapDirect = await getDoc(docRef);
-                
                 if (docSnapDirect.exists()) {
                     const settings = docSnapDirect.data();
                     const womenVideoEl = document.getElementById('womens-hero-video');
                     const menVideoEl = document.getElementById('mens-hero-video');
-
-                    if (settings.women_video && womenVideoEl) {
-                        womenVideoEl.src = settings.women_video;
-                    }
-                    if (settings.men_video && menVideoEl) {
-                        menVideoEl.src = settings.men_video;
-                    }
+                    if (settings.women_video && womenVideoEl) womenVideoEl.src = settings.women_video;
+                    if (settings.men_video && menVideoEl) menVideoEl.src = settings.men_video;
                 }
-            } catch (error) {
-                console.error("Error setting video streams:", error);
-            }
+            } catch (error) { console.error("Error setting video streams:", error); }
         }
 
-        // Kick off engines
         loadStorefrontProducts();
         listenToHeroVideos();
     </script>
-
     <script>
         function updateCartBadge() {
             const cart = JSON.parse(localStorage.getItem('jambaCart')) || [];
@@ -426,10 +409,7 @@
 
         const profileBtn = document.getElementById('profile-btn');
         const dropdownMenu = document.getElementById('dropdown-menu');
-        profileBtn.addEventListener('click', (e) => { 
-            e.stopPropagation(); 
-            dropdownMenu.classList.toggle('show'); 
-        });
+        profileBtn.addEventListener('click', (e) => { e.stopPropagation(); dropdownMenu.classList.toggle('show'); });
         window.addEventListener('click', () => dropdownMenu.classList.remove('show'));
     </script>
 </body>
