@@ -330,6 +330,24 @@
                 sliderHtml += `</div>`;
             }
 
+            // --- VISUAL FORMATTING LOGIC FOR CATEGORY (No DB changes) ---
+            let displayCategory = globalProduct.category || 'N/A';
+            if (displayCategory.includes('-')) {
+                const parts = displayCategory.split('-');
+                if (parts.length === 2) {
+                    const p1 = parts[0].trim();
+                    const p2 = parts[1].trim();
+                    // Put Men/Women first
+                    if (p2.toLowerCase() === 'men' || p2.toLowerCase() === 'women') {
+                        displayCategory = p2 + ' ' + p1;
+                    } else if (p1.toLowerCase() === 'men' || p1.toLowerCase() === 'women') {
+                        displayCategory = p1 + ' ' + p2;
+                    } else {
+                        displayCategory = p1 + ' ' + p2; // Just remove hyphen if neither is gender
+                    }
+                }
+            }
+
             // --- OUT OF STOCK LOGIC ---
             const isOOS = globalProduct.isOutOfStock === true;
             const oosBadgeHtml = isOOS ? `<div class="oos-text-badge">Currently Out of Stock</div>` : '';
@@ -337,7 +355,6 @@
 
             let actionButtonsHtml = '';
             if (isOOS) {
-                // If Out of Stock, render grayed-out disabled buttons
                 actionButtonsHtml = `
                     <div class="btn-container">
                         <button class="buy-now-btn disabled-btn">Out of Stock</button>
@@ -345,7 +362,6 @@
                     </div>
                 `;
             } else {
-                // If In Stock, render active actionable buttons
                 actionButtonsHtml = `
                     <div class="btn-container">
                         <button class="buy-now-btn" onclick="buyNow()">Buy Now</button>
@@ -354,7 +370,7 @@
                 `;
             }
 
-            // Render Layout inside the flex-1 main container so the footer is pushed down
+            // Render Layout
             mainContent.innerHTML = `
                 <div class="product-container" style="flex: 1; width: 100%;">
                     <div class="product-image-section">
@@ -375,7 +391,7 @@
                         <div class="meta-details">
                             <div class="meta-item"><strong>Color:</strong> ${globalProduct.color || 'N/A'}</div>
                             <div class="meta-item"><strong>Fabric:</strong> ${globalProduct.fabric || 'N/A'}</div>
-                            <div class="meta-item"><strong>Category:</strong> ${globalProduct.category || 'N/A'}</div>
+                            <div class="meta-item"><strong>Category:</strong> ${displayCategory}</div>
                         </div>
 
                         <div class="size-section">
