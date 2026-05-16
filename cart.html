@@ -103,7 +103,6 @@
         const db = getFirestore(app);
 
         // ✅ LIVE PRODUCTION URL CONFIGURATION
-        // Now pointing to your active Render server!
         const BACKEND_URL = "https://jamba-backend.onrender.com"; 
 
         let currentUser = null;
@@ -221,7 +220,7 @@
                     body: JSON.stringify({ cart: cart, customer: customerEmail })
                 });
 
-                // SMART ERROR HANDLING: Prevents the HTML/JSON crash if server goes to sleep
+                // SMART ERROR HANDLING
                 const contentType = res.headers.get("content-type");
                 if (!contentType || !contentType.includes("application/json")) {
                     throw new Error(`The server at ${BACKEND_URL} returned a webpage instead of data. The server might be waking up or deployed incorrectly. Try again in 30 seconds.`);
@@ -235,7 +234,8 @@
                 const order = await res.json();
 
                 const options = {
-                    "key": "rzp_test_SZxdNM9vw8sb9u", 
+                    // ✅ THIS IS THE FIX: The correct Key ID from your CSV
+                    "key": "rzp_test_SpyxvDrIKz4ZbL", 
                     "amount": order.amount,
                     "currency": order.currency,
                     "name": "JAMBA WEAR",
@@ -277,7 +277,6 @@
                     body: JSON.stringify(paymentData)
                 });
 
-                // SMART ERROR HANDLING
                 const contentType = res.headers.get("content-type");
                 if (!contentType || !contentType.includes("application/json")) {
                     throw new Error("Verification failed: Server returned HTML instead of JSON.");
