@@ -21,22 +21,13 @@
         .btn-google { background-color: white; color: #555; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
 
-        /* --- OTP SECTION SPACING & ANIMATION --- */
-        #otp-section { 
-            display: none; 
-            margin-top: 30px; 
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            animation: fadeIn 0.4s ease-in-out;
-        }
-
+        #otp-section { display: none; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .divider { margin: 20px 0; color: #aaa; font-size: 11px; display: flex; align-items: center; letter-spacing: 1px; }
         .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: #eee; margin: 0 10px; }
         
         #error-msg { color: #d9534f; font-size: 12px; margin-bottom: 15px; display: none; text-align: center; font-weight: 500; }
-        
         .change-num { font-size: 11px; color: #888; text-decoration: underline; cursor: pointer; margin-top: 10px; display: block; text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
@@ -50,7 +41,7 @@
 
         <div id="success-banner" style="display:none; background:#dcfce7; padding:15px; border-radius:8px; margin-bottom:20px; color:#166534; font-weight:bold;">
             Login Successful! <br><br>
-            <a href="./index.html" style="background:#166534; color:white; padding:10px 15px; border-radius:4px; text-decoration:none; display:inline-block; margin-top:10px;">Click here to enter Store →</a>
+            <a href="./index.html" style="background:#166534; color:white; padding:10px 15px; border-radius:4px; text-decoration:none; display:inline-block; margin-top:10px;">Enter Store →</a>
         </div>
 
         <button class="btn btn-google" id="google-login">
@@ -76,7 +67,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        // 🛠️ We import BOTH signInWithPopup AND signInWithRedirect
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -99,44 +91,37 @@
             errDiv.style.display = 'block';
         };
 
-        // --- 1. CAPTURE ERRORS FROM THE REDIRECT FLOW ---
+        // --- 1. HANDLE MOBILE REDIRECTS (Runs on Page Load) ---
         window.addEventListener('DOMContentLoaded', async () => {
             try {
-                await getRedirectResult(auth);
+                const result = await getRedirectResult(auth);
+                if (result && result.user) {
+                    await syncUserProfile(result.user);
+                    window.location.assign("./index.html");
+                }
             } catch (error) {
-                console.error("Redirect Resolution Failure:", error);
-                showError("Authentication Error: " + error.message);
+                console.error("Redirect Error:", error);
             }
         });
 
-        // --- 2. THE ROUTING ENGINE WITH MANUAL OVERRIDE ---
+        // --- 2. GLOBAL AUTH STATE LISTENER ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // 1. Hide the login inputs immediately
                 document.getElementById('google-login').style.display = 'none';
                 document.getElementById('divider-text').style.display = 'none';
                 document.getElementById('phone-section').style.display = 'none';
                 document.getElementById('otp-section').style.display = 'none';
-                
-                // 2. Reveal the manual override banner in case the browser blocks the redirect
                 document.getElementById('success-banner').style.display = 'block';
-
-                try {
-                    await syncUserProfile(user);
-                } catch (e) {
-                    console.warn("Profile sync blocked by Firestore rules. Bypassing...", e);
-                }
                 
-                // 3. Attempt the automatic redirect using a relative path
+                try { await syncUserProfile(user); } catch (e) { console.warn("Firestore rule block:", e); }
                 window.location.assign("./index.html");
             }
         });
 
-        // Profile Sync Engine to Firestore
+        // --- 3. FIRESTORE PROFILE SYNC ---
         async function syncUserProfile(user) {
             const userRef = doc(db, "users", user.uid);
             const userSnap = await getDoc(userRef);
-            
             if (!userSnap.exists()) {
                 await setDoc(userRef, {
                     name: user.displayName || "JAMBA Customer",
@@ -148,7 +133,32 @@
             }
         }
 
-        // Locked +91 Logic
+        // --- 4. HYBRID GOOGLE LOGIN LOGIC (The Magic Fix) ---
+        const googleProvider = new GoogleAuthProvider();
+        document.getElementById('google-login').onclick = async () => {
+            try {
+                document.getElementById('google-login').innerText = "Connecting to Google...";
+                
+                // Detect if the user is on a mobile device or WebView
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+                if (isMobile) {
+                    // Mobile & App: Use Redirect to bypass popup blockers
+                    await signInWithRedirect(auth, googleProvider);
+                } else {
+                    // Desktop: Use Popup to bypass Edge/Safari Tracking Prevention
+                    const result = await signInWithPopup(auth, googleProvider);
+                    await syncUserProfile(result.user);
+                    window.location.assign("./index.html");
+                }
+            } catch (error) { 
+                console.error("Auth Error:", error);
+                showError(error.message); 
+                document.getElementById('google-login').innerText = "Continue with Google";
+            }
+        };
+
+        // --- 5. PHONE OTP LOGIC ---
         const phoneInput = document.getElementById('phone-number');
         const prefix = "+91 ";
         phoneInput.addEventListener('keydown', (e) => {
@@ -156,19 +166,6 @@
         });
         phoneInput.addEventListener('input', () => { if (!phoneInput.value.startsWith(prefix)) phoneInput.value = prefix; });
 
-        // Google Login via redirect 
-        const googleProvider = new GoogleAuthProvider();
-        document.getElementById('google-login').onclick = async () => {
-            try {
-                document.getElementById('google-login').innerText = "Connecting to Google...";
-                await signInWithRedirect(auth, googleProvider);
-            } catch (error) { 
-                console.error("Auth Initialization Error:", error);
-                showError("Initialization Error: " + error.message); 
-            }
-        };
-
-        // Phone OTP Logic
         let confirmationResult;
         const initRecaptcha = () => {
             if (!window.recaptchaVerifier) {
@@ -180,36 +177,27 @@
             const btn = document.getElementById('send-otp');
             const phoneNumber = phoneInput.value.replace(/\s/g, ''); 
             if (phoneNumber.length < 13) { showError("Please enter a 10-digit number."); return; }
-
-            btn.disabled = true;
-            btn.innerText = "Sending...";
-            initRecaptcha();
-
+            btn.disabled = true; btn.innerText = "Sending..."; initRecaptcha();
             try {
                 confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);
                 document.getElementById('phone-section').style.display = 'none';
                 document.getElementById('otp-section').style.display = 'block';
                 document.getElementById('error-msg').style.display = 'none';
             } catch (error) {
-                btn.disabled = false;
-                btn.innerText = "Send OTP";
-                showError("Error: " + error.message);
-                if (window.grecaptcha) window.grecaptcha.reset();
-                window.recaptchaVerifier = null;
+                btn.disabled = false; btn.innerText = "Send OTP";
+                showError(error.message);
+                if (window.grecaptcha) window.grecaptcha.reset(); window.recaptchaVerifier = null;
             }
         };
 
         document.getElementById('verify-otp').onclick = async () => {
             const btn = document.getElementById('verify-otp');
             const code = document.getElementById('otp-code').value;
-            btn.disabled = true;
-            btn.innerText = "Verifying...";
+            btn.disabled = true; btn.innerText = "Verifying...";
             try {
                 await confirmationResult.confirm(code);
-                // onAuthStateChanged will handle the redirect and UI updates automatically
             } catch (error) {
-                btn.disabled = false;
-                btn.innerText = "Verify & Login";
+                btn.disabled = false; btn.innerText = "Verify & Login";
                 showError("Invalid OTP: " + error.message);
             }
         };
