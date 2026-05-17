@@ -104,17 +104,20 @@
             }
         });
 
-        // --- 2. THE ROUTING ENGINE (Fixes the stuck login page) ---
+        // --- 2. THE BULLETPROOF ROUTING ENGINE ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 document.getElementById('google-login').innerText = "Logging you in...";
+                
                 try {
                     await syncUserProfile(user);
                 } catch (e) {
-                    console.error("Could not sync profile to Firestore. Check Database Rules.", e);
+                    // Even if database rules block the profile creation, we still redirect the user!
+                    console.warn("Profile sync blocked by Firestore rules. Bypassing...");
                 }
-                // Push the user to the homepage
-                window.location.replace("index.html");
+                
+                // Uses explicit relative path to prevent GitHub Pages 404 routing errors
+                window.location.href = "./index.html";
             }
         });
 
@@ -191,13 +194,8 @@
             btn.disabled = true;
             btn.innerText = "Verifying...";
             try {
-                // Confirm the OTP code
-                const result = await confirmationResult.confirm(code);
-                
-                // Note: The onAuthStateChanged listener at the top will automatically 
-                // detect this successful login and redirect the user, so we don't need 
-                // to call window.location.replace() here manually!
-                
+                await confirmationResult.confirm(code);
+                // onAuthStateChanged will handle the redirect automatically!
             } catch (error) {
                 btn.disabled = false;
                 btn.innerText = "Verify & Login";
