@@ -48,12 +48,17 @@
 
         <div id="error-msg"></div>
 
+        <div id="success-banner" style="display:none; background:#dcfce7; padding:15px; border-radius:8px; margin-bottom:20px; color:#166534; font-weight:bold;">
+            Login Successful! <br><br>
+            <a href="./index.html" style="background:#166534; color:white; padding:10px 15px; border-radius:4px; text-decoration:none; display:inline-block; margin-top:10px;">Click here to enter Store →</a>
+        </div>
+
         <button class="btn btn-google" id="google-login">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">
             Continue with Google
         </button>
 
-        <div class="divider">OR USE PHONE</div>
+        <div class="divider" id="divider-text">OR USE PHONE</div>
 
         <div id="phone-section">
             <input type="tel" id="phone-number" value="+91 " maxlength="14">
@@ -104,20 +109,26 @@
             }
         });
 
-        // --- 2. THE BULLETPROOF ROUTING ENGINE ---
+        // --- 2. THE ROUTING ENGINE WITH MANUAL OVERRIDE ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                document.getElementById('google-login').innerText = "Logging you in...";
+                // 1. Hide the login inputs immediately
+                document.getElementById('google-login').style.display = 'none';
+                document.getElementById('divider-text').style.display = 'none';
+                document.getElementById('phone-section').style.display = 'none';
+                document.getElementById('otp-section').style.display = 'none';
                 
+                // 2. Reveal the manual override banner in case the browser blocks the redirect
+                document.getElementById('success-banner').style.display = 'block';
+
                 try {
                     await syncUserProfile(user);
                 } catch (e) {
-                    // Even if database rules block the profile creation, we still redirect the user!
-                    console.warn("Profile sync blocked by Firestore rules. Bypassing...");
+                    console.warn("Profile sync blocked by Firestore rules. Bypassing...", e);
                 }
                 
-                // Uses explicit relative path to prevent GitHub Pages 404 routing errors
-                window.location.href = "./index.html";
+                // 3. Attempt the automatic redirect using a relative path
+                window.location.assign("./index.html");
             }
         });
 
@@ -195,7 +206,7 @@
             btn.innerText = "Verifying...";
             try {
                 await confirmationResult.confirm(code);
-                // onAuthStateChanged will handle the redirect automatically!
+                // onAuthStateChanged will handle the redirect and UI updates automatically
             } catch (error) {
                 btn.disabled = false;
                 btn.innerText = "Verify & Login";
