@@ -71,7 +71,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -94,18 +94,27 @@
             errDiv.style.display = 'block';
         };
 
-        // --- 1. RESOLVE INBOUND REDIRECTS ON BOOT (Fixes White Screen instantly on page load) ---
+        // --- 1. CAPTURE ERRORS FROM THE REDIRECT FLOW ---
         window.addEventListener('DOMContentLoaded', async () => {
             try {
-                const result = await getRedirectResult(auth);
-                if (result && result.user) {
-                    const user = result.user;
-                    await syncUserProfile(user);
-                    window.location.replace("index.html");
-                }
+                await getRedirectResult(auth);
             } catch (error) {
                 console.error("Redirect Resolution Failure:", error);
-                showError("Authentication Redirect Error: " + error.message);
+                showError("Authentication Error: " + error.message);
+            }
+        });
+
+        // --- 2. THE ROUTING ENGINE (Fixes the stuck login page) ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                document.getElementById('google-login').innerText = "Logging you in...";
+                try {
+                    await syncUserProfile(user);
+                } catch (e) {
+                    console.error("Could not sync profile to Firestore. Check Database Rules.", e);
+                }
+                // Push the user to the homepage
+                window.location.replace("index.html");
             }
         });
 
@@ -133,7 +142,7 @@
         });
         phoneInput.addEventListener('input', () => { if (!phoneInput.value.startsWith(prefix)) phoneInput.value = prefix; });
 
-        // Google Login via redirect (Safe for Windows Desktop and Mobile WebView environments)
+        // Google Login via redirect 
         const googleProvider = new GoogleAuthProvider();
         document.getElementById('google-login').onclick = async () => {
             try {
@@ -182,9 +191,13 @@
             btn.disabled = true;
             btn.innerText = "Verifying...";
             try {
+                // Confirm the OTP code
                 const result = await confirmationResult.confirm(code);
-                await syncUserProfile(result.user);
-                window.location.replace("index.html");
+                
+                // Note: The onAuthStateChanged listener at the top will automatically 
+                // detect this successful login and redirect the user, so we don't need 
+                // to call window.location.replace() here manually!
+                
             } catch (error) {
                 btn.disabled = false;
                 btn.innerText = "Verify & Login";
