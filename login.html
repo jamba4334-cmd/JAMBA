@@ -10,7 +10,7 @@
         
         .login-container { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 400px; text-align: center; }
         .logo img { height: 40px; margin-bottom: 20px; }
-        h2 { margin-bottom: 30px; font-weight: 300; letter-spacing: 1px; text-transform: uppercase; }
+        h2 { margin-bottom: 20px; font-weight: 300; letter-spacing: 1px; text-transform: uppercase; }
 
         input { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 16px; outline: none; transition: border 0.3s; }
         input:focus { border-color: var(--accent); }
@@ -21,7 +21,7 @@
         .btn-google { background-color: white; color: #555; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
 
-        #otp-section { display: none; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; animation: fadeIn 0.4s ease-in-out; }
+        #otp-section, #profile-section { display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .divider { margin: 20px 0; color: #aaa; font-size: 11px; display: flex; align-items: center; letter-spacing: 1px; }
@@ -35,41 +35,53 @@
 
     <div class="login-container">
         <div class="logo"><img src="https://raw.githubusercontent.com/jamba4334-cmd/JAMBA/main/assets/JAMBA.png" alt="JAMBA"></div>
-        <h2>Sign In</h2>
+        
+        <div id="login-view">
+            <h2>Sign In</h2>
+            <div id="error-msg"></div>
 
-        <div id="error-msg"></div>
+            <button class="btn btn-google" id="google-login">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">
+                Continue with Google
+            </button>
 
-        <div id="success-banner" style="display:none; background:#dcfce7; padding:15px; border-radius:8px; margin-bottom:20px; color:#166534; font-weight:bold;">
-            Login Successful! <br><br>
-            <a href="./index.html" style="background:#166534; color:white; padding:10px 15px; border-radius:4px; text-decoration:none; display:inline-block; margin-top:10px;">Enter Store →</a>
+            <div class="divider" id="divider-text">OR USE PHONE</div>
+
+            <div id="phone-section">
+                <input type="tel" id="phone-number" value="+91 " maxlength="14">
+                <div id="recaptcha-container"></div> 
+                <button class="btn btn-primary" id="send-otp">Send OTP</button>
+            </div>
+
+            <div id="otp-section">
+                <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Enter the 6-digit code sent to your phone</p>
+                <input type="text" id="otp-code" placeholder="Enter OTP" maxlength="6">
+                <button class="btn btn-primary" id="verify-otp">Verify & Login</button>
+                <span class="change-num" onclick="location.reload()">← Change Phone Number</span>
+            </div>
         </div>
 
-        <button class="btn btn-google" id="google-login">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">
-            Continue with Google
-        </button>
-
-        <div class="divider" id="divider-text">OR USE PHONE</div>
-
-        <div id="phone-section">
-            <input type="tel" id="phone-number" value="+91 " maxlength="14">
-            <div id="recaptcha-container"></div> 
-            <button class="btn btn-primary" id="send-otp">Send OTP</button>
+        <div id="profile-section">
+            <h2 style="font-size: 18px; color: var(--primary);">Complete Your Profile</h2>
+            <p style="font-size: 12px; color: #666; margin-bottom: 20px;">Please provide your details to continue.</p>
+            
+            <input type="text" id="prof-name" placeholder="Full Name">
+            <input type="email" id="prof-email" placeholder="Email Address">
+            <input type="tel" id="prof-phone" placeholder="Phone Number (+91...)">
+            
+            <button class="btn btn-primary" id="save-profile">Save & Enter Store</button>
         </div>
 
-        <div id="otp-section">
-            <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Enter the 6-digit code sent to your phone</p>
-            <input type="text" id="otp-code" placeholder="Enter OTP" maxlength="6">
-            <button class="btn btn-primary" id="verify-otp">Verify & Login</button>
-            <span class="change-num" onclick="location.reload()">← Change Phone Number</span>
+        <div id="success-banner" style="display:none; background:#dcfce7; padding:15px; border-radius:8px; margin-top:20px; color:#166534; font-weight:bold;">
+            Logging you in...
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        // 🛠️ We import BOTH signInWithPopup AND signInWithRedirect
-        import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        // IMPORT SETPERSISTENCE TO FIX ANDROID WEBVIEW AMNESIA
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBgH8hpWJ97mqLFfoDDW9A_78pR5YjEmxo",
@@ -85,80 +97,111 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        let currentUser = null;
+
         const showError = (msg) => {
             const errDiv = document.getElementById('error-msg');
-            errDiv.innerText = msg;
-            errDiv.style.display = 'block';
+            errDiv.innerText = msg; errDiv.style.display = 'block';
         };
 
-        // --- 1. HANDLE MOBILE REDIRECTS (Runs on Page Load) ---
-        window.addEventListener('DOMContentLoaded', async () => {
-            try {
-                const result = await getRedirectResult(auth);
-                if (result && result.user) {
-                    await syncUserProfile(result.user);
-                    window.location.assign("./index.html");
-                }
-            } catch (error) {
-                console.error("Redirect Error:", error);
-            }
+        // --- ANDROID WEBVIEW FIX: FORCE LOCAL PERSISTENCE BEFORE ANYTHING ELSE ---
+        setPersistence(auth, browserLocalPersistence).catch((error) => {
+            console.error("Persistence Error:", error);
         });
 
-        // --- 2. GLOBAL AUTH STATE LISTENER ---
+        window.addEventListener('DOMContentLoaded', async () => {
+            try { await getRedirectResult(auth); } 
+            catch (error) { console.error("Redirect Error:", error); }
+        });
+
+        // --- GLOBAL AUTH STATE LISTENER ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                document.getElementById('google-login').style.display = 'none';
-                document.getElementById('divider-text').style.display = 'none';
-                document.getElementById('phone-section').style.display = 'none';
-                document.getElementById('otp-section').style.display = 'none';
-                document.getElementById('success-banner').style.display = 'block';
+                currentUser = user;
+                document.getElementById('login-view').style.display = 'none';
                 
-                try { await syncUserProfile(user); } catch (e) { console.warn("Firestore rule block:", e); }
-                window.location.assign("./index.html");
+                try {
+                    const userRef = doc(db, "users", user.uid);
+                    const userSnap = await getDoc(userRef);
+                    
+                    let userData = {};
+                    if (!userSnap.exists()) {
+                        userData = {
+                            name: user.displayName || "",
+                            email: user.email || "",
+                            phone: user.phoneNumber || "",
+                            role: "customer",
+                            createdAt: new Date().toISOString()
+                        };
+                        await setDoc(userRef, userData);
+                    } else {
+                        userData = userSnap.data();
+                    }
+
+                    // CHECK IF WE NEED MORE DATA
+                    if (!userData.name || !userData.email || !userData.phone) {
+                        // Show Profile Collection Form
+                        document.getElementById('profile-section').style.display = 'block';
+                        document.getElementById('prof-name').value = userData.name || "";
+                        document.getElementById('prof-email').value = userData.email || "";
+                        document.getElementById('prof-phone').value = userData.phone || "+91 ";
+                    } else {
+                        // All data exists, redirect to store immediately
+                        document.getElementById('success-banner').style.display = 'block';
+                        window.location.assign("./index.html");
+                    }
+                } catch (e) {
+                    console.warn("Database sync error", e);
+                    window.location.assign("./index.html");
+                }
             }
         });
 
-        // --- 3. FIRESTORE PROFILE SYNC ---
-        async function syncUserProfile(user) {
-            const userRef = doc(db, "users", user.uid);
-            const userSnap = await getDoc(userRef);
-            if (!userSnap.exists()) {
-                await setDoc(userRef, {
-                    name: user.displayName || "JAMBA Customer",
-                    email: user.email || "",
-                    phone: user.phoneNumber || "",
-                    role: "customer",
-                    createdAt: new Date().toISOString()
-                });
-            }
-        }
+        // --- HANDLE SAVING MISSING CUSTOMER DATA ---
+        document.getElementById('save-profile').onclick = async () => {
+            const name = document.getElementById('prof-name').value.trim();
+            const email = document.getElementById('prof-email').value.trim();
+            const phone = document.getElementById('prof-phone').value.trim();
 
-        // --- 4. HYBRID GOOGLE LOGIN LOGIC (The Magic Fix) ---
+            if (!name || !email || !phone || phone.length < 13) {
+                alert("Please fill in all details correctly.");
+                return;
+            }
+
+            document.getElementById('save-profile').innerText = "Saving...";
+            try {
+                await updateDoc(doc(db, "users", currentUser.uid), {
+                    name: name,
+                    email: email,
+                    phone: phone
+                });
+                window.location.assign("./index.html");
+            } catch (error) {
+                console.error("Error saving data:", error);
+                alert("Could not save profile. Entering store anyway.");
+                window.location.assign("./index.html");
+            }
+        };
+
+        // --- HYBRID GOOGLE LOGIN ---
         const googleProvider = new GoogleAuthProvider();
         document.getElementById('google-login').onclick = async () => {
             try {
-                document.getElementById('google-login').innerText = "Connecting to Google...";
-                
-                // Detect if the user is on a mobile device or WebView
+                document.getElementById('google-login').innerText = "Connecting...";
                 const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
+                
                 if (isMobile) {
-                    // Mobile & App: Use Redirect to bypass popup blockers
                     await signInWithRedirect(auth, googleProvider);
                 } else {
-                    // Desktop: Use Popup to bypass Edge/Safari Tracking Prevention
-                    const result = await signInWithPopup(auth, googleProvider);
-                    await syncUserProfile(result.user);
-                    window.location.assign("./index.html");
+                    await signInWithPopup(auth, googleProvider);
                 }
             } catch (error) { 
-                console.error("Auth Error:", error);
                 showError(error.message); 
                 document.getElementById('google-login').innerText = "Continue with Google";
             }
         };
 
-        // --- 5. PHONE OTP LOGIC ---
+        // --- PHONE OTP LOGIC ---
         const phoneInput = document.getElementById('phone-number');
         const prefix = "+91 ";
         phoneInput.addEventListener('keydown', (e) => {
@@ -168,9 +211,7 @@
 
         let confirmationResult;
         const initRecaptcha = () => {
-            if (!window.recaptchaVerifier) {
-                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
-            }
+            if (!window.recaptchaVerifier) window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
         };
 
         document.getElementById('send-otp').onclick = async () => {
